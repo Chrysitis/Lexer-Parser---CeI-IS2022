@@ -41,7 +41,7 @@ public class parser extends java_cup.runtime.lr_parser {
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
     "\000\005\000\002\001\002\000\004\002\007\001\002\000" +
-    "\004\004\006\001\002\000\004\002\000\001\002\000\004" +
+    "\004\027\006\001\002\000\004\002\000\001\002\000\004" +
     "\002\001\001\002" });
 
   /** Access to parse-action table. */
@@ -93,7 +93,7 @@ public class parser extends java_cup.runtime.lr_parser {
   /** User initialization code. */
   public void user_init() throws java.lang.Exception
     {
-        //s.init();
+ s.init(); 
     }
 
   /** Scan to get the next Symbol. */
@@ -154,7 +154,7 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // ini ::= expr_list SEMI 
+          case 1: // ini ::= expr_list HASH 
             {
               Object RESULT =null;
 

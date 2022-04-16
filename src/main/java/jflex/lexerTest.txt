@@ -1,0 +1,13 @@
+// This12 is a comment
+/* Multiline comment */
+:=
+*
+int x = y #
+ABC
+0
+1
+2
+123
++
+-
+;
