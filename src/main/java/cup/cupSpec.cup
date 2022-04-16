@@ -22,10 +22,36 @@ scan with {: return s.next_token(); :};
 
 
 // Symbol list (terminals and non terminals)
+// Keyword terminals
+terminal    INT, FLOAT;
+terminal    BOOL;
+terminal    CHAR, STRING, ARRAY;
+terminal    BEGIN, END;
+terminal    IF, THEN, ELSE;
+terminal    FOR, BREAK, WHILE;
+terminal    SWITCH, CASE;
+terminal    RETURN;
 
-//terminal EOF;
-terminal  SEMI, EQ;
-terminal  ADD, SUBS, MULT, DIV;
+// Boolean.
+terminal    TRUE, FALSE;
+
+// Separator
+terminal    HASH, EQ, EQEQ;
+terminal    LPAREN, RPAREN;
+terminal    LCURLY, RCURLY;
+terminal    LSQUARE, RSQUARE;
+terminal    DOT;
+terminal    COMMA;
+
+// Operators.
+terminal    ADD, SUBS, MULT, DIV;
+terminal    AND, OR, NOT;    
+
+// Number literals.
+terminal INTLIT, FLOATLIT;
+terminal CHARLIT, STRINGLIT;
+
+terminal ID;
 
 
 /* Non terminals */
@@ -37,5 +63,5 @@ non terminal ini;
 
 // The grammar.
 start with ini;
-ini ::= expr_list SEMI
+ini ::= expr_list HASH
   ;
