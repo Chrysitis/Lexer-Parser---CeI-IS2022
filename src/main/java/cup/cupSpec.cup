@@ -1,0 +1,41 @@
+// Misc declarations and user code.
+package cup;
+import java_cup.runtime.*;
+import jflex.*;
+/* Parser code to change the way the parser reports errors (include
+  line and column number of the error). */
+
+parser code {:
+    Scanner s;
+    //parser(Scanner s){ this.s=s; }
+    public boolean syntaxErrors;
+
+    public void syntax_error(Symbol current_token) {
+      report_error (
+        "There seems to be a syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null
+      );
+    }
+:}
+/* define how to connect to the scanner! */
+init with {: s.init(); :};
+scan with {: return s.next_token(); :};
+
+
+// Symbol list (terminals and non terminals)
+
+//terminal EOF;
+terminal  SEMI, EQ;
+terminal  ADD, SUBS, MULT, DIV;
+
+
+/* Non terminals */
+non terminal            expr_list;
+non terminal Integer    expr;      // used to store evaluated subexpressions
+non terminal ini;
+
+// Precedence and associativity declarations
+
+// The grammar.
+start with ini;
+ini ::= expr_list SEMI
+  ;
