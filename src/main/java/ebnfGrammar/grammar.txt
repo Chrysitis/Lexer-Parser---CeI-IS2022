@@ -25,8 +25,8 @@ decimalPoint =  \.
 letter = [a-zA-Z]
 
 // ---------- char ----------
-charDelimitator = \'
-char = {charDelimitator} {letter} {charDelimitator}
+charDelimiter = \'
+char = {charDelimiter} {letter} {charDelimiter}
 // ---------- integer ----------
 integer = 0 | {digR}{digs}*
 
@@ -44,9 +44,9 @@ identifier = {letter}+ ({letter} | {underScore} | {digs})*
 As in to name a "case" in the case control structure.
 <constant> -> [ char digs ]*
 // ---------- string ----------
-stringDelimitator = \"
+stringDelimiter = \"
 strSymbols = [$#%&/()!¡¿?]
-string = {stringDelimitator} ({char} | {strSymbols} | {digs})+ {stringDelimitator}
+string = {stringDelimiter} ({char} | {strSymbols} | {digs})+ {stringDelimiter}
 // ---------- code block ----------
 <code block> -> ... 
 
