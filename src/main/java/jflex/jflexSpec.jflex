@@ -75,7 +75,7 @@ constant = [ char digs ]*
 // ---------- string ----------
 stringDelimiter = \"
 strSymbols = [$#%&/()!¡¿?]
-string = {stringDelimiter} ({char} | {digs} | [ ])+ {stringDelimiter}
+string = {stringDelimiter} ({letter} | {digs} | [ ])+ {stringDelimiter}
 // ---------- relational expressions ----------
 relationalOperator = < | <= | > | >= | == | !=
 booleanRelationalOperator = == | !=
