@@ -19,39 +19,34 @@
 // ---------- Some type definitions ----------
 <sign> -> -
 <zero> -> 0 | 0.0
-<digR> -> [1 ... 9]
-<digs> -> [0 ... 9]
-<decimal point> -> " . "
+<digR> -> [1...9]
+<digs> -> [0...9]
+decimalPoint =  \. 
+letter = [a-zA-Z]
 
 // ---------- char ----------
-<char> -> [a...z A...Z]
-
+charDelimitator = \'
+char = {charDelimitator} {letter} {charDelimitator}
 // ---------- integer ----------
-<integer> -> <zero>
-<integer> -> <sign> <integer> | <integer>
-<integer> -> <digR> <integerRest>
-<integerRest> -> <digs> <intergerRest>
-<integerRest> -> <digs>
+integer = 0 | {digR}{digs}*
 
 // ---------- float ----------
-<float> -> <zero>
-<float> -> <sign> <preDecimal> <postDecinmal> | <preDecimal> <postDecinmal>
-<preDecimal> -> <digR> <preDecimal>
-<preDecimal> -> <digs> <preDecimal>
-<postDecimal> -> <decimal point> <digs>
+floatNum = 0.0 | {digR}+ {decimalPoint} {digs}*
 
 // ---------- boolean ----------
-<boolean> -> -TRUE- | -FALSE-
+boolean = TRUE | FALSE
 
 // ---------- identifier ----------
-<identifier> -> <char>+ ( <punctuation> | <digs> ) *
+underScore = "_"
+identifier = {letter}+ ({letter} | {underScore} | {digs})*
 
 // ---------- constant ----------
 As in to name a "case" in the case control structure.
 <constant> -> [ char digs ]*
 // ---------- string ----------
-<string> -> -ε-
-<string> -> <char> <string>
+stringDelimitator = \"
+strSymbols = [$#%&/()!¡¿?]
+string = {stringDelimitator} ({char} | {strSymbols} | {digs})+ {stringDelimitator}
 // ---------- code block ----------
 <code block> -> ... 
 
@@ -160,10 +155,15 @@ For more, refer to variable creation section where a variable creation productio
 <parameters> -> " ; " identifier " : " <type> <parameters>
 
 // ---------- one/multi line comments ----------
-<comment> -> " // " ( char* | digs* ) <comment>
-<comment> -> " /* " ( char* | digs* ) <comment>
-<comment> -> ( char* | digs* ) <comment>
-<comment> -> " // " | " */ "
+comment = "//" ({letter} | {digs}| [ ] )* {newLine}
+comment = "/*" ({letter} | {digs}| [ ] )* "*/"
+commentEnd = "*/"
+
+// ---------- new line ----------
+newLine = \r | \n | \r\n
+
+// ---------- whitespace ----------
+whitespace = {newLine} | [ \t\f]
 
 // ---------- code block ----------
 The use of (-BEGIN-)* and (-END-)* in case that the code of block does not include it or already inclued it.
