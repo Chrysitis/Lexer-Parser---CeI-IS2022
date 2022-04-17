@@ -1,7 +1,16 @@
 // This12 is a comment
 /* Multiline comment */
+"Esto es un string"
+funcOne()
+funcTwo(param)
+funcThree(paramOne, paramTwo)
+funcFour(paramOne, "jeje", 123, 22.9)
 =
 *
+0.0
+2.3
+15.5
+17.2
 int x = y #
 "ABC"
 0
@@ -14,4 +23,4 @@ int x = y #
 +
 -
 ;
-bool t = true#
+boolean t = true#

@@ -40,10 +40,8 @@ digs = [0-9]
 decimalPoint =  \. 
 letter = [a-zA-Z]
 // ---------- char ----------
-charDelimitator = \'
-char = {charDelimitator} {letter} {charDelimitator}
-//char = {charDelimitator} [^\r\n] {charDelimitator}
-//char = [^\r\n ]
+charDelimiter = \'
+char = {charDelimiter} {letter} {charDelimiter}
 
 // ---------- integer ----------
 integer = 0 | {digR}{digs}*
@@ -55,6 +53,7 @@ integer = 0 | {digR}{digs}*
 //integerRest = {digs}
 
 // ---------- float ----------
+floatNum = 0.0 | {digR}+ {decimalPoint} {digs}*
 float = zero
 float = sign preDecimal postDecinmal | preDecimal postDecinmal
 preDecimal = digR preDecimal
@@ -66,18 +65,17 @@ boolean = TRUE | FALSE
 
 // ---------- identifier ----------
 underScore = "_"
-idLetter = [a-zA-Z]
-identifier = {idLetter}+ ({idLetter} | {underScore} | {digs})*
-//identifier = [:jletter:][:jletterdigit:]*
+identifier = {letter}+ ({letter} | {underScore} | {digs})*
+
+// ---------- literal ----------
+literal = {integer} | {string} | {floatNum} | {boolean}
 // ---------- constant ----------
 //As in to name a "case" in the case control structure.
 constant = [ char digs ]*
 // ---------- string ----------
-stringDelimitator = \"
-//string = {char}{string}
+stringDelimiter = \"
 strSymbols = [$#%&/()!¡¿?]
-//string = {stringDelimitator} ({char} | {strSymbols})+ {stringDelimitator}
-string = {stringDelimitator} {char}+ {stringDelimitator}
+string = {stringDelimiter} ({char} | {digs} | [ ])+ {stringDelimiter}
 // ---------- relational expressions ----------
 relationalOperator = < | <= | > | >= | == | !=
 booleanRelationalOperator = == | !=
@@ -95,6 +93,17 @@ newLine = \r | \n | \r\n
 // ---------- whitespace ----------
 whitespace = {newLine} | [ \t\f]
 
+// ---------- parameters ----------
+type = "int" | "char" | "boolean" | "array"
+parameters = {type} {identifier}
+parameters = "," {type} {identifier} {parameters}
+// ---------- function invocation ----------
+functionType = "int" | "char"
+paramInv = ({identifier} | {literal}) {paramInv}
+paramInv = "," ({identifier} | {literal}) {paramInv}
+paramInv = "," {identifier} | {literal}
+functionInv = {identifier} "(" ")"
+functionInv = {identifier} "("paramInv")" 
 %%
 /* Lexical rules */
 <YYINITIAL> {
@@ -104,7 +113,7 @@ whitespace = {newLine} | [ \t\f]
     "float"     { tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT); }
     "char"      { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR); }
     "array"     { tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY); }
-    "bool"      { tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
+    "boolean"      { tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
     "string"    { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING); }
     "begin"     { tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN); }
     "end"       { tokenInfo("-END- ", yytext()); return symbol(sym.END); }
@@ -145,10 +154,12 @@ whitespace = {newLine} | [ \t\f]
     "!"         { tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 
     {integer}   { tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT); }
+    {floatNum}   { tokenInfo("-FLOATNUM- ", yytext()); return symbol(sym.FLOATLIT); }
     {char}      { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT); }
     {comment}   { tokenInfo("-COMMENT- ", yytext()); }
-    {identifier}    { tokenInfo("-ID- ", yytext()); return symbol(sym.ID); }      
     {string}    { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT); }
+    {identifier}    { tokenInfo("-ID- ", yytext()); return symbol(sym.ID); }      
     {whitespace}    { /* Does nothing */ }  
+    //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }
 }
 [^]             { System.out.println("ILLEGAL ENTRY ::> " + yytext()); }
