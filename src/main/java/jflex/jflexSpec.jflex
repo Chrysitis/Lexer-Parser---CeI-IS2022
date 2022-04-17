@@ -24,6 +24,12 @@ import cup.*;
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
+
+  private void tokenInfo(String token, String val) {
+
+    String info = token + " > " + val + " < ";
+    System.out.print(info);
+  }
 %}
 
 // ---------- Some type definitions ----------
@@ -32,16 +38,21 @@ zero = 0 | 0.0
 digR = [1-9]
 digs = [0-9]
 decimalPoint =  \. 
-
+letter = [a-zA-Z]
 // ---------- char ----------
-char = [a-zA-Z]
+charDelimitator = \'
+char = {charDelimitator} {letter} {charDelimitator}
+//char = {charDelimitator} [^\r\n] {charDelimitator}
+//char = [^\r\n ]
 
 // ---------- integer ----------
-integer = {zero}
-integer = {sign} {integer} | {integer}
-integer = {digR} {integerRest}
-integerRest = {digs} {intergerRest}
-integerRest = {digs}
+integer = 0 | {digR}{digs}*
+//integer = {zero}
+//integer = {digR}
+//integer = {sign} {integer} | {integer}
+//integer = {digR} {integerRest}
+//integerRest = {digs} {intergerRest}
+//integerRest = {digs}
 
 // ---------- float ----------
 float = zero
@@ -55,13 +66,18 @@ boolean = TRUE | FALSE
 
 // ---------- identifier ----------
 underScore = "_"
-identifier = {char}+ ({underScore}|{digs})*
+idLetter = [a-zA-Z]
+identifier = {idLetter}+ ({idLetter} | {underScore} | {digs})*
+//identifier = [:jletter:][:jletterdigit:]*
 // ---------- constant ----------
 //As in to name a "case" in the case control structure.
 constant = [ char digs ]*
 // ---------- string ----------
-string = {char}{string}
-string = {char}
+stringDelimitator = \"
+//string = {char}{string}
+strSymbols = [$#%&/()!¡¿?]
+//string = {stringDelimitator} ({char} | {strSymbols})+ {stringDelimitator}
+string = {stringDelimitator} {char}+ {stringDelimitator}
 // ---------- relational expressions ----------
 relationalOperator = < | <= | > | >= | == | !=
 booleanRelationalOperator = == | !=
@@ -69,13 +85,13 @@ booleanRelationalOperator = == | !=
 // ---------- logical expressions ----------
 logicalOperator = AND | OR | NOT
 // ---------- one/multi line comments ----------
-comment = "//"({char} | {digs})*
-comment = "/*"( {char} | {digs})* "*/"
-//comment = ({char} | {digs})* {commentEnd}
+comment = "//" ({letter} | {digs}| [ ] )* {newLine}
+comment = "/*" ({letter} | {digs}| [ ] )* "*/"
+//comment = ({letter} | {digs})* {commentEnd}
 commentEnd = "*/"
 
 // ---------- new line ----------
-newLine = \r|\n|\r\n
+newLine = \r | \n | \r\n
 // ---------- whitespace ----------
 whitespace = {newLine} | [ \t\f]
 
@@ -84,56 +100,55 @@ whitespace = {newLine} | [ \t\f]
 <YYINITIAL> {
 
     // Keywords
-    "int"       { System.out.print(" -INT- "); return symbol(sym.INT); }
-    "float"     { System.out.print(" -FLOAT- "); return symbol(sym.FLOAT); }
-    "char"      { System.out.print(" -CHAR- "); return symbol(sym.CHAR); }
-    "array"     { System.out.print(" -ARRAY- "); return symbol(sym.ARRAY); }
-    "bool"      { System.out.print(" -BOOL- "); return symbol(sym.BOOL); }
-    "string"    { System.out.print(" -STRING- "); return symbol(sym.STRING); }
-    "begin"     { System.out.print(" -BEGIN- "); return symbol(sym.BEGIN); }
-    "end"       { System.out.print(" -END- "); return symbol(sym.END); }
-    "if"        { System.out.print(" -IF- "); return symbol(sym.IF); }
-    "then"      { System.out.print(" -THEN- "); return symbol(sym.THEN); }
-    "else"      { System.out.print(" -ELSE- "); return symbol(sym.ELSE); }
-    "for"       { System.out.print(" -FOR- "); return symbol(sym.FOR); }
-    "break"     { System.out.print(" -BREAK- "); return symbol(sym.BREAK); }
-    "while"     { System.out.print(" -WHILE- "); return symbol(sym.WHILE); }
-    "switch"    { System.out.print(" -SWITCH- "); return symbol(sym.SWITCH); }
-    "case"      { System.out.print(" -CASE- "); return symbol(sym.CASE); }
-    "return"    { System.out.print(" -RETURN- "); return symbol(sym.RETURN); }
+    "int"       { tokenInfo("-INT- ", yytext()); return symbol(sym.INT); }
+    "float"     { tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT); }
+    "char"      { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR); }
+    "array"     { tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY); }
+    "bool"      { tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
+    "string"    { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING); }
+    "begin"     { tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN); }
+    "end"       { tokenInfo("-END- ", yytext()); return symbol(sym.END); }
+    "if"        { tokenInfo("-IF- ", yytext()); return symbol(sym.IF); }
+    "then"      { tokenInfo("-THEN- ", yytext()); return symbol(sym.THEN); }
+    "else"      { tokenInfo("-ELSE- ", yytext()); return symbol(sym.ELSE); }
+    "for"       { tokenInfo("-FOR- ", yytext()); return symbol(sym.FOR); }
+    "break"     { tokenInfo("-BREAK- ", yytext()); return symbol(sym.BREAK); }
+    "while"     { tokenInfo("-WHILE- ", yytext()); return symbol(sym.WHILE); }
+    "switch"    { tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH); }
+    "case"      { tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE); }
+    "return"    { tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN); }
 
     // Boolean literals.
-    "true"      { System.out.print(" -TRUE- "); return symbol(sym.TRUE); }
-    "false"     { System.out.print(" -FALSE- "); return symbol(sym.FALSE); }
+    "true"      { tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE); }
+    "false"     { tokenInfo("-FALSE- ", yytext()); return symbol(sym.FALSE); }
 
     // Separator.
-    "="         { System.out.print(" -EQ- "); return symbol(sym.EQ); }
-    "=="        { System.out.print(" -EQEQ- "); return symbol(sym.EQEQ); }
-    "#"         { System.out.print(" -HASH- "); return symbol(sym.HASH); }
-    "("         { System.out.print(" -LPAREN- "); return symbol(sym.LPAREN); }
-    ")"         { System.out.print(" -RPAREN- "); return symbol(sym.RPAREN); }
-    "{"         { System.out.print(" -LCURLY- "); return symbol(sym.LCURLY); }
-    "}"         { System.out.print(" -RCURLY- "); return symbol(sym.RCURLY); }
-    "["         { System.out.print(" -LSQUARE- "); return symbol(sym.LSQUARE); }
-    "]"         { System.out.print(" -RSQUARE- "); return symbol(sym.RSQUARE); }
-    "."         { System.out.print(" -DOT- "); return symbol(sym.DOT); }
-    ","         { System.out.print(" -COMMA- "); return symbol(sym.COMMA); }
+    "="         { tokenInfo("-EQ- ", yytext()); return symbol(sym.EQ); }
+    "=="        { tokenInfo("-EQEQ- ", yytext()); return symbol(sym.EQEQ); }
+    "#"         { tokenInfo("-HASH- ", yytext()); return symbol(sym.HASH); }
+    "("         { tokenInfo("-LPAREN- ", yytext()); return symbol(sym.LPAREN); }
+    ")"         { tokenInfo("-RPAREN- ", yytext()); return symbol(sym.RPAREN); }
+    "{"         { tokenInfo("-LCURLY- ", yytext()); return symbol(sym.LCURLY); }
+    "}"         { tokenInfo("-RCURLY- ", yytext()); return symbol(sym.RCURLY); }
+    "["         { tokenInfo("-LSQUARE- ", yytext()); return symbol(sym.LSQUARE); }
+    "]"         { tokenInfo("-RSQUARE- ", yytext()); return symbol(sym.RSQUARE); }
+    "."         { tokenInfo("-DOT- ", yytext()); return symbol(sym.DOT); }
+    ","         { tokenInfo("-COMMA- ", yytext()); return symbol(sym.COMMA); }
 
     // Operators.
-    "+"         { System.out.print(" -ADD- "); return symbol(sym.ADD); }
-    "-"         { System.out.print(" -SUBS- "); return symbol(sym.SUBS); }
-    "*"         { System.out.print(" -MULT- "); return symbol(sym.MULT); }
-    "/"         { System.out.print(" -DIV- "); return symbol(sym.DIV); }
-    "&"         { System.out.print(" -AND- "); return symbol(sym.AND); }
-    "|"         { System.out.print(" -OR- "); return symbol(sym.OR); }
-    "!"         { System.out.print(" -NOT- "); return symbol(sym.NOT); }
+    "+"         { tokenInfo("-ADD- ", yytext()); return symbol(sym.ADD); }
+    "-"         { tokenInfo("-SUBS- ", yytext()); return symbol(sym.SUBS); }
+    "*"         { tokenInfo("-MULT- ", yytext()); return symbol(sym.MULT); }
+    "/"         { tokenInfo("-DIV- ", yytext()); return symbol(sym.DIV); }
+    "&"         { tokenInfo("-AND- ", yytext()); return symbol(sym.AND); }
+    "|"         { tokenInfo("-OR- ", yytext()); return symbol(sym.OR); }
+    "!"         { tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 
-    {integer}   { System.out.print(" -INTEGER- " + " > " + yytext() + " < "); return symbol(sym.INTLIT); }
-    {identifier}    { System.out.print(" -ID- " + " > " + yytext() + " < "); return symbol(sym.ID); }  
-    {char}      { System.out.print(" -CHAR-" + " > " + yytext() + " < "); return symbol(sym.CHARLIT); }
-    {string}    { System.out.print(" -STRING- " + " > " + yytext() + " < "); return symbol(sym.STRINGLIT); }
-    {comment}   { System.out.print(" -COMMENT- "); }
-    {whitespace}    { /* Does nothing */ }
-      
+    {integer}   { tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT); }
+    {char}      { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT); }
+    {comment}   { tokenInfo("-COMMENT- ", yytext()); }
+    {identifier}    { tokenInfo("-ID- ", yytext()); return symbol(sym.ID); }      
+    {string}    { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT); }
+    {whitespace}    { /* Does nothing */ }  
 }
-[^]             { System.out.print("That is not what I call a legal character >.< <"+yytext()+">"); }
+[^]             { System.out.println("ILLEGAL ENTRY ::> " + yytext()); }

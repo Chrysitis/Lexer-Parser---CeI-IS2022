@@ -24,6 +24,8 @@ import jflex.Lexer;
  */
 public class Main {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_CYAN = "\033[35m";
     /**
      * @param args the command line arguments
      */
@@ -53,13 +55,14 @@ public class Main {
           
         BufferedReader br = null;
         try {
-            String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/lexerTest.txt";
+            String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
+            String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
             br = new BufferedReader(new FileReader(testFile));
             Lexer lexer = new Lexer(br);
             Symbol token;
             do {
                 token = lexer.next_token();
-                System.out.println("El token es: " + token);
+                System.out.println(ANSI_CYAN + "El token es: " + token + ANSI_RESET);
             } while (token.sym != sym.EOF);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,7 +104,6 @@ public class Main {
         return false;
     }
     
-
     private static boolean delFile(File file) {
   
         if (file.exists()) {
@@ -111,5 +113,4 @@ public class Main {
         }
         return false;
     }
-
 }
