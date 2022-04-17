@@ -24,8 +24,6 @@ import jflex.Lexer;
  */
 public class Main {
 
-  public static final String ANSI_RESET = "\u001B[0m";
-  public static final String ANSI_CYAN = "\033[35m";
 
   /**
    * @param args the command line arguments
@@ -63,7 +61,7 @@ public class Main {
       Symbol token;
       do {
         token = lexer.next_token();
-        System.out.println(ANSI_CYAN + "El token es: " + token + ANSI_RESET);
+        System.out.println("El token es: " + token);
       } while (token.sym != sym.EOF);
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
