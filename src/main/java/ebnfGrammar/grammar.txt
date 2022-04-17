@@ -1,0 +1,171 @@
+
+
+// ---------- Initial expression, like Pascal ----------
+<init> -> -PROGRAMM- id " # " <init main>
+<init main> -> <main>
+<init main> -> (<function>)* <main>
+<init main> -> <main> (<function>)*
+
+<main> -> -INT- "main" " ( " " ) " " { " <block code> " } "
+<function> -> -FUNCTION- identifier " ( " " ) " <type> " { " <code block> " } "
+<function> -> -FUNCTION- identifier " ( " <parameters> " ) " <type> " { " <code block> " } "
+
+<type> -> <numerical type> | <char type> | <boolean type> | <array type>
+<numerical type> -> INT | FLOAT
+<char type> -> CHAR
+<boolean type> -> BOOL
+<array type> -> ARRAY
+
+// ---------- Some type definitions ----------
+<sign> -> -
+<zero> -> 0 | 0.0
+<digR> -> [1 ... 9]
+<digs> -> [0 ... 9]
+<decimal point> -> " . "
+
+// ---------- char ----------
+<char> -> [a...z A...Z]
+
+// ---------- integer ----------
+<integer> -> <zero>
+<integer> -> <sign> <integer> | <integer>
+<integer> -> <digR> <integerRest>
+<integerRest> -> <digs> <intergerRest>
+<integerRest> -> <digs>
+
+// ---------- float ----------
+<float> -> <zero>
+<float> -> <sign> <preDecimal> <postDecinmal> | <preDecimal> <postDecinmal>
+<preDecimal> -> <digR> <preDecimal>
+<preDecimal> -> <digs> <preDecimal>
+<postDecimal> -> <decimal point> <digs>
+
+// ---------- boolean ----------
+<boolean> -> -TRUE- | -FALSE-
+
+// ---------- identifier ----------
+<identifier> -> <char>+ ( <punctuation> | <digs> ) *
+
+// ---------- constant ----------
+As in to name a "case" in the case control structure.
+<constant> -> [ char digs ]*
+// ---------- string ----------
+<string> -> -ε-
+<string> -> <char> <string>
+// ---------- code block ----------
+<code block> -> ... 
+
+// ---------- static array ----------
+<static array> -> "[" <array size> "]" OF <array val type>
+<array size> -> <integer>
+<array val type> -> INT | CHAR
+<array index val> -> idArray "[" <integer> "]" = <integer> | <char>
+<array get val> -> <array val type> idVar = idArray "[" <integer> "]" 
+<array get val> -> idVar = idArray "[" <integer> "]" 
+
+
+// ---------- variable creation ----------
+// The end of the expression (be it "#" or ";") is at the end of the <expression> prodution.
+<var> -> <type> id
+<var> -> <type> id " = " ( <numerical var> | <char var> | <boolean var> | <array var> )
+<numerical var> -> <numerical type> id
+<numerical var> -> <numerical type> id " = " <integer> | <float>
+<numerical var> -> <numerical type> id " = " <read function>
+<char var> -> <char type> id
+<char var> -> <char type> id " = " <char>
+<boolean var> -> <boolean type> id
+<boolean var> -> <boolean type> id " = " <boolean>
+<array var> -> <array type> id
+<array var> -> <array type> id " = " <static array>
+
+// ---------- expression creation and assignation ----------
+<expression> -> <type> id " = " <complex expression> " # "
+<expression> -> <complex expression> " # "
+
+// ---------- expressions ----------
+<complex expression> -> <literal> <complex expression>
+<complex expression> -> <variable> <complex expression>
+<complex expression> -> <function> <complex expression>
+<complex expression> -> <math operation> <complex expression>
+<complex expression> -> <math operation> <complex expression>
+<complex expression> -> <unary expression> <complex expression>
+<complex expression> -> <relational expression> <complex expression>
+<complex expression> -> <logical expression> <complex expression>
+<complex expression> -> <control expression> <complex expression>
+<complex expression> -> <print function> <complex expression>
+<complex expression> -> -BREAK- <complex expression>
+
+// ---------- literal, variable and function ----------
+<literal> -> <string>
+<variable> -> <var>
+
+// ---------- math functions ----------
+<operator> -> + | - | // | / | * | ~ | ^
+<operand> -> <integer> | <float> | <var>
+<math expression> -> <operand> <operator> <operand>
+<math operation> -> <pemdas parenthesis> | <pemdas sequence>
+<pemdas parenthesis> -> " ( " math expression " ) " <pemdas parenthesis>
+<pemdas parenthesis> -> <operator> " ( " math expression " ) " <pemdas parenthesis>
+<pemdas parenthesis> -> <operand> <operator> " ( " math expression " ) " <pemdas parenthesis>
+<pemdas parenthesis> -> <operator> <operand> <pemdas parenthesis>
+<pemdas sequence> -> <operand> ^ <operand> <pemdas sequence>
+<pemdas sequence> -> <operator> ( * | / | // | ~) <pemdas sequence>
+<pemdas sequence> -> <operator> ( + | - ) <pemdas sequence>
+
+2 * (3 + 2) - 3
+(5 + 5) / (3 * (2 + 2))
+2 + 3 * 5 - 3 + 10 / 2
+// ---------- unary expression ----------
+For negative literal refer to <integer> and <float> definition...
+<unary expression> -> <unary addition> | <unary subtraction>
+<post addition> -> + +
+<post subtraction> -> - -
+<unary addition> -> <numerical var> <post addition>
+<unary subtraction> -> <var> <post substraction>
+
+// ---------- relational expressions ----------
+<relational operator> -> < | <= | > | >= | == | !=
+<boolean relational operator> -> == | !=
+<relational expression> -> ( <integer> | <float> ) <relational operator> ( <integer> | <float> )
+<relational expression> -> <boolean> <boolean relational operator> <boolean>
+
+// ---------- logical expressions ----------
+<logical operator> -AND- | -OR- | -NOT-
+<logical expression> -> <expression> <logical operator> <expression>
+<logical expression> -> <logical operator> <expression>
+
+// ---------- control structures ----------
+The production <complex expression> contains the -BREAK- condition for while and for loops. :)
+<control expression> -> <if conditional> | <for conditional> | <while conditional> | <case conditional> 
+<if conditional> -> -IF- <expression> then <code block> | -IF- <expression> then <code block> -ELSE- <code block>
+<for conditional> -> <for list> DO <code block>
+<for list> -> <initial valie> -TO- <final value> | <initial value> -DOWNTO- <final value>
+<while conditional> -> -WHILE- <expression> -DO- <code block>
+<case conditional> -> -CASE- <expression> -OF- <case numeration>
+<case numeration> -> <constant> " : " <code block> <case numeration>
+
+<initial value> -> <expression>
+<final value> -> <expression>
+
+// ---------- read/print functions ----------
+For more, refer to variable creation section where a variable creation production uses the read function. :)
+<read function> -> digs
+<read function> -> digs <read function>
+<read function> -> <decimal point> <read function>
+
+<print function> -> digs* | char* | ( [ digs char ]* )
+
+// ---------- parameters ----------
+<parameters> -> identifier " : " <type>
+<parameters> -> " ; " identifier " : " <type> <parameters>
+
+// ---------- one/multi line comments ----------
+<comment> -> " // " ( char* | digs* ) <comment>
+<comment> -> " /* " ( char* | digs* ) <comment>
+<comment> -> ( char* | digs* ) <comment>
+<comment> -> " // " | " */ "
+
+// ---------- code block ----------
+The use of (-BEGIN-)* and (-END-)* in case that the code of block does not include it or already inclued it.
+<code block> -> (-BEGIN-)* <expression> (-END-)*
+<code block> -> (-BEGIN-)* <expression> <code block> (-END-)*

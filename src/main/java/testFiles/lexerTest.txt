@@ -1,13 +1,17 @@
 // This12 is a comment
 /* Multiline comment */
-:=
+=
 *
 int x = y #
-ABC
+"ABC"
 0
 1
 2
+'a'
+'b'
+"789"
 123
 +
 -
 ;
+bool t = true#
