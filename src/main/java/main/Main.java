@@ -6,6 +6,7 @@
 package main;
 
 import cup.sym;
+import fileManager.FileManager;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +37,8 @@ public class Main {
     //newManager.createNewSymbolTable(0, "main");
     //newManager.createNewSymbolTable(newManager.getScopeLevel(), "aux");
     //newManager.addToSymbolTable(0, "main", "x", ["1","2"]);
-    
+    FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+    fileManager.emptyFile();
     System.out.println("Hello, World!");
     // Lexer.class, parser.class and sym.class dirs to delete them everytime the program in run to avoid replication. :)
     String lexerClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/Lexer.java";
@@ -63,7 +65,7 @@ public class Main {
     try {
       String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
       String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
-      br = new BufferedReader(new FileReader(testFile));
+      br = new BufferedReader(new FileReader(codeFile));
       Lexer lexer = new Lexer(br);
       Symbol token;
       do {
