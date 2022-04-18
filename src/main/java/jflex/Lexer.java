@@ -8,6 +8,9 @@ package jflex;
 //import java_cup.sym;
 import java_cup.runtime.*;
 import cup.*;
+import symbolTable.*;
+import java.util.ArrayList;
+
 
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
@@ -378,8 +381,15 @@ public class Lexer implements java_cup.runtime.Scanner {
 
   /* user code: */
   StringBuilder string = new StringBuilder();
-  
+  public ArrayList<Token> tokens = new ArrayList<>();
+  public SymbolTableManager newManager = new SymbolTableManager();
+  public int scope = 0;
   private Symbol symbol(int type) {
+    if (type == 26) {
+      increaseScope();
+    } else if (type == 27) {
+      decreaseScope();
+    }
     return new Symbol(type, yyline+1, yycolumn+1);
   }
 
@@ -388,10 +398,45 @@ public class Lexer implements java_cup.runtime.Scanner {
   }
 
   private void tokenInfo(String token, String val) {
-
     String info = token + " > " + val + " < ";
     System.out.print(info);
   }
+
+  private void saveToken(int symbol, String value) {
+    if (symbol != 43) {
+      Token newToken = new Token(symbol, value);
+      tokens.add(newToken);
+    } else {
+      Token newToken = new Token(symbol, value, this.scope);
+      tokens.add(newToken);
+      // After creating the ID token, we save it to the symbol table with its attributes...
+    }
+  }
+
+  private void increaseScope() {
+    scope += 1;
+  }
+  private void decreaseScope() {
+    scope -= 1;
+  }
+
+  public void printTokens() {
+    int tokensSize = tokens.size();
+    for (int i = 0; i < tokensSize; i++) {
+      Token token = tokens.get(i);
+      if (token.getSymbol() == 43) {
+        System.out.println("[ " + sym.terminalNames[token.getSymbol()] + " " + 
+          token.getTokenId() + " ] " + token.getSymbolName() + " - Found in symbol table: " + token.getSymbolTable());
+      } else {
+          System.out.println("[ " + sym.terminalNames[token.getSymbol()] + " ] " + token.getSymbolName());
+      } 
+    }
+  }
+
+  private void reportErr(String info, int line, int column) {
+    System.err.println("ILLEGAL ENTRY AT LINE " + line + " - COLUMN " + column + " ::> " + yytext());
+  }
+
 
 
   /**
@@ -800,7 +845,7 @@ public class Lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { System.out.println("ILLEGAL ENTRY ::> " + yytext());
+            { reportErr(yytext(), yyline, yycolumn);
             }
             // fall through
           case 46: break;
@@ -810,137 +855,137 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 47: break;
           case 3:
-            { tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT);
+            { saveToken(sym.NOT, yytext()); tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT);
             }
             // fall through
           case 48: break;
           case 4:
-            { tokenInfo("-HASH- ", yytext()); return symbol(sym.HASH);
+            { saveToken(sym.HASH, yytext()); tokenInfo("-HASH- ", yytext()); return symbol(sym.HASH);
             }
             // fall through
           case 49: break;
           case 5:
-            { tokenInfo("-AND- ", yytext()); return symbol(sym.AND);
+            { saveToken(sym.AND, yytext()); tokenInfo("-AND- ", yytext()); return symbol(sym.AND);
             }
             // fall through
           case 50: break;
           case 6:
-            { tokenInfo("-LPAREN- ", yytext()); return symbol(sym.LPAREN);
+            { saveToken(sym.LPAREN, yytext()); tokenInfo("-LPAREN- ", yytext()); return symbol(sym.LPAREN);
             }
             // fall through
           case 51: break;
           case 7:
-            { tokenInfo("-RPAREN- ", yytext()); return symbol(sym.RPAREN);
+            { saveToken(sym.RPAREN, yytext()); tokenInfo("-RPAREN- ", yytext()); return symbol(sym.RPAREN);
             }
             // fall through
           case 52: break;
           case 8:
-            { tokenInfo("-MULT- ", yytext()); return symbol(sym.MULT);
+            { saveToken(sym.MULT, yytext()); tokenInfo("-MULT- ", yytext()); return symbol(sym.MULT);
             }
             // fall through
           case 53: break;
           case 9:
-            { tokenInfo("-ADD- ", yytext()); return symbol(sym.ADD);
+            { saveToken(sym.ADD, yytext()); tokenInfo("-ADD- ", yytext()); return symbol(sym.ADD);
             }
             // fall through
           case 54: break;
           case 10:
-            { tokenInfo("-COMMA- ", yytext()); return symbol(sym.COMMA);
+            { saveToken(sym.COMMA, yytext()); tokenInfo("-COMMA- ", yytext()); return symbol(sym.COMMA);
             }
             // fall through
           case 55: break;
           case 11:
-            { tokenInfo("-SUBS- ", yytext()); return symbol(sym.SUBS);
+            { saveToken(sym.SUBS, yytext()); tokenInfo("-SUBS- ", yytext()); return symbol(sym.SUBS);
             }
             // fall through
           case 56: break;
           case 12:
-            { tokenInfo("-DOT- ", yytext()); return symbol(sym.DOT);
+            { saveToken(sym.DOT, yytext()); tokenInfo("-DOT- ", yytext()); return symbol(sym.DOT);
             }
             // fall through
           case 57: break;
           case 13:
-            { tokenInfo("-DIV- ", yytext()); return symbol(sym.DIV);
+            { saveToken(sym.DIV, yytext()); tokenInfo("-DIV- ", yytext()); return symbol(sym.DIV);
             }
             // fall through
           case 58: break;
           case 14:
-            { tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT);
+            { saveToken(sym.INTLIT, yytext()); tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT);
             }
             // fall through
           case 59: break;
           case 15:
-            { tokenInfo("-EQ- ", yytext()); return symbol(sym.EQ);
+            { saveToken(sym.EQ, yytext()); tokenInfo("-EQ- ", yytext()); return symbol(sym.EQ);
             }
             // fall through
           case 60: break;
           case 16:
-            { tokenInfo("-ID- ", yytext()); return symbol(sym.ID);
+            { saveToken(sym.ID, yytext()); return symbol(sym.ID);
             }
             // fall through
           case 61: break;
           case 17:
-            { tokenInfo("-LSQUARE- ", yytext()); return symbol(sym.LSQUARE);
+            { saveToken(sym.LSQUARE, yytext()); tokenInfo("-LSQUARE- ", yytext()); return symbol(sym.LSQUARE);
             }
             // fall through
           case 62: break;
           case 18:
-            { tokenInfo("-RSQUARE- ", yytext()); return symbol(sym.RSQUARE);
+            { saveToken(sym.RSQUARE, yytext()); tokenInfo("-RSQUARE- ", yytext()); return symbol(sym.RSQUARE);
             }
             // fall through
           case 63: break;
           case 19:
-            { tokenInfo("-LCURLY- ", yytext()); return symbol(sym.LCURLY);
+            { saveToken(sym.LCURLY, yytext()); tokenInfo("-LCURLY- ", yytext()); return symbol(sym.LCURLY);
             }
             // fall through
           case 64: break;
           case 20:
-            { tokenInfo("-OR- ", yytext()); return symbol(sym.OR);
+            { saveToken(sym.OR, yytext()); tokenInfo("-OR- ", yytext()); return symbol(sym.OR);
             }
             // fall through
           case 65: break;
           case 21:
-            { tokenInfo("-RCURLY- ", yytext()); return symbol(sym.RCURLY);
+            { saveToken(sym.RCURLY, yytext()); tokenInfo("-RCURLY- ", yytext()); return symbol(sym.RCURLY);
             }
             // fall through
           case 66: break;
           case 22:
-            { tokenInfo("-FLOATNUM- ", yytext()); return symbol(sym.FLOATLIT);
+            { saveToken(sym.FLOATLIT, yytext()); tokenInfo("-FLOATNUM- ", yytext()); return symbol(sym.FLOATLIT);
             }
             // fall through
           case 67: break;
           case 23:
-            { tokenInfo("-EQEQ- ", yytext()); return symbol(sym.EQEQ);
+            { saveToken(sym.EQEQ, yytext()); tokenInfo("-EQEQ- ", yytext()); return symbol(sym.EQEQ);
             }
             // fall through
           case 68: break;
           case 24:
-            { tokenInfo("-IF- ", yytext()); return symbol(sym.IF);
+            { saveToken(sym.IF, yytext()); tokenInfo("-IF- ", yytext()); return symbol(sym.IF);
             }
             // fall through
           case 69: break;
           case 25:
-            { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT);
+            { saveToken(sym.STRINGLIT, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT);
             }
             // fall through
           case 70: break;
           case 26:
-            { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT);
+            { saveToken(sym.CHARLIT, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT);
             }
             // fall through
           case 71: break;
           case 27:
-            { tokenInfo("-END- ", yytext()); return symbol(sym.END);
+            { saveToken(sym.END, yytext()); tokenInfo("-END- ", yytext()); return symbol(sym.END);
             }
             // fall through
           case 72: break;
           case 28:
-            { tokenInfo("-FOR- ", yytext()); return symbol(sym.FOR);
+            { saveToken(sym.FOR, yytext()); tokenInfo("-FOR- ", yytext()); return symbol(sym.FOR);
             }
             // fall through
           case 73: break;
           case 29:
-            { tokenInfo("-INT- ", yytext()); return symbol(sym.INT);
+            { saveToken(sym.INT, yytext()); tokenInfo("-INT- ", yytext()); return symbol(sym.INT);
             }
             // fall through
           case 74: break;
@@ -950,77 +995,77 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 75: break;
           case 31:
-            { tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE);
+            { saveToken(sym.CASE, yytext()); tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE);
             }
             // fall through
           case 76: break;
           case 32:
-            { tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR);
+            { saveToken(sym.CHAR, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR);
             }
             // fall through
           case 77: break;
           case 33:
-            { tokenInfo("-ELSE- ", yytext()); return symbol(sym.ELSE);
+            { saveToken(sym.ELSE, yytext()); tokenInfo("-ELSE- ", yytext()); return symbol(sym.ELSE);
             }
             // fall through
           case 78: break;
           case 34:
-            { tokenInfo("-THEN- ", yytext()); return symbol(sym.THEN);
+            { saveToken(sym.THEN, yytext()); tokenInfo("-THEN- ", yytext()); return symbol(sym.THEN);
             }
             // fall through
           case 79: break;
           case 35:
-            { tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE);
+            { saveToken(sym.TRUE, yytext()); tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE);
             }
             // fall through
           case 80: break;
           case 36:
-            { tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY);
+            { saveToken(sym.ARRAY, yytext()); tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY);
             }
             // fall through
           case 81: break;
           case 37:
-            { tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN);
+            { saveToken(sym.BEGIN, yytext()); tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN);
             }
             // fall through
           case 82: break;
           case 38:
-            { tokenInfo("-BREAK- ", yytext()); return symbol(sym.BREAK);
+            { saveToken(sym.BREAK, yytext()); tokenInfo("-BREAK- ", yytext()); return symbol(sym.BREAK);
             }
             // fall through
           case 83: break;
           case 39:
-            { tokenInfo("-FALSE- ", yytext()); return symbol(sym.FALSE);
+            { saveToken(sym.FALSE, yytext()); tokenInfo("-FALSE- ", yytext()); return symbol(sym.FALSE);
             }
             // fall through
           case 84: break;
           case 40:
-            { tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT);
+            { saveToken(sym.FLOAT, yytext()); tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT);
             }
             // fall through
           case 85: break;
           case 41:
-            { tokenInfo("-WHILE- ", yytext()); return symbol(sym.WHILE);
+            { saveToken(sym.WHILE, yytext()); tokenInfo("-WHILE- ", yytext()); return symbol(sym.WHILE);
             }
             // fall through
           case 86: break;
           case 42:
-            { tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN);
+            { saveToken(sym.RETURN, yytext()); tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN);
             }
             // fall through
           case 87: break;
           case 43:
-            { tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING);
+            { saveToken(sym.STRING, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING);
             }
             // fall through
           case 88: break;
           case 44:
-            { tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH);
+            { saveToken(sym.SWITCH, yytext()); tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH);
             }
             // fall through
           case 89: break;
           case 45:
-            { tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL);
+            { saveToken(sym.BOOL, yytext()); tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL);
             }
             // fall through
           case 90: break;

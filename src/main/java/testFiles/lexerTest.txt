@@ -1,10 +1,12 @@
-// This12 is a comment
 /* Multiline comment */
 "Esto es un string"
+{
 funcOne()
 funcTwo(param)
+}
 funcThree(paramOne, paramTwo)
 funcFour(paramOne, "jeje", 123, 22.9)
+{
 =
 *
 0.0
@@ -13,6 +15,7 @@ funcFour(paramOne, "jeje", 123, 22.9)
 17.2
 int x = y #
 "ABC"
+}
 0
 1
 2
@@ -23,4 +26,7 @@ int x = y #
 +
 -
 ;
+{{{
 boolean t = true#
+}}}
+;

@@ -14,12 +14,13 @@ import java.util.ArrayList;
  */
 public class SymbolTableManager {
   
-  private ArrayList<SymbolTable> symbolTables;
-  private int symbolTablesQuantity = 0;
-  private static int currentScope;
+  private final ArrayList<SymbolTable> symbolTables;
+  private int currentScope;
+  private int scopeLevel;
 
   public SymbolTableManager() {
     symbolTables = new ArrayList<>();
+    scopeLevel = 0;
     currentScope = 0;
   }
 
@@ -30,6 +31,7 @@ public class SymbolTableManager {
   public void createNewSymbolTable(int scopeLevel, String scopeFuncName) {
     SymbolTable newSymbolTable = new SymbolTable(scopeLevel, scopeFuncName);
     symbolTables.add(newSymbolTable);
+    scopeLevel += 1;
   }
   public void addToSymbolTable(int scopeLevel, String scopeFuncName, String symbol, ArrayList attributes) {
     
@@ -45,5 +47,15 @@ public class SymbolTableManager {
   public boolean checkSymbolScope(int symbolScope, String key) {
     return symbolTables.get(symbolScope).isSymbolPresent(key);
   }
+
+  public int getCurrentScope() {
+    return currentScope;
+  }
+
+  public int getScopeLevel() {
+    return scopeLevel;
+  }
+  
+  
   
 }
