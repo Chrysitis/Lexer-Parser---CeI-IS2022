@@ -7,6 +7,8 @@ package cup;
 
 import java_cup.runtime.*;
 import jflex.*;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -32,7 +34,9 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\002\000\002\002\004\000\002\004\004" });
+    "\000\006\000\002\002\004\000\002\002\003\000\002\002" +
+    "\004\000\002\002\004\000\002\004\010\000\002\005\010" +
+    "" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -40,9 +44,16 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\005\000\002\001\002\000\004\002\007\001\002\000" +
-    "\004\027\006\001\002\000\004\002\000\001\002\000\004" +
-    "\002\001\001\002" });
+    "\000\023\000\006\004\010\007\007\001\002\000\004\004" +
+    "\010\001\002\000\006\002\000\007\007\001\002\000\004" +
+    "\002\023\001\002\000\004\055\016\001\002\000\004\055" +
+    "\011\001\002\000\004\032\012\001\002\000\004\033\013" +
+    "\001\002\000\004\034\014\001\002\000\004\035\015\001" +
+    "\002\000\006\002\ufffd\007\ufffd\001\002\000\004\032\017" +
+    "\001\002\000\004\033\020\001\002\000\004\034\021\001" +
+    "\002\000\004\035\022\001\002\000\006\002\ufffc\004\ufffc" +
+    "\001\002\000\004\002\001\001\002\000\004\002\uffff\001" +
+    "\002\000\004\002\ufffe\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -50,9 +61,13 @@ public class parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\005\000\006\002\004\004\003\001\001\000\002\001" +
+    "\000\023\000\010\002\005\004\004\005\003\001\001\000" +
+    "\004\004\024\001\001\000\004\005\023\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "" });
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -90,12 +105,6 @@ public class parser extends java_cup.runtime.lr_parser {
   public int error_sym() {return 1;}
 
 
-  /** User initialization code. */
-  public void user_init() throws java.lang.Exception
-    {
- s.init(); 
-    }
-
   /** Scan to get the next Symbol. */
   public java_cup.runtime.Symbol scan()
     throws java.lang.Exception
@@ -105,14 +114,27 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
     Scanner s;
-    //parser(Scanner s){ this.s=s; }
+    public parser(int t, Scanner s){ this.s=s; }
     public boolean syntaxErrors;
 
     public void syntax_error(Symbol current_token) {
       report_error (
-        "There seems to be a syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null
-      );
+        "SYNTAX ERROR AT LINE " + (current_token.left+1) + ", COLUMN " + current_token.right, null);
     }
+
+    public void initParser(String file){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            parser codeParser = new parser(0,
+                    new Lexer(br));
+            Object result = codeParser.parse().value;
+            System.out.println(result);
+            System.out.println("\n*** Resultados finales ***");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
@@ -154,11 +176,47 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // ini ::= expr_list HASH 
+          case 1: // ini ::= main 
             {
               Object RESULT =null;
 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ini",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ini",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 2: // ini ::= main function 
+            {
+              Object RESULT =null;
+
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ini",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 3: // ini ::= function main 
+            {
+              Object RESULT =null;
+
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ini",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 4: // main ::= INT ID LPAREN RPAREN LCURLY RCURLY 
+            {
+              Object RESULT =null;
+
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("main",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 5: // function ::= CHAR ID LPAREN RPAREN LCURLY RCURLY 
+            {
+              Object RESULT =null;
+
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("function",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
