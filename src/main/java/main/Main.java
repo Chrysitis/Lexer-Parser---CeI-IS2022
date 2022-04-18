@@ -63,22 +63,25 @@ public class Main {
     moveFile(new File("sym.java"), cupPackageDir);
 
     BufferedReader br = null;
+    BufferedReader br2 = null;
     try {
       String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
       String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
       String codeFile2 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest2.txt";
-      br = new BufferedReader(new FileReader(codeFile2));
+      br = new BufferedReader(new FileReader(testFile));
+      br2 = new BufferedReader(new FileReader(codeFile2));
       Lexer lexer = new Lexer(br);
+      Lexer lexerTwo = new Lexer(br2);
       Symbol token;
       ComplexSymbolFactory csf = new ComplexSymbolFactory();
-      parser codeParser = new parser(0, lexer);
-      codeParser.initParser(codeFile2);
-      /*
+      //parser codeParser = new parser(0, lexerTwo);
+      //codeParser.initParser(codeFile2);
+      
       do {
         token = lexer.next_token();
-        System.out.println("El token es: " + token);
+        //System.out.println("El token es: " + token);
       } while (token.sym != sym.EOF);
-      lexer.printTokens(); */
+      lexer.printTokens();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {

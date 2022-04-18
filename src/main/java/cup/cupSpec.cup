@@ -11,10 +11,13 @@ parser code {:
     Scanner s;
     public parser(int t, Scanner s){ this.s=s; }
     public boolean syntaxErrors;
+    public int syntaxErrs = 0;
 
     public void syntax_error(Symbol current_token) {
-      report_error (
-        "SYNTAX ERROR AT LINE " + (current_token.left+1) + ", COLUMN " + current_token.right, null);
+      syntaxErrs += 1;
+      System.out.println(
+        "SYNTAX ERROR AT LINE " + (current_token.left+1) + " COLUMN " + current_token.right +
+          " VALUE: " + current_token.value + " - ");
     }
 
     public void initParser(String file){
@@ -23,10 +26,12 @@ parser code {:
             parser codeParser = new parser(0,
                     new Lexer(br));
             Object result = codeParser.parse().value;
-            System.out.println(result);
-            System.out.println("\n*** Resultados finales ***");
+            String res = this.syntaxErrs > 0? "THERE WERE " + syntaxErrs + 
+              "ERRORS. THE CODE CANNOT BE GENERATED." : "THE CODE CAN BE GENERATED.";
+            System.out.println(res);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.err.println("AN ERROR HAS BEEN FOUND. PROCEEDING WITH THE REST OF THE FILE.");
+            //ex.printStackTrace();
         }
     }
 
@@ -45,7 +50,8 @@ terminal    BEGIN, END;
 terminal    IF, THEN, ELSE;
 terminal    FOR, BREAK, WHILE;
 terminal    SWITCH, CASE;
-terminal    RETURN;
+terminal    RETURN, MAIN, FUNC;
+terminal    READ, PRINT;
 
 // Boolean.
 terminal    TRUE, FALSE;
@@ -60,7 +66,9 @@ terminal    COMMA;
 
 // Operators.
 terminal    ADD, SUBS, MULT, DIV;
-terminal    AND, OR, NOT;    
+terminal    PADD, PSUBS;
+terminal    GTE, GT, LTE, LT;
+terminal    AND, OR, NOT;
 
 // Number literals.
 terminal INTLIT, FLOATLIT;
@@ -73,6 +81,9 @@ terminal ID;
 non terminal          ini;       // Starting point...
 non terminal Integer  expr;       // used to store evaluated subexpressions
 non terminal main, function;      // main and other functions.
+non terminal codeBlock;
+non terminal varCreation, varCreationAsign;
+non terminal parameters;
 //non terminal expr, factor, termino;
 // Precedence and associativity declarations
 
@@ -87,10 +98,16 @@ ini ::=
           ;
 
 main ::= 
-          INT ID LPAREN RPAREN LCURLY RCURLY
+          INT MAIN LPAREN RPAREN LCURLY RCURLY
+          |
+          INT MAIN LPAREN RPAREN LCURLY codeBlock RCURLY
           ;
 function ::=
+          INT ID LPAREN RPAREN LCURLY RCURLY
+          |
           CHAR ID LPAREN RPAREN LCURLY RCURLY
+          |
+          BOOL ID LPAREN RPAREN LCURLY RCURLY
           ;
 
 parameters ::= 
@@ -99,8 +116,46 @@ parameters ::=
           CHAR ID
           |
           BOOL ID
+          |
+          ARRAY ID
+          |
+          STRING ID
           ;
 
+codeBlock ::=
+          varCreation | varCreationAsign
+          |
+          varCreation codeBlock 
+          |
+          varCreationAsign codeBlock 
+          ;
+// ---------- variable creation ----------
+varCreation ::=   
+          INT ID HASH
+          |
+          CHAR ID HASH
+          |
+          BOOL ID HASH
+          |
+          ARRAY ID HASH
+          |
+          STRING ID HASH
+          ;
+varCreationAsign ::=
+          INT ID EQ INTLIT HASH
+          |
+          BOOL ID EQ TRUE HASH
+          |
+          BOOL ID EQ FALSE HASH
+          | 
+          CHAR ID EQ CHARLIT HASH 
+          | 
+          FLOAT ID EQ FLOATLIT HASH
+          |
+          STRING ID EQ STRINGLIT HASH
+          //|
+          //ARRAY ID EQ ARRAYLIT HASH
+          ;
 /*
     expr_list ::= expr_list expr_part
                   |

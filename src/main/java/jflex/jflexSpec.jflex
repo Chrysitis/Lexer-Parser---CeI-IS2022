@@ -23,9 +23,9 @@ import fileManager.*;
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
   private Symbol symbol(int type) {
-    if (type == 26) {
+    if (type == 30) {
       increaseScope();
-    } else if (type == 27) {
+    } else if (type == 31) {
       decreaseScope();
     }
     return new Symbol(type, yyline+1, yycolumn+1);
@@ -37,11 +37,11 @@ import fileManager.*;
 
   private void tokenInfo(String token, String val) {
     String info = token + " > " + val + " < ";
-    System.out.print(info);
+    System.out.println(info);
   }
 
   private void saveToken(int symbol, String value) {
-    if (symbol != 43) {
+    if (symbol != 53) {
       Token newToken = new Token(symbol, value);
       tokens.add(newToken);
       String tokenInfo = "[ " + sym.terminalNames[newToken.getSymbol()] + " ] " + newToken.getSymbolName();
@@ -67,7 +67,7 @@ import fileManager.*;
     int tokensSize = tokens.size();
     for (int i = 0; i < tokensSize; i++) {
       Token token = tokens.get(i);
-      if (token.getSymbol() == 43) {
+      if (token.getSymbol() == 53) {
         System.out.println("[ " + sym.terminalNames[token.getSymbol()] + " " + 
           token.getTokenId() + " ] " + token.getSymbolName() + " - Found in symbol table: " + token.getSymbolTable());
       } else {
@@ -152,13 +152,15 @@ whitespace = {newLine} | [ \t\f]
 type = "int" | "char" | "boolean" | "array"
 parameters = {type} {identifier}
 parameters = "," {type} {identifier} {parameters}
+// ---------- function ----------
+function = {type}{identifier}"(" ")"
 // ---------- function invocation ----------
 functionType = "int" | "char"
 paramInv = ({identifier} | {literal}) {paramInv}
 paramInv = "," ({identifier} | {literal}) {paramInv}
 paramInv = "," {identifier} | {literal}
 functionInv = {identifier} "(" ")"
-functionInv = {identifier} "("paramInv")" 
+//functionInv = {identifier} "("paramInv")" 
 %%
 /* Lexical rules */
 <YYINITIAL> {
@@ -181,14 +183,17 @@ functionInv = {identifier} "("paramInv")"
     "switch"    { saveToken(sym.SWITCH, yytext()); tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH); }
     "case"      { saveToken(sym.CASE, yytext()); tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE); }
     "return"    { saveToken(sym.RETURN, yytext()); tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN); }
+    "main()"    { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
+    "read()"    { saveToken(sym.READ, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.READ); }
+    "print()"      { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
 
     // Boolean literals.
     "true"      { saveToken(sym.TRUE, yytext()); tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE); }
     "false"     { saveToken(sym.FALSE, yytext()); tokenInfo("-FALSE- ", yytext()); return symbol(sym.FALSE); }
 
     // Separator.
-    "="         { saveToken(sym.EQ, yytext()); tokenInfo("-EQ- ", yytext()); return symbol(sym.EQ); }
     "=="        { saveToken(sym.EQEQ, yytext()); tokenInfo("-EQEQ- ", yytext()); return symbol(sym.EQEQ); }
+    "="         { saveToken(sym.EQ, yytext()); tokenInfo("-EQ- ", yytext()); return symbol(sym.EQ); }
     "#"         { saveToken(sym.HASH, yytext()); tokenInfo("-HASH- ", yytext()); return symbol(sym.HASH); }
     "("         { saveToken(sym.LPAREN, yytext()); tokenInfo("-LPAREN- ", yytext()); return symbol(sym.LPAREN); }
     ")"         { saveToken(sym.RPAREN, yytext()); tokenInfo("-RPAREN- ", yytext()); return symbol(sym.RPAREN); }
@@ -199,7 +204,11 @@ functionInv = {identifier} "("paramInv")"
     "."         { saveToken(sym.DOT, yytext()); tokenInfo("-DOT- ", yytext()); return symbol(sym.DOT); }
     ","         { saveToken(sym.COMMA, yytext()); tokenInfo("-COMMA- ", yytext()); return symbol(sym.COMMA); }
 
+    {comment}   { tokenInfo("-COMMENT- ", yytext()); }
+
     // Operators.
+    "++"        { saveToken(sym.PADD, yytext()); tokenInfo("-PADD- ", yytext()); return symbol(sym.PADD); }
+    "--"        { saveToken(sym.PSUBS, yytext()); tokenInfo("-PSUBS- ", yytext()); return symbol(sym.PSUBS); }
     "+"         { saveToken(sym.ADD, yytext()); tokenInfo("-ADD- ", yytext()); return symbol(sym.ADD); }
     "-"         { saveToken(sym.SUBS, yytext()); tokenInfo("-SUBS- ", yytext()); return symbol(sym.SUBS); }
     "*"         { saveToken(sym.MULT, yytext()); tokenInfo("-MULT- ", yytext()); return symbol(sym.MULT); }
@@ -208,12 +217,17 @@ functionInv = {identifier} "("paramInv")"
     "|"         { saveToken(sym.OR, yytext()); tokenInfo("-OR- ", yytext()); return symbol(sym.OR); }
     "!"         { saveToken(sym.NOT, yytext()); tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 
+    ">="         { saveToken(sym.GTE, yytext()); tokenInfo("-GTE- ", yytext()); return symbol(sym.GTE); }
+    ">"         { saveToken(sym.GT, yytext()); tokenInfo("-GT- ", yytext()); return symbol(sym.GT); }
+    "<="         { saveToken(sym.LTE, yytext()); tokenInfo("-LTE- ", yytext()); return symbol(sym.LTE); }
+    "<"         { saveToken(sym.LT, yytext()); tokenInfo("-LT- ", yytext()); return symbol(sym.LT); }
+
     {integer}   { saveToken(sym.INTLIT, yytext()); tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT); }
     {floatNum}   { saveToken(sym.FLOATLIT, yytext()); tokenInfo("-FLOATNUM- ", yytext()); return symbol(sym.FLOATLIT); }
     {char}      { saveToken(sym.CHARLIT, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT); }
-    {comment}   { tokenInfo("-COMMENT- ", yytext()); }
     {string}    { saveToken(sym.STRINGLIT, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT); }
-    {identifier}    { saveToken(sym.ID, yytext()); return symbol(sym.ID); }      
+    {identifier}    { saveToken(sym.ID, yytext()); tokenInfo("-ID- ", yytext()); return symbol(sym.ID); }      
+    {function}    { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }      
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }
 }

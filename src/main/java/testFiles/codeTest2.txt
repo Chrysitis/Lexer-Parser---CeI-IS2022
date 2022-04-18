@@ -1,2 +1,10 @@
-int main() {}
-char ex() {}
+int main() {
+  int x #
+  int y #
+  int a = 5 #
+  float b = 2.5 #
+  string c = "Un string" #
+  char d = 'c' #
+  boolean e = true #
+  boolean f = false #
+}
