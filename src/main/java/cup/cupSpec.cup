@@ -2,22 +2,37 @@
 package cup;
 import java_cup.runtime.*;
 import jflex.*;
+import java.io.FileReader;
+import java.io.BufferedReader;
 /* Parser code to change the way the parser reports errors (include
   line and column number of the error). */
 
 parser code {:
     Scanner s;
-    //parser(Scanner s){ this.s=s; }
+    public parser(int t, Scanner s){ this.s=s; }
     public boolean syntaxErrors;
 
     public void syntax_error(Symbol current_token) {
       report_error (
-        "There seems to be a syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null
-      );
+        "SYNTAX ERROR AT LINE " + (current_token.left+1) + ", COLUMN " + current_token.right, null);
     }
+
+    public void initParser(String file){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            parser codeParser = new parser(0,
+                    new Lexer(br));
+            Object result = codeParser.parse().value;
+            System.out.println(result);
+            System.out.println("\n*** Resultados finales ***");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 :}
 /* define how to connect to the scanner! */
-init with {: s.init(); :};
+//init with {: s.init(); :};
 scan with {: return s.next_token(); :};
 
 
@@ -55,13 +70,87 @@ terminal ID;
 
 
 /* Non terminals */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
-non terminal ini;
-
+non terminal          ini;       // Starting point...
+non terminal Integer  expr;       // used to store evaluated subexpressions
+non terminal main, function;      // main and other functions.
+//non terminal expr, factor, termino;
 // Precedence and associativity declarations
 
 // The grammar.
 start with ini;
-ini ::= expr_list HASH
-  ;
+ini ::=
+          main
+          |
+          main function
+          |
+          function main
+          ;
+
+main ::= 
+          INT ID LPAREN RPAREN LCURLY RCURLY
+          ;
+function ::=
+          CHAR ID LPAREN RPAREN LCURLY RCURLY
+          ;
+
+parameters ::= 
+          INT ID
+          |
+          CHAR ID
+          |
+          BOOL ID
+          ;
+
+/*
+    expr_list ::= expr_list expr_part
+                  |
+                  expr_part
+                  ;
+
+   expr_part ::= expr:e
+                  {:
+                    System.out.println(" = " + e); 
+                  :} 
+                  HASH
+                 ;
+                  
+        
+
+   expr      ::=  expr:e ADD factor:f
+                  {:
+                    RESULT = new Integer(e.intValue() + f.intValue());
+                  :}
+                  |
+                  expr:e SUBS factor:f
+                  {:
+                    RESULT = new Integer(e.intValue() - f.intValue());
+                  :}
+                  |
+                  factor:n
+                  {:
+                    RESULT = n; 
+                  :}
+                  ;
+
+factor        ::=  factor:f MULT termino:e
+                  {:
+                    RESULT = new Integer(f.intValue() * e.intValue());
+                  :}
+                  |
+                  termino:t
+                  {:
+                    RESULT = t;
+                  :}
+                  ;
+
+termino       ::=  LPAREN expr:e RPAREN
+                  {:
+                    RESULT = e;
+                  :}
+                  |
+                  INT:e
+                  {:
+                    RESULT = e;
+                  :}
+                  ; 
+*/

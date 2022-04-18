@@ -3,97 +3,10 @@
 [ LPAREN ] (
 [ RPAREN ] )
 [ LCURLY ] {
-[ INT ] int
-[ ID 1 ] temp - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 12
-[ MULT ] *
-[ ID 2 ] residuo - Found in symbol table: 1
-[ LPAREN ] (
-[ INTLIT ] 45
-[ RPAREN ] )
-[ HASH ] #
-[ IF ] if
-[ ID 3 ] temp - Found in symbol table: 1
-[ EQEQ ] ==
-[ INTLIT ] 12
-[ LCURLY ] {
-[ ID 4 ] temp - Found in symbol table: 2
-[ EQ ] =
-[ ID 5 ] read - Found in symbol table: 2
-[ LPAREN ] (
-[ RPAREN ] )
-[ SUBS ] -
-[ SUBS ] -
-[ SUBS ] -
-[ ID 6 ] temp - Found in symbol table: 2
-[ HASH ] #
-[ BREAK ] break
-[ HASH ] #
 [ RCURLY ] }
-[ ELSE ] else
-[ LCURLY ] {
-[ ID 7 ] temp - Found in symbol table: 2
-[ EQ ] =
+[ CHAR ] char
+[ ID 1 ] ex - Found in symbol table: 0
 [ LPAREN ] (
-[ ID 8 ] var - Found in symbol table: 2
-[ ADD ] +
-[ INTLIT ] 23
-[ RPAREN ] )
-[ INTLIT ] 45
-[ AND ] &
-[ TRUE ] true
-[ OR ] |
-[ ID 9 ] otra - Found in symbol table: 2
-[ EQEQ ] ==
-[ ID 10 ] dif - Found in symbol table: 2
-[ HASH ] #
-[ RCURLY ] }
-[ STRING ] string
-[ ID 11 ] miString - Found in symbol table: 1
-[ EQ ] =
-[ HASH ] #
-[ AND ] &
-[ DIV ] /
-[ LPAREN ] (
-[ RPAREN ] )
-[ NOT ] !
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 12 ] miBool - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 2
-[ EQ ] =
-[ INTLIT ] 7
-[ HASH ] #
-[ INT ] int
-[ ID 13 ] numero - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 45.5
-[ DIV ] /
-[ LPAREN ] (
-[ FLOATLIT ] 34.0
-[ FLOATLIT ] 4.0
-[ RPAREN ] )
-[ HASH ] #
-[ ID 14 ] print - Found in symbol table: 1
-[ LPAREN ] (
-[ ID 15 ] numero - Found in symbol table: 1
-[ RPAREN ] )
-[ HASH ] #
-[ RCURLY ] }
-[ INT ] int
-[ ID 16 ] residuo - Found in symbol table: 0
-[ LPAREN ] (
-[ INT ] int
-[ ID 17 ] num - Found in symbol table: 0
 [ RPAREN ] )
 [ LCURLY ] {
-[ RETURN ] return
-[ ID 18 ] num - Found in symbol table: 1
-[ ADD ] +
-[ INTLIT ] 10
-[ MULT ] *
-[ ID 19 ] num - Found in symbol table: 1
-[ HASH ] #
 [ RCURLY ] }

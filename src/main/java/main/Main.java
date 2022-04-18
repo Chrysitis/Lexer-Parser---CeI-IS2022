@@ -5,6 +5,7 @@
  */
 package main;
 
+import cup.parser;
 import cup.sym;
 import fileManager.FileManager;
 import java.io.BufferedReader;
@@ -16,10 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 import jflex.Lexer;
 import symbolTable.SymbolTableManager;
-import symbolTable.Token;
 
 /**
  *
@@ -46,7 +47,7 @@ public class Main {
     String symClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/parser.java";
     // The jflex and cup specification dirs to work with.
     String[] jFlexFile = {"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/jflexSpec.jflex"};
-    String[] cupFile = {"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/cupSpec.cup"};
+    String[] cupFile = {"-parser", "parser" ,"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/cupSpec.cup"};
     // The direction to the cup package to move the parser and sym classes.
     Path currentPath = Paths.get("");
     String cupPackageDir = currentPath.toAbsolutePath().toString() + File.separator + "src" + File.separator + "main"
@@ -65,14 +66,19 @@ public class Main {
     try {
       String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
       String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
-      br = new BufferedReader(new FileReader(codeFile));
+      String codeFile2 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest2.txt";
+      br = new BufferedReader(new FileReader(codeFile2));
       Lexer lexer = new Lexer(br);
       Symbol token;
+      ComplexSymbolFactory csf = new ComplexSymbolFactory();
+      parser codeParser = new parser(0, lexer);
+      codeParser.initParser(codeFile2);
+      /*
       do {
         token = lexer.next_token();
         System.out.println("El token es: " + token);
       } while (token.sym != sym.EOF);
-      lexer.printTokens();
+      lexer.printTokens(); */
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
