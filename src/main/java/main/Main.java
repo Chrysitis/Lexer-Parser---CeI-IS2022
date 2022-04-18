@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import jflex.Lexer;
+import symbolTable.SymbolTableManager;
+import symbolTable.Token;
 
 /**
  *
@@ -30,6 +32,11 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
 
+    SymbolTableManager newManager = new SymbolTableManager();
+    //newManager.createNewSymbolTable(0, "main");
+    //newManager.createNewSymbolTable(newManager.getScopeLevel(), "aux");
+    //newManager.addToSymbolTable(0, "main", "x", ["1","2"]);
+    
     System.out.println("Hello, World!");
     // Lexer.class, parser.class and sym.class dirs to delete them everytime the program in run to avoid replication. :)
     String lexerClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/Lexer.java";
@@ -63,6 +70,7 @@ public class Main {
         token = lexer.next_token();
         System.out.println("El token es: " + token);
       } while (token.sym != sym.EOF);
+      lexer.printTokens();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
@@ -71,7 +79,7 @@ public class Main {
       } catch (IOException ex) {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
       }
-    }
+    } 
   }
 
   private static void createLexer(String[] jFlexFile) {
