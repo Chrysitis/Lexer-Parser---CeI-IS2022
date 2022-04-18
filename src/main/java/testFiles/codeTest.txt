@@ -3,7 +3,7 @@ int main (){
   if temp == 12{
     temp = read() - --temp#
     break#
-  }
+  } 
   else:
   { 
     temp = (var+23) > 45 & true | otra == dif #

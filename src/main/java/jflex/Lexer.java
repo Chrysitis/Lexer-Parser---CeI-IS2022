@@ -10,7 +10,7 @@ import java_cup.runtime.*;
 import cup.*;
 import symbolTable.*;
 import java.util.ArrayList;
-
+import fileManager.*;
 
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
@@ -406,9 +406,14 @@ public class Lexer implements java_cup.runtime.Scanner {
     if (symbol != 43) {
       Token newToken = new Token(symbol, value);
       tokens.add(newToken);
+      String tokenInfo = "[ " + sym.terminalNames[newToken.getSymbol()] + " ] " + newToken.getSymbolName();
+      writeTokensToFile(tokenInfo);
     } else {
       Token newToken = new Token(symbol, value, this.scope);
       tokens.add(newToken);
+      String tokenInfo = "[ " + sym.terminalNames[newToken.getSymbol()] + " " + 
+        newToken.getTokenId() + " ] " + newToken.getSymbolName() + " - Found in symbol table: " + newToken.getSymbolTable();
+      writeTokensToFile(tokenInfo);
       // After creating the ID token, we save it to the symbol table with its attributes...
     }
   }
@@ -431,6 +436,11 @@ public class Lexer implements java_cup.runtime.Scanner {
           System.out.println("[ " + sym.terminalNames[token.getSymbol()] + " ] " + token.getSymbolName());
       } 
     }
+  }
+
+  private void writeTokensToFile(String info){
+    FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+    fileManager.writeToFile(info);
   }
 
   private void reportErr(String info, int line, int column) {
