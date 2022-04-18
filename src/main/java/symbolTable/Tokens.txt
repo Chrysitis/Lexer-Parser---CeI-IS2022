@@ -1,12 +1,80 @@
-[ INT ] int
-[ ID 0 ] main - Found in symbol table: 0
+[ STRINGLIT ] "Esto es un string"
+[ DIV ] /
+[ DIV ] /
+[ ID 0 ] Esto - Found in symbol table: 0
+[ ID 1 ] es - Found in symbol table: 0
+[ ID 2 ] un - Found in symbol table: 0
+[ ID 3 ] comentario - Found in symbol table: 0
+[ MAIN ] main()
+[ ID 4 ] main - Found in symbol table: 0
+[ LCURLY ] {
+[ ID 5 ] funcOne - Found in symbol table: 1
 [ LPAREN ] (
 [ RPAREN ] )
-[ LCURLY ] {
+[ ID 6 ] funcTwo - Found in symbol table: 1
+[ LPAREN ] (
+[ ID 7 ] param - Found in symbol table: 1
+[ RPAREN ] )
 [ RCURLY ] }
-[ CHAR ] char
-[ ID 1 ] ex - Found in symbol table: 0
+[ ID 8 ] funcThree - Found in symbol table: 0
 [ LPAREN ] (
+[ ID 9 ] paramOne - Found in symbol table: 0
+[ COMMA ] ,
+[ ID 10 ] paramTwo - Found in symbol table: 0
+[ RPAREN ] )
+[ ID 11 ] funcFour - Found in symbol table: 0
+[ LPAREN ] (
+[ ID 12 ] paramOne - Found in symbol table: 0
+[ COMMA ] ,
+[ STRINGLIT ] "jeje"
+[ COMMA ] ,
+[ INTLIT ] 123
+[ COMMA ] ,
+[ FLOATLIT ] 22.9
 [ RPAREN ] )
 [ LCURLY ] {
+[ EQ ] =
+[ MULT ] *
+[ ID 13 ] x - Found in symbol table: 1
+[ EQEQ ] ==
+[ ID 14 ] y - Found in symbol table: 1
+[ HASH ] #
+[ READ ] read()
+[ PRINT ] print()
+[ FLOATLIT ] 0.0
+[ FLOATLIT ] 2.3
+[ FLOATLIT ] 15.5
+[ FLOATLIT ] 17.2
+[ INT ] int
+[ ID 15 ] x - Found in symbol table: 1
+[ EQ ] =
+[ ID 16 ] y - Found in symbol table: 1
+[ HASH ] #
+[ STRINGLIT ] "ABC"
+[ RCURLY ] }
+[ INTLIT ] 0
+[ INTLIT ] 1
+[ INTLIT ] 2
+[ CHARLIT ] 'a'
+[ CHARLIT ] 'b'
+[ STRINGLIT ] "789"
+[ INTLIT ] 123
+[ PADD ] ++
+[ INTLIT ] 5
+[ PADD ] ++
+[ PSUBS ] --
+[ INTLIT ] 3
+[ PSUBS ] --
+[ ADD ] +
+[ SUBS ] -
+[ LCURLY ] {
+[ LCURLY ] {
+[ LCURLY ] {
+[ BOOL ] boolean
+[ ID 17 ] t - Found in symbol table: 3
+[ EQ ] =
+[ TRUE ] true
+[ HASH ] #
+[ RCURLY ] }
+[ RCURLY ] }
 [ RCURLY ] }

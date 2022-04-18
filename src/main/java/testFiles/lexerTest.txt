@@ -1,5 +1,8 @@
 /* Multiline comment */
 "Esto es un string"
+// Esto es un comentario
+main()
+main
 {
 funcOne()
 funcTwo(param)
@@ -9,6 +12,9 @@ funcFour(paramOne, "jeje", 123, 22.9)
 {
 =
 *
+x == y #
+read()
+print()
 0.0
 2.3
 15.5
@@ -23,6 +29,10 @@ int x = y #
 'b'
 "789"
 123
+++
+5++
+--
+3--
 +
 -
 ;
