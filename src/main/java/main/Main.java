@@ -27,31 +27,34 @@ import symbolTable.SymbolTableManager;
  * @author chris
  */
 public class Main {
-
-
+  
+  public static FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+  // Lexer.class, parser.class and sym.class dirs to delete them everytime the program in run to avoid replication. :)
+  public static String lexerClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/Lexer.java";
+  public static String parserClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/parser.java";
+  public static String symClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/sym.java";
+  // The jflex and cup specification dirs to work with.
+  public static String[] jFlexFile = {"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/jflexSpec.jflex"};
+  public static String[] cupFile = {"-parser", "parser" ,"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/cupSpec.cup"};
+  // The direction to the cup package to move the parser and sym classes.
+  public static Path currentPath = Paths.get("");
+  public static String cupPackageDir = currentPath.toAbsolutePath().toString() + File.separator + "src" + File.separator + "main"
+            + File.separator + "java" + File.separator + "cup" + File.separator;
+  // Some files to test on...
+  public static String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
+  public static String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
+  public static String codeFile2 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest2.txt";
   /**
    * @param args the command line arguments
    */
   public static void main(String[] args) throws IOException {
 
-    SymbolTableManager newManager = new SymbolTableManager();
-    //newManager.createNewSymbolTable(0, "main");
-    //newManager.createNewSymbolTable(newManager.getScopeLevel(), "aux");
-    //newManager.addToSymbolTable(0, "main", "x", ["1","2"]);
-    FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+    //lexicalAnalysis();
+    sintaticAnalysis();
+  }
+
+  private static void lexicalAnalysis()throws IOException {
     fileManager.emptyFile();
-    System.out.println("Hello, World!");
-    // Lexer.class, parser.class and sym.class dirs to delete them everytime the program in run to avoid replication. :)
-    String lexerClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/Lexer.java";
-    String parserClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/parser.java";
-    String symClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/parser.java";
-    // The jflex and cup specification dirs to work with.
-    String[] jFlexFile = {"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/jflexSpec.jflex"};
-    String[] cupFile = {"-parser", "parser" ,"C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/cupSpec.cup"};
-    // The direction to the cup package to move the parser and sym classes.
-    Path currentPath = Paths.get("");
-    String cupPackageDir = currentPath.toAbsolutePath().toString() + File.separator + "src" + File.separator + "main"
-            + File.separator + "java" + File.separator + "cup" + File.separator;
     // Delete the files if they have been previously created...
     delFile(new File(lexerClassDir));
     delFile(new File(parserClassDir));
@@ -65,21 +68,11 @@ public class Main {
     BufferedReader br = null;
     BufferedReader br2 = null;
     try {
-      String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
-      String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
-      String codeFile2 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest2.txt";
       br = new BufferedReader(new FileReader(testFile));
-      br2 = new BufferedReader(new FileReader(codeFile2));
       Lexer lexer = new Lexer(br);
-      Lexer lexerTwo = new Lexer(br2);
       Symbol token;
-      ComplexSymbolFactory csf = new ComplexSymbolFactory();
-      //parser codeParser = new parser(0, lexerTwo);
-      //codeParser.initParser(codeFile2);
-      
       do {
         token = lexer.next_token();
-        //System.out.println("El token es: " + token);
       } while (token.sym != sym.EOF);
       lexer.printTokens();
     } catch (FileNotFoundException ex) {
@@ -90,9 +83,42 @@ public class Main {
       } catch (IOException ex) {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
       }
-    } 
+    }
   }
+  
+  public static void sintaticAnalysis() throws IOException {
+ 
+    fileManager.emptyFile();
+    // Delete the files if they have been previously created...
+    delFile(new File(lexerClassDir));
+    delFile(new File(parserClassDir));
+    delFile(new File(symClassDir));
+    createLexer(jFlexFile);             // Creates the lexer class.
+    createParser(cupFile);              // Creates the parser and sym class.       
+    // Moving the parser and sym class.
+    moveFile(new File("parser.java"), cupPackageDir);
+    moveFile(new File("sym.java"), cupPackageDir);
 
+    BufferedReader br = null;
+    try {
+      br = new BufferedReader(new FileReader(codeFile2));
+      Lexer lexer = new Lexer(br);
+      ComplexSymbolFactory csf = new ComplexSymbolFactory();
+      parser codeParser = new parser(0, lexer);
+      codeParser.initParser(codeFile2);
+    } catch (FileNotFoundException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+      try {
+        br.close();
+      } catch (IOException ex) {
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+ 
+  }
+  
+  
   private static void createLexer(String[] jFlexFile) {
     jflex.Main.main(jFlexFile);         // Creates the lexer class.
     System.out.println("*************** The lexer was created ***************");

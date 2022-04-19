@@ -7,4 +7,17 @@ int main() {
   char d = 'c' #
   boolean e = true #
   boolean f = false #
+  print("Printeando un string") #
+  print('c') #
+  print(5) #
+  print(5.5) #
+  print(x) #
+  read() #
 }
+int functionOne() {}
+char functionTwo(int paramOne) {}
+int functionThree(int paramOne, char paramTwo) {}
+boolean functionFour(boolean paramOne, string paramTwo) {}
+int functionFive("Esto es un mensaje") {}
+char functionSix(5, 23.0) {}
+boolean functionSeven('c', "test") {}

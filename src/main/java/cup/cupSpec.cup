@@ -12,7 +12,8 @@ parser code {:
     public parser(int t, Scanner s){ this.s=s; }
     public boolean syntaxErrors;
     public int syntaxErrs = 0;
-
+    
+    @Override
     public void syntax_error(Symbol current_token) {
       syntaxErrs += 1;
       System.out.println(
@@ -66,70 +67,111 @@ terminal    COMMA;
 
 // Operators.
 terminal    ADD, SUBS, MULT, DIV;
+terminal    MOD, EXP;
 terminal    PADD, PSUBS;
 terminal    GTE, GT, LTE, LT;
 terminal    AND, OR, NOT;
 
-// Number literals.
-terminal INTLIT, FLOATLIT;
-terminal CHARLIT, STRINGLIT;
-
+// Literals.
+terminal    INTLIT, FLOATLIT;
+terminal    CHARLIT, STRINGLIT;
+// Identifiers.
 terminal ID;
 
 
 /* Non terminals */
-non terminal          ini;       // Starting point...
-non terminal Integer  expr;       // used to store evaluated subexpressions
-non terminal main, function;      // main and other functions.
-non terminal codeBlock;
-non terminal varCreation, varCreationAsign;
-non terminal parameters;
-//non terminal expr, factor, termino;
+non terminal  ini;       
+//non terminal Integer  expr;      
+non terminal  main, function;    
+non terminal  codeBlock;
+non terminal  varCreation, varCreationAsign;
+non terminal  printFunction, readFunction;
+non terminal  parameters, parametersInv;
+//non terminal  expr, factor, termino;
 // Precedence and associativity declarations
 
 // The grammar.
 start with ini;
+// ---------- Init point ----------
 ini ::=
-          main
+          main | function
           |
-          main function
+          main ini
           |
-          function main
+          function ini
           ;
 
+// ---------- main function (no params) ----------
 main ::= 
           INT MAIN LPAREN RPAREN LCURLY RCURLY
           |
           INT MAIN LPAREN RPAREN LCURLY codeBlock RCURLY
           ;
+// ---------- Other functions ----------
+/* These include functions with parameters and no parameters. 
+  Also, function definition and function invocations.*/
 function ::=
           INT ID LPAREN RPAREN LCURLY RCURLY
           |
           CHAR ID LPAREN RPAREN LCURLY RCURLY
           |
           BOOL ID LPAREN RPAREN LCURLY RCURLY
+          |
+          INT ID LPAREN parameters RPAREN LCURLY RCURLY
+          |
+          CHAR ID LPAREN parameters RPAREN LCURLY RCURLY
+          |
+          BOOL ID LPAREN parameters RPAREN LCURLY RCURLY
+          |
+          INT ID LPAREN parametersInv RPAREN LCURLY RCURLY
+          |
+          CHAR ID LPAREN parametersInv RPAREN LCURLY RCURLY
+          |
+          BOOL ID LPAREN parametersInv RPAREN LCURLY RCURLY
           ;
-
+// ---------- Parameters/Parameters inv ----------
+// Rules for parameters in functions and parameter invocation.
 parameters ::= 
-          INT ID
+          INT ID | CHAR ID | BOOL ID | ARRAY ID | STRING ID
           |
-          CHAR ID
+          INT ID COMMA parameters
           |
-          BOOL ID
+          CHAR ID COMMA parameters
           |
-          ARRAY ID
+          BOOL ID COMMA parameters
           |
-          STRING ID
+          ARRAY ID COMMA parameters
+          |
+          STRING ID COMMA parameters
+          ;
+parametersInv ::=
+          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | BOOL | ID
+          |
+          INTLIT COMMA parametersInv
+          |
+          FLOATLIT COMMA parametersInv
+          |
+          CHARLIT COMMA parametersInv
+          |
+          STRINGLIT COMMA parametersInv
+          |
+          ID COMMA parametersInv
           ;
 
+// ---------- Block of code ----------
+// Block of code with all kind of expressions.
 codeBlock ::=
-          varCreation | varCreationAsign
+          varCreation | varCreationAsign | printFunction | readFunction
           |
           varCreation codeBlock 
           |
-          varCreationAsign codeBlock 
+          varCreationAsign codeBlock
+          |
+          printFunction codeBlock
+          |
+          readFunction codeBlock
           ;
-// ---------- variable creation ----------
+// ---------- variable creation and assignation ----------
 varCreation ::=   
           INT ID HASH
           |
@@ -155,6 +197,24 @@ varCreationAsign ::=
           STRING ID EQ STRINGLIT HASH
           //|
           //ARRAY ID EQ ARRAYLIT HASH
+          ;
+// ---------- Print function ----------
+// Print function taking int, float, char and string literals. Also identifiers.
+printFunction ::=
+          PRINT LPAREN INTLIT RPAREN HASH
+          |
+          PRINT LPAREN FLOATLIT RPAREN HASH
+          |
+          PRINT LPAREN CHARLIT RPAREN HASH
+          |
+          PRINT LPAREN STRINGLIT RPAREN HASH
+          |
+          PRINT LPAREN ID RPAREN HASH
+          ;
+// ---------- Read function ----------
+// I believe this one is just like a system call to read input.
+readFunction ::=
+          READ HASH
           ;
 /*
     expr_list ::= expr_list expr_part

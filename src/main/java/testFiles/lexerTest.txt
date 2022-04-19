@@ -2,10 +2,12 @@
 "Esto es un string"
 // Esto es un comentario
 main()
+~
+^
 main
 {
 funcOne()
-funcTwo(param)
+funcTwo(int param) {}
 }
 funcThree(paramOne, paramTwo)
 funcFour(paramOne, "jeje", 123, 22.9)
@@ -19,6 +21,7 @@ print()
 2.3
 15.5
 17.2
+string s = "jeje"
 int x = y #
 "ABC"
 }
