@@ -5,126 +5,16 @@
 [ LCURLY ] {
 [ INT ] int
 [ ID 0 ] x - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 5
 [ HASH ] #
 [ INT ] int
 [ ID 1 ] y - Found in symbol table: 1
-[ HASH ] #
-[ INT ] int
-[ ID 2 ] a - Found in symbol table: 1
 [ EQ ] =
-[ INTLIT ] 5
+[ INTLIT ] 10
 [ HASH ] #
-[ FLOAT ] float
-[ ID 3 ] b - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 2.5
+[ ID 2 ] x - Found in symbol table: 1
+[ EQEQ ] ==
+[ ID 3 ] y - Found in symbol table: 1
 [ HASH ] #
-[ STRING ] string
-[ ID 4 ] c - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Un string"
-[ HASH ] #
-[ CHAR ] char
-[ ID 5 ] d - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'c'
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 6 ] e - Found in symbol table: 1
-[ EQ ] =
-[ TRUE ] true
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 7 ] f - Found in symbol table: 1
-[ EQ ] =
-[ FALSE ] false
-[ HASH ] #
-[ PRINT ] print
-[ LPAREN ] (
-[ STRINGLIT ] "Printeando un string"
-[ RPAREN ] )
-[ HASH ] #
-[ PRINT ] print
-[ LPAREN ] (
-[ CHARLIT ] 'c'
-[ RPAREN ] )
-[ HASH ] #
-[ PRINT ] print
-[ LPAREN ] (
-[ INTLIT ] 5
-[ RPAREN ] )
-[ HASH ] #
-[ PRINT ] print
-[ LPAREN ] (
-[ FLOATLIT ] 5.5
-[ RPAREN ] )
-[ HASH ] #
-[ PRINT ] print
-[ LPAREN ] (
-[ ID 8 ] x - Found in symbol table: 1
-[ RPAREN ] )
-[ HASH ] #
-[ READ ] read()
-[ HASH ] #
-[ RCURLY ] }
-[ INT ] int
-[ ID 9 ] functionOne - Found in symbol table: 0
-[ LPAREN ] (
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ CHAR ] char
-[ ID 10 ] functionTwo - Found in symbol table: 0
-[ LPAREN ] (
-[ INT ] int
-[ ID 11 ] paramOne - Found in symbol table: 0
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ INT ] int
-[ ID 12 ] functionThree - Found in symbol table: 0
-[ LPAREN ] (
-[ INT ] int
-[ ID 13 ] paramOne - Found in symbol table: 0
-[ COMMA ] ,
-[ CHAR ] char
-[ ID 14 ] paramTwo - Found in symbol table: 0
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ BOOL ] boolean
-[ ID 15 ] functionFour - Found in symbol table: 0
-[ LPAREN ] (
-[ BOOL ] boolean
-[ ID 16 ] paramOne - Found in symbol table: 0
-[ COMMA ] ,
-[ STRING ] string
-[ ID 17 ] paramTwo - Found in symbol table: 0
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ INT ] int
-[ ID 18 ] functionFive - Found in symbol table: 0
-[ LPAREN ] (
-[ STRINGLIT ] "Esto es un mensaje"
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ CHAR ] char
-[ ID 19 ] functionSix - Found in symbol table: 0
-[ LPAREN ] (
-[ INTLIT ] 5
-[ COMMA ] ,
-[ FLOATLIT ] 23.0
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
-[ BOOL ] boolean
-[ ID 20 ] functionSeven - Found in symbol table: 0
-[ LPAREN ] (
-[ CHARLIT ] 'c'
-[ COMMA ] ,
-[ STRINGLIT ] "test"
-[ RPAREN ] )
-[ LCURLY ] {
-[ RCURLY ] }
+[ ID 4 ] x - Found in symbol table: 1

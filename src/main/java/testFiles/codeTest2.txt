@@ -13,11 +13,13 @@ int main() {
   print(5.5) #
   print(x) #
   read() #
+  int test = fun() #
+  char test2 = fun2(x, "val", 5) #
+  functionFive("Esto es un mensaje")
+  functionSix(5, 23.0)
+  functionSeven('c', "test")
 }
-int functionOne() {}
-char functionTwo(int paramOne) {}
-int functionThree(int paramOne, char paramTwo) {}
-boolean functionFour(boolean paramOne, string paramTwo) {}
-int functionFive("Esto es un mensaje") {}
-char functionSix(5, 23.0) {}
-boolean functionSeven('c', "test") {}
+int functionOne() {int x #}
+char functionTwo(int paramOne) {int x #}
+int functionThree(int paramOne, char paramTwo) {int x #}
+boolean functionFour(boolean paramOne, string paramTwo) {int x #}
