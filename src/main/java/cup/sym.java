@@ -8,10 +8,10 @@ package cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int LTE = 44;
+  public static final int LTE = 46;
   public static final int MULT = 38;
   public static final int CHAR = 5;
-  public static final int STRINGLIT = 52;
+  public static final int STRINGLIT = 54;
   public static final int CASE = 17;
   public static final int HASH = 25;
   public static final int LPAREN = 28;
@@ -19,19 +19,20 @@ public class sym {
   public static final int ARRAY = 7;
   public static final int FOR = 13;
   public static final int RPAREN = 29;
-  public static final int NOT = 48;
-  public static final int AND = 46;
-  public static final int INTLIT = 49;
-  public static final int LT = 45;
-  public static final int OR = 47;
+  public static final int NOT = 50;
+  public static final int AND = 48;
+  public static final int INTLIT = 51;
+  public static final int LT = 47;
+  public static final int OR = 49;
   public static final int COMMA = 35;
   public static final int BOOL = 4;
   public static final int DIV = 39;
   public static final int BEGIN = 8;
-  public static final int PADD = 40;
+  public static final int PADD = 42;
   public static final int MAIN = 19;
   public static final int IF = 10;
-  public static final int ID = 53;
+  public static final int EXP = 41;
+  public static final int ID = 55;
   public static final int DOT = 34;
   public static final int EOF = 0;
   public static final int RETURN = 18;
@@ -40,13 +41,14 @@ public class sym {
   public static final int LCURLY = 30;
   public static final int ADD = 36;
   public static final int EQEQ = 27;
+  public static final int MOD = 40;
   public static final int BREAK = 14;
-  public static final int FLOATLIT = 50;
+  public static final int FLOATLIT = 52;
   public static final int EQ = 26;
-  public static final int GTE = 42;
+  public static final int GTE = 44;
   public static final int SWITCH = 16;
   public static final int RCURLY = 31;
-  public static final int CHARLIT = 51;
+  public static final int CHARLIT = 53;
   public static final int ELSE = 12;
   public static final int LSQUARE = 32;
   public static final int FUNC = 20;
@@ -59,8 +61,8 @@ public class sym {
   public static final int END = 9;
   public static final int STRING = 6;
   public static final int FALSE = 24;
-  public static final int PSUBS = 41;
-  public static final int GT = 43;
+  public static final int PSUBS = 43;
+  public static final int GT = 45;
   public static final int PRINT = 22;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -103,6 +105,8 @@ public class sym {
   "SUBS",
   "MULT",
   "DIV",
+  "MOD",
+  "EXP",
   "PADD",
   "PSUBS",
   "GTE",
