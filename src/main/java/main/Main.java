@@ -44,6 +44,8 @@ public class Main {
   public static String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
   public static String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
   public static String codeFile2 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest2.txt";
+  public static String codeFile3 = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest3.txt";
+
   /**
    * @param args the command line arguments
    */
@@ -101,11 +103,11 @@ public class Main {
 
     BufferedReader br = null;
     try {
-      br = new BufferedReader(new FileReader(codeFile2));
+      br = new BufferedReader(new FileReader(codeFile3));
       Lexer lexer = new Lexer(br);
       ComplexSymbolFactory csf = new ComplexSymbolFactory();
       parser codeParser = new parser(0, lexer);
-      codeParser.initParser(codeFile2);
+      codeParser.initParser(codeFile3);
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {

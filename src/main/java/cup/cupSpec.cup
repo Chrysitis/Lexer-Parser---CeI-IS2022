@@ -76,17 +76,20 @@ terminal    AND, OR, NOT;
 terminal    INTLIT, FLOATLIT;
 terminal    CHARLIT, STRINGLIT;
 // Identifiers.
-terminal ID;
-
+terminal    ID;
 
 /* Non terminals */
-non terminal  ini;       
-//non terminal Integer  expr;      
-non terminal  main, function;    
-non terminal  codeBlock;
-non terminal  varCreation, varCreationAsign;
-non terminal  printFunction, readFunction;
-non terminal  parameters, parametersInv;
+non terminal    ini;       
+//non terminal    Integer  expr;      
+non terminal    main, function, functionInv;    
+non terminal    codeBlock;
+non terminal    varCreation, varCreationAsign;
+non terminal    printFunction, readFunction;
+non terminal    parameters, parametersInv;
+non terminal    expression, mathExpression, logRelExpression;
+non terminal    logicalExpression, logicalExpr, relationalExpression;
+non terminal    mathOperand, relationalOperand, logicalOperand;
+non terminal    mathOperator, relationalOperator, logicalOperator;
 //non terminal  expr, factor, termino;
 // Precedence and associativity declarations
 
@@ -111,23 +114,22 @@ main ::=
 /* These include functions with parameters and no parameters. 
   Also, function definition and function invocations.*/
 function ::=
-          INT ID LPAREN RPAREN LCURLY RCURLY
+          INT ID LPAREN RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR ID LPAREN RPAREN LCURLY RCURLY
+          CHAR ID LPAREN RPAREN LCURLY codeBlock RCURLY
           |
-          BOOL ID LPAREN RPAREN LCURLY RCURLY
+          BOOL ID LPAREN RPAREN LCURLY codeBlock RCURLY
           |
-          INT ID LPAREN parameters RPAREN LCURLY RCURLY
+          INT ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR ID LPAREN parameters RPAREN LCURLY RCURLY
+          CHAR ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
           |
-          BOOL ID LPAREN parameters RPAREN LCURLY RCURLY
+          BOOL ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
+          ;
+functionInv ::=
+          ID LPAREN RPAREN
           |
-          INT ID LPAREN parametersInv RPAREN LCURLY RCURLY
-          |
-          CHAR ID LPAREN parametersInv RPAREN LCURLY RCURLY
-          |
-          BOOL ID LPAREN parametersInv RPAREN LCURLY RCURLY
+          ID LPAREN parametersInv RPAREN
           ;
 // ---------- Parameters/Parameters inv ----------
 // Rules for parameters in functions and parameter invocation.
@@ -163,6 +165,8 @@ parametersInv ::=
 codeBlock ::=
           varCreation | varCreationAsign | printFunction | readFunction
           |
+          expression
+          |
           varCreation codeBlock 
           |
           varCreationAsign codeBlock
@@ -170,6 +174,10 @@ codeBlock ::=
           printFunction codeBlock
           |
           readFunction codeBlock
+          |
+          functionInv codeBlock
+          //|
+          //expression codeBlock
           ;
 // ---------- variable creation and assignation ----------
 varCreation ::=   
@@ -195,6 +203,10 @@ varCreationAsign ::=
           FLOAT ID EQ FLOATLIT HASH
           |
           STRING ID EQ STRINGLIT HASH
+          |
+          INT ID EQ functionInv HASH
+          |
+          CHAR ID EQ functionInv HASH
           //|
           //ARRAY ID EQ ARRAYLIT HASH
           ;
@@ -215,6 +227,51 @@ printFunction ::=
 // I believe this one is just like a system call to read input.
 readFunction ::=
           READ HASH
+          ;
+// ---------- Expressions ----------
+expression ::=
+          mathExpression
+          |
+          logRelExpression 
+          //INTLIT | FLOATLIT | CHARLIT | STRINGLIT | BOOL
+          ;
+mathExpression ::=
+          mathOperand
+          |
+          mathOperand mathOperator mathExpression
+          ;
+logRelExpression ::=
+          logicalExpression | relationalExpression
+          ;
+relationalExpression ::=
+          relationalOperand relationalOperator relationalOperand HASH
+          ;
+logicalExpression ::=
+          logicalOperand logicalOperator logicalExpr HASH
+          ;
+logicalExpr ::=
+          logicalOperand
+          |
+          logicalOperand logicalOperator logicalExpr
+          ;
+// ---------- Operands and operators ----------
+mathOperand ::=
+          ID | INTLIT | FLOATLIT | functionInv
+          ;
+relationalOperand ::=
+          mathOperand | LPAREN mathExpression RPAREN
+          ;
+logicalOperand ::=
+          ID | BOOL | functionInv | LPAREN relationalExpression RPAREN
+          ;
+mathOperator ::=
+          ADD | SUBS | DIV | MULT | EXP | MOD
+          ;
+relationalOperator ::=
+          GTE | GT | LTE | LT
+          ;
+logicalOperator ::=
+          AND | OR | EQEQ | NOT
           ;
 /*
     expr_list ::= expr_list expr_part
