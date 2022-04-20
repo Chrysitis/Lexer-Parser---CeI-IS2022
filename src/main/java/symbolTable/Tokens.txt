@@ -13,8 +13,31 @@
 [ EQ ] =
 [ INTLIT ] 10
 [ HASH ] #
-[ ID 2 ] x - Found in symbol table: 1
-[ EQEQ ] ==
-[ ID 3 ] y - Found in symbol table: 1
+[ FLOAT ] float
+[ ID 2 ] z - Found in symbol table: 1
+[ EQ ] =
+[ FLOATLIT ] 5.5
 [ HASH ] #
-[ ID 4 ] x - Found in symbol table: 1
+[ ID 3 ] x - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
+[ ID 4 ] y - Found in symbol table: 1
+[ PSUBS ] --
+[ HASH ] #
+[ ID 5 ] z - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
+[ ID 6 ] x - Found in symbol table: 1
+[ EQEQ ] ==
+[ ID 7 ] y - Found in symbol table: 1
+[ HASH ] #
+[ INTLIT ] 12
+[ GT ] >
+[ INTLIT ] 5
+[ HASH ] #
+[ INTLIT ] 15
+[ LTE ] <=
+[ INTLIT ] 3
+[ HASH ] #
+[ ID 8 ] x - Found in symbol table: 1
+[ GT ] >

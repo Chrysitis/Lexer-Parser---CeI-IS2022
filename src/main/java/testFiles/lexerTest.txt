@@ -1,15 +1,15 @@
-/* Multiline comment */
+/* Multiline comment 
+Esto es un comentario */
 "Esto es un string"
-// Esto es un comentario
 main()
 ~
 ^
 main
 {
 funcOne()
-funcTwo(int param) {}
+char funcTwo(int param) {}
 }
-funcThree(paramOne, paramTwo)
+int funcThree(char paramOne, string paramTwo)
 funcFour(paramOne, "jeje", 123, 22.9)
 {
 =
@@ -26,6 +26,8 @@ int x = y #
 "ABC"
 }
 0
+?
+??__%%%$
 1
 2
 'a'

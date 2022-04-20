@@ -85,8 +85,10 @@ non terminal    main, function, functionInv;
 non terminal    codeBlock;
 non terminal    varCreation, varCreationAsign;
 non terminal    printFunction, readFunction;
-non terminal    parameters, parametersInv;
 non terminal    expression, mathExpression, logRelExpression;
+non terminal    unaryExpression;
+non terminal    parameters, parametersInv;
+non terminal    literal, numLiteral, lettersLiteral;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
 non terminal    mathOperand, relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
@@ -163,21 +165,9 @@ parametersInv ::=
 // ---------- Block of code ----------
 // Block of code with all kind of expressions.
 codeBlock ::=
-          varCreation | varCreationAsign | printFunction | readFunction
-          |
           expression
           |
-          varCreation codeBlock 
-          |
-          varCreationAsign codeBlock
-          |
-          printFunction codeBlock
-          |
-          readFunction codeBlock
-          |
-          functionInv codeBlock
-          //|
-          //expression codeBlock
+          expression codeBlock
           ;
 // ---------- variable creation and assignation ----------
 varCreation ::=   
@@ -232,8 +222,35 @@ readFunction ::=
 expression ::=
           mathExpression
           |
-          logRelExpression 
-          //INTLIT | FLOATLIT | CHARLIT | STRINGLIT | BOOL
+          unaryExpression
+          |
+          logRelExpression
+          |
+          varCreation 
+          | 
+          varCreationAsign 
+          | 
+          printFunction 
+          | 
+          readFunction 
+          ;
+literal ::=
+          numLiteral | lettersLiteral 
+          //| 
+          //BOOL
+          ;
+numLiteral ::=
+          INTLIT | FLOATLIT
+          ;
+lettersLiteral ::=
+          CHARLIT | STRINGLIT
+          ;
+unaryExpression ::=
+          ID PADD HASH | ID PSUBS HASH
+          |
+          INTLIT PADD HASH | INTLIT PSUBS HASH
+          |
+          FLOATLIT PADD HASH | FLOATLIT PSUBS HASH
           ;
 mathExpression ::=
           mathOperand
@@ -256,7 +273,9 @@ logicalExpr ::=
           ;
 // ---------- Operands and operators ----------
 mathOperand ::=
-          ID | INTLIT | FLOATLIT | functionInv
+          literal | functionInv
+          //| 
+          //ID
           ;
 relationalOperand ::=
           mathOperand | LPAREN mathExpression RPAREN
@@ -273,56 +292,3 @@ relationalOperator ::=
 logicalOperator ::=
           AND | OR | EQEQ | NOT
           ;
-/*
-    expr_list ::= expr_list expr_part
-                  |
-                  expr_part
-                  ;
-
-   expr_part ::= expr:e
-                  {:
-                    System.out.println(" = " + e); 
-                  :} 
-                  HASH
-                 ;
-                  
-        
-
-   expr      ::=  expr:e ADD factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() + f.intValue());
-                  :}
-                  |
-                  expr:e SUBS factor:f
-                  {:
-                    RESULT = new Integer(e.intValue() - f.intValue());
-                  :}
-                  |
-                  factor:n
-                  {:
-                    RESULT = n; 
-                  :}
-                  ;
-
-factor        ::=  factor:f MULT termino:e
-                  {:
-                    RESULT = new Integer(f.intValue() * e.intValue());
-                  :}
-                  |
-                  termino:t
-                  {:
-                    RESULT = t;
-                  :}
-                  ;
-
-termino       ::=  LPAREN expr:e RPAREN
-                  {:
-                    RESULT = e;
-                  :}
-                  |
-                  INT:e
-                  {:
-                    RESULT = e;
-                  :}
-                  ; 
-*/
