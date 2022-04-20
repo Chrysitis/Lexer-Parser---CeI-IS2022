@@ -82,14 +82,15 @@ import fileManager.*;
   }
 
   private void reportErr(String info, int line, int column) {
-    System.err.println("ILLEGAL ENTRY AT LINE " + line + " - COLUMN " + column + " ::> " + yytext());
+    //System.err.println("ILLEGAL ENTRY AT LINE " + line + " - COLUMN " + column + " ::> " + yytext());
+    String err = "LEXICAL ERROR AT LINE " + String.valueOf(line) + " - COLUMN " + String.valueOf(column) + " ::> " + yytext();
+    writeTokensToFile(err);
   }
 
 %}
 
 // ---------- Some type definitions ----------
 sign = "-"
-zero = 0 | 0.0
 digR = [1-9]
 digs = [0-9]
 decimalPoint =  \. 
@@ -100,48 +101,22 @@ char = {charDelimiter} {letter} {charDelimiter}
 
 // ---------- integer ----------
 integer = 0 | {digR}{digs}*
-//integer = {zero}
-//integer = {digR}
-//integer = {sign} {integer} | {integer}
-//integer = {digR} {integerRest}
-//integerRest = {digs} {intergerRest}
-//integerRest = {digs}
 
 // ---------- float ----------
 floatNum = 0.0 | {digR}+ {decimalPoint} {digs}*
-float = zero
-float = sign preDecimal postDecinmal | preDecimal postDecinmal
-preDecimal = digR preDecimal
-preDecimal = digs preDecimal
-postDecimal = decimalPoint digs
-
-// ---------- boolean ----------
-boolean = TRUE | FALSE
 
 // ---------- identifier ----------
 underScore = "_"
 identifier = {letter}+ ({letter} | {underScore} | {digs})*
 
-// ---------- literal ----------
-literal = {integer} | {string} | {floatNum} | {boolean}
-// ---------- constant ----------
-//As in to name a "case" in the case control structure.
-constant = [ char digs ]*
 // ---------- string ----------
 stringDelimiter = \"
-strSymbols = [$#%&/()!¡¿?]
-string = {stringDelimiter} ({letter} | {digs} | [ ])+ {stringDelimiter}
-// ---------- relational expressions ----------
-relationalOperator = < | <= | > | >= | == | !=
-booleanRelationalOperator = == | !=
+//strSymbols = [$#%&/()!¡¿?]
+stringLit = {stringDelimiter} ({letter} | {digs} | [ ])+ {stringDelimiter}
 
-// ---------- logical expressions ----------
-logicalOperator = AND | OR | NOT
 // ---------- one/multi line comments ----------
 comment = "//" ({letter} | {digs}| [ ] )* {newLine}
-comment = "/*" ({letter} | {digs}| [ ] )* "*/"
-//comment = ({letter} | {digs})* {commentEnd}
-commentEnd = "*/"
+comment = "/*" ({letter} | {digs}| [ ] | {newLine})* "*/"
 
 // ---------- new line ----------
 newLine = \r | \n | \r\n
@@ -149,28 +124,25 @@ newLine = \r | \n | \r\n
 whitespace = {newLine} | [ \t\f]
 
 // ---------- parameters ----------
-type = "int" | "char" | "boolean" | "array"
+type = "int" | "char" | "boolean" | "array" | "string"
 parameters = {type} {identifier}
+parameters = {type} {identifier} {parameters}
 parameters = "," {type} {identifier} {parameters}
 // ---------- function ----------
-function = {type}{identifier}"(" ")"
-// ---------- function invocation ----------
-functionType = "int" | "char"
-paramInv = ({identifier} | {literal}) {paramInv}
-paramInv = "," ({identifier} | {literal}) {paramInv}
-paramInv = "," {identifier} | {literal}
-functionInv = {identifier} "(" ")"
-//functionInv = {identifier} "("paramInv")" 
+function = {type}{identifier} "("
+//function = {type}{identifier} "(" parameters ")"
+
 %%
 /* Lexical rules */
 <YYINITIAL> {
 
     // Keywords
+    {function}  { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }      
     "int"       { saveToken(sym.INT, yytext()); tokenInfo("-INT- ", yytext()); return symbol(sym.INT); }
     "float"     { saveToken(sym.FLOAT, yytext()); tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT); }
     "char"      { saveToken(sym.CHAR, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR); }
     "array"     { saveToken(sym.ARRAY, yytext()); tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY); }
-    "boolean"      { saveToken(sym.BOOL, yytext()); tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
+    "boolean"   { saveToken(sym.BOOL, yytext()); tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
     "string"    { saveToken(sym.STRING, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING); }
     "begin"     { saveToken(sym.BEGIN, yytext()); tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN); }
     "end"       { saveToken(sym.END, yytext()); tokenInfo("-END- ", yytext()); return symbol(sym.END); }
@@ -183,9 +155,9 @@ functionInv = {identifier} "(" ")"
     "switch"    { saveToken(sym.SWITCH, yytext()); tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH); }
     "case"      { saveToken(sym.CASE, yytext()); tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE); }
     "return"    { saveToken(sym.RETURN, yytext()); tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN); }
-    "main"    { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
+    "main"      { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
     "read()"    { saveToken(sym.READ, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.READ); }
-    "print"      { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
+    "print"     { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
 
     // Boolean literals.
     "true"      { saveToken(sym.TRUE, yytext()); tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE); }
@@ -220,16 +192,15 @@ functionInv = {identifier} "(" ")"
     "|"         { saveToken(sym.OR, yytext()); tokenInfo("-OR- ", yytext()); return symbol(sym.OR); }
     "!"         { saveToken(sym.NOT, yytext()); tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 
-    ">="         { saveToken(sym.GTE, yytext()); tokenInfo("-GTE- ", yytext()); return symbol(sym.GTE); }
+    ">="        { saveToken(sym.GTE, yytext()); tokenInfo("-GTE- ", yytext()); return symbol(sym.GTE); }
     ">"         { saveToken(sym.GT, yytext()); tokenInfo("-GT- ", yytext()); return symbol(sym.GT); }
-    "<="         { saveToken(sym.LTE, yytext()); tokenInfo("-LTE- ", yytext()); return symbol(sym.LTE); }
+    "<="        { saveToken(sym.LTE, yytext()); tokenInfo("-LTE- ", yytext()); return symbol(sym.LTE); }
     "<"         { saveToken(sym.LT, yytext()); tokenInfo("-LT- ", yytext()); return symbol(sym.LT); }
 
-    {integer}   { saveToken(sym.INTLIT, yytext()); tokenInfo("-INTEGER- ", yytext()); return symbol(sym.INTLIT); }
-    {floatNum}   { saveToken(sym.FLOATLIT, yytext()); tokenInfo("-FLOATNUM- ", yytext()); return symbol(sym.FLOATLIT); }
-    {char}      { saveToken(sym.CHARLIT, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHARLIT); }
-    {string}    { saveToken(sym.STRINGLIT, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRINGLIT); }
-    {function}    { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }      
+    {integer}   { saveToken(sym.INTLIT, yytext()); tokenInfo("-INTLIT- ", yytext()); return symbol(sym.INTLIT); }
+    {floatNum}  { saveToken(sym.FLOATLIT, yytext()); tokenInfo("-FLOATLIT- ", yytext()); return symbol(sym.FLOATLIT); }
+    {char}      { saveToken(sym.CHARLIT, yytext()); tokenInfo("-CHARLIT- ", yytext()); return symbol(sym.CHARLIT); }
+    {stringLit} { saveToken(sym.STRINGLIT, yytext()); tokenInfo("-STRINGLIT- ", yytext()); return symbol(sym.STRINGLIT); }
     {identifier}    { saveToken(sym.ID, yytext()); tokenInfo("-ID- ", yytext()); return symbol(sym.ID); }      
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }

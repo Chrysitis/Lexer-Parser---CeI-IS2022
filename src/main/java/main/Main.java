@@ -15,12 +15,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 import jflex.Lexer;
-import symbolTable.SymbolTableManager;
 
 /**
  *
@@ -40,6 +40,8 @@ public class Main {
   public static Path currentPath = Paths.get("");
   public static String cupPackageDir = currentPath.toAbsolutePath().toString() + File.separator + "src" + File.separator + "main"
             + File.separator + "java" + File.separator + "cup" + File.separator;
+  public static String testFilePackageDir = currentPath.toAbsolutePath().toString() + File.separator + "src" + File.separator + "main"
+            + File.separator + "java" + File.separator + "testFiles" + File.separator;
   // Some files to test on...
   public static String testFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/lexerTest.txt";
   public static String codeFile = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/testFiles/codeTest.txt";
@@ -51,11 +53,40 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
 
-    //lexicalAnalysis();
-    sintaticAnalysis();
+    String opt = "";
+    int optInt = 0;
+    String fileName;
+    boolean exit = false;
+    /*
+    do {
+      Scanner inputScan = new Scanner(System.in);
+      System.out.println("Name of the file to analyze:");
+      System.out.print("> ");
+      fileName = inputScan.nextLine();
+      System.out.println("Choose an action to execute:");
+      System.out.println("1. Lexical Analysis\n2. Syntactic Analysis\nAny other to exit.");
+      System.out.println("Indica lo que desea realizar.");
+      System.out.print("> ");
+      opt = inputScan.next();
+      optInt = Character.getNumericValue(opt.charAt(0));
+      switch(optInt) {
+        case 1:
+          lexicalAnalysis(testFilePackageDir + fileName);
+          exit = true;
+          break;
+        case 2:
+          syntacticAnalysis(testFilePackageDir + fileName);
+          exit = true;
+          break;
+        default:
+          break;
+      }
+    } while(!exit); */
+    //lexicalAnalysis(testFilePackageDir + "lexerTest.txt");
+    syntacticAnalysis(testFilePackageDir + "codeTest3.txt");
   }
 
-  private static void lexicalAnalysis()throws IOException {
+  private static void lexicalAnalysis(String file)throws IOException {
     fileManager.emptyFile();
     // Delete the files if they have been previously created...
     delFile(new File(lexerClassDir));
@@ -70,13 +101,15 @@ public class Main {
     BufferedReader br = null;
     BufferedReader br2 = null;
     try {
-      br = new BufferedReader(new FileReader(testFile));
+      br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
       Symbol token;
       do {
         token = lexer.next_token();
       } while (token.sym != sym.EOF);
-      lexer.printTokens();
+      System.out.println("*************** LEXYCAL ANALYSIS RESULT ***************");
+      //lexer.printTokens();
+      System.out.println("*************** RESULTS WRITTEN TO TOKENS.TXT FILE ***************");
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
@@ -88,7 +121,7 @@ public class Main {
     }
   }
   
-  public static void sintaticAnalysis() throws IOException {
+  public static void syntacticAnalysis(String file) throws IOException {
  
     fileManager.emptyFile();
     // Delete the files if they have been previously created...
@@ -103,11 +136,11 @@ public class Main {
 
     BufferedReader br = null;
     try {
-      br = new BufferedReader(new FileReader(codeFile3));
+      br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
       ComplexSymbolFactory csf = new ComplexSymbolFactory();
       parser codeParser = new parser(0, lexer);
-      codeParser.initParser(codeFile3);
+      codeParser.initParser(file);
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
@@ -117,9 +150,7 @@ public class Main {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
- 
   }
-  
   
   private static void createLexer(String[] jFlexFile) {
     jflex.Main.main(jFlexFile);         // Creates the lexer class.
