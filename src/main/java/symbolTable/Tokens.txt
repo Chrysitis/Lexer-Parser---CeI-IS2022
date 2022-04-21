@@ -1,7 +1,5 @@
 [ INT ] int
-[ MAIN ] main
-[ LPAREN ] (
-[ RPAREN ] )
+[ MAIN ] main()
 [ LCURLY ] {
 [ INT ] int
 [ ID 0 ] x - Found in symbol table: 1
@@ -18,18 +16,39 @@
 [ EQ ] =
 [ FLOATLIT ] 5.5
 [ HASH ] #
-[ ID 3 ] x - Found in symbol table: 1
-[ PADD ] ++
+[ BOOL ] boolean
+[ ID 3 ] t - Found in symbol table: 1
 [ HASH ] #
-[ ID 4 ] y - Found in symbol table: 1
-[ PSUBS ] --
+[ BOOL ] boolean
+[ ID 4 ] p - Found in symbol table: 1
+[ EQ ] =
+[ TRUE ] true
 [ HASH ] #
-[ ID 5 ] z - Found in symbol table: 1
-[ PADD ] ++
+[ BOOL ] boolean
+[ ID 5 ] u - Found in symbol table: 1
+[ EQ ] =
+[ FALSE ] false
 [ HASH ] #
 [ ID 6 ] x - Found in symbol table: 1
-[ EQEQ ] ==
+[ PADD ] ++
+[ HASH ] #
 [ ID 7 ] y - Found in symbol table: 1
+[ PSUBS ] --
+[ HASH ] #
+[ ID 8 ] z - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
+[ ID 9 ] x - Found in symbol table: 1
+[ AND ] &&
+[ LPAREN ] (
+[ INTLIT ] 12
+[ GT ] >
+[ INTLIT ] 5
+[ RPAREN ] )
+[ HASH ] #
+[ ID 10 ] x - Found in symbol table: 1
+[ EQEQ ] ==
+[ ID 11 ] y - Found in symbol table: 1
 [ HASH ] #
 [ INTLIT ] 12
 [ GT ] >
@@ -39,5 +58,18 @@
 [ LTE ] <=
 [ INTLIT ] 3
 [ HASH ] #
-[ ID 8 ] x - Found in symbol table: 1
+[ INTLIT ] 12
 [ GT ] >
+[ FUNC ] func(
+[ INTLIT ] 12
+[ COMMA ] ,
+[ TRUE ] true
+[ COMMA ] ,
+[ CHARLIT ] 'c'
+[ RPAREN ] )
+[ HASH ] #
+[ ID 12 ] x - Found in symbol table: 1
+[ LT ] <
+[ ID 13 ] y - Found in symbol table: 1
+[ HASH ] #
+[ RCURLY ] }

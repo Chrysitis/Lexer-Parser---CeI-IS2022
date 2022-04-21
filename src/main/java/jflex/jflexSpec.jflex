@@ -23,9 +23,9 @@ import fileManager.*;
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
   private Symbol symbol(int type) {
-    if (type == 30) {
+    if (type == 32) {
       increaseScope();
-    } else if (type == 31) {
+    } else if (type == 33) {
       decreaseScope();
     }
     return new Symbol(type, yyline+1, yycolumn+1);
@@ -41,7 +41,7 @@ import fileManager.*;
   }
 
   private void saveToken(int symbol, String value) {
-    if (symbol != 55) {
+    if (symbol != 57) {
       Token newToken = new Token(symbol, value);
       tokens.add(newToken);
       String tokenInfo = "[ " + sym.terminalNames[newToken.getSymbol()] + " ] " + newToken.getSymbolName();
@@ -67,7 +67,7 @@ import fileManager.*;
     int tokensSize = tokens.size();
     for (int i = 0; i < tokensSize; i++) {
       Token token = tokens.get(i);
-      if (token.getSymbol() == 55) {
+      if (token.getSymbol() == 57) {
         System.out.println("[ " + sym.terminalNames[token.getSymbol()] + " " + 
           token.getTokenId() + " ] " + token.getSymbolName() + " - Found in symbol table: " + token.getSymbolTable());
       } else {
@@ -130,6 +130,7 @@ parameters = {type} {identifier} {parameters}
 parameters = "," {type} {identifier} {parameters}
 // ---------- function ----------
 function = {type}{identifier} "("
+function = {identifier} "("
 //function = {type}{identifier} "(" parameters ")"
 
 %%
@@ -137,11 +138,13 @@ function = {type}{identifier} "("
 <YYINITIAL> {
 
     // Keywords
-    {function}  { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }      
+    "main()"    { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
+    {function}  { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }
+    "int["      { saveToken(sym.INT, yytext()); tokenInfo("-INTARR- ", yytext()); return symbol(sym.INTARR); }     
+    "char["      { saveToken(sym.INT, yytext()); tokenInfo("-CHARARR- ", yytext()); return symbol(sym.CHARARR); }     
     "int"       { saveToken(sym.INT, yytext()); tokenInfo("-INT- ", yytext()); return symbol(sym.INT); }
     "float"     { saveToken(sym.FLOAT, yytext()); tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT); }
     "char"      { saveToken(sym.CHAR, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR); }
-    "array"     { saveToken(sym.ARRAY, yytext()); tokenInfo("-ARRAY- ", yytext()); return symbol(sym.ARRAY); }
     "boolean"   { saveToken(sym.BOOL, yytext()); tokenInfo("-BOOL- ", yytext()); return symbol(sym.BOOL); }
     "string"    { saveToken(sym.STRING, yytext()); tokenInfo("-STRING- ", yytext()); return symbol(sym.STRING); }
     "begin"     { saveToken(sym.BEGIN, yytext()); tokenInfo("-BEGIN- ", yytext()); return symbol(sym.BEGIN); }
@@ -155,7 +158,6 @@ function = {type}{identifier} "("
     "switch"    { saveToken(sym.SWITCH, yytext()); tokenInfo("-SWITCH- ", yytext()); return symbol(sym.SWITCH); }
     "case"      { saveToken(sym.CASE, yytext()); tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE); }
     "return"    { saveToken(sym.RETURN, yytext()); tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN); }
-    "main"      { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
     "read()"    { saveToken(sym.READ, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.READ); }
     "print"     { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
 
@@ -188,7 +190,7 @@ function = {type}{identifier} "("
     "^"         { saveToken(sym.EXP, yytext()); tokenInfo("-EXP- ", yytext()); return symbol(sym.EXP); }    
 
     "/"         { saveToken(sym.DIV, yytext()); tokenInfo("-DIV- ", yytext()); return symbol(sym.DIV); }
-    "&"         { saveToken(sym.AND, yytext()); tokenInfo("-AND- ", yytext()); return symbol(sym.AND); }
+    "&&"         { saveToken(sym.AND, yytext()); tokenInfo("-AND- ", yytext()); return symbol(sym.AND); }
     "|"         { saveToken(sym.OR, yytext()); tokenInfo("-OR- ", yytext()); return symbol(sym.OR); }
     "!"         { saveToken(sym.NOT, yytext()); tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 
@@ -205,4 +207,4 @@ function = {type}{identifier} "("
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }
 }
-[^]             { reportErr(yytext(), yyline, yycolumn); }
+[^]             { reportErr(yytext(), yyline + 1, yycolumn); }
