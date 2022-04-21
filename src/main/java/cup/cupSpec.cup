@@ -93,6 +93,7 @@ non terminal    literal, numLiteral, lettersLiteral, boolLit;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
 non terminal    mathOperand, relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
+non terminal    if;
 //non terminal  expr, factor, termino;
 // Precedence and associativity declarations
 
@@ -217,6 +218,8 @@ expression ::=
           printFunction HASH
           | 
           readFunction HASH
+          |
+          if
           ;
 literal ::=
           numLiteral | lettersLiteral | boolLit
@@ -275,3 +278,10 @@ relationalOperator ::=
 logicalOperator ::=
           AND | OR | EQEQ | NOT
           ;
+// ---------- IF THEN ELSE structure ----------
+
+if ::=
+        IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY
+        |
+        IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY ELSE LCURLY codeBlock RCURLY
+        ;

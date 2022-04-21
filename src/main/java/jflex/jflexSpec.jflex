@@ -103,7 +103,7 @@ char = {charDelimiter} {letter} {charDelimiter}
 integer = 0 | {digR}{digs}*
 
 // ---------- float ----------
-floatNum = 0.0 | {digR}+ {decimalPoint} {digs}*
+floatNum = 0.0 | {digR}+ {digs}* {decimalPoint} {digs}*
 
 // ---------- identifier ----------
 underScore = "_"
@@ -190,7 +190,7 @@ function = {identifier} "("
     "^"         { saveToken(sym.EXP, yytext()); tokenInfo("-EXP- ", yytext()); return symbol(sym.EXP); }    
 
     "/"         { saveToken(sym.DIV, yytext()); tokenInfo("-DIV- ", yytext()); return symbol(sym.DIV); }
-    "&&"         { saveToken(sym.AND, yytext()); tokenInfo("-AND- ", yytext()); return symbol(sym.AND); }
+    "&&"        { saveToken(sym.AND, yytext()); tokenInfo("-AND- ", yytext()); return symbol(sym.AND); }
     "|"         { saveToken(sym.OR, yytext()); tokenInfo("-OR- ", yytext()); return symbol(sym.OR); }
     "!"         { saveToken(sym.NOT, yytext()); tokenInfo("-NOT- ", yytext()); return symbol(sym.NOT); }
 

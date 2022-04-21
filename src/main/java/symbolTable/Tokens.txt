@@ -68,8 +68,48 @@
 [ CHARLIT ] 'c'
 [ RPAREN ] )
 [ HASH ] #
+[ LPAREN ] (
 [ ID 12 ] x - Found in symbol table: 1
 [ LT ] <
 [ ID 13 ] y - Found in symbol table: 1
+[ RPAREN ] )
+[ AND ] &&
+[ ID 14 ] Z - Found in symbol table: 1
 [ HASH ] #
+[ IF ] if
+[ LPAREN ] (
+[ ID 15 ] x - Found in symbol table: 1
+[ GT ] >
+[ ID 16 ] y - Found in symbol table: 1
+[ RPAREN ] )
+[ THEN ] then
+[ LCURLY ] {
+[ INT ] int
+[ ID 17 ] z - Found in symbol table: 2
+[ EQ ] =
+[ INTLIT ] 10
+[ HASH ] #
+[ RCURLY ] }
+[ IF ] if
+[ LPAREN ] (
+[ ID 18 ] a - Found in symbol table: 1
+[ LTE ] <=
+[ ID 19 ] b - Found in symbol table: 1
+[ RPAREN ] )
+[ THEN ] then
+[ LCURLY ] {
+[ FLOAT ] float
+[ ID 20 ] c - Found in symbol table: 2
+[ EQ ] =
+[ FLOATLIT ] 5.5
+[ HASH ] #
+[ RCURLY ] }
+[ ELSE ] else
+[ LCURLY ] {
+[ FLOAT ] float
+[ ID 21 ] c - Found in symbol table: 2
+[ EQ ] =
+[ FLOATLIT ] 10.543
+[ HASH ] #
+[ RCURLY ] }
 [ RCURLY ] }
