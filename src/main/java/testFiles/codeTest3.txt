@@ -15,6 +15,14 @@ int main() {
   12 > 5 # 
   15 <= 3 # 
   12 > func(12, true, 'c') #
-  x < y #
+  (x < y) && Z #
+  if (x > y) then {
+    int z = 10 #
+  }
 
+  if (a <= b) then {
+    float c = 5.5 #
+  } else {
+      float c = 10.543 #
+  }
 }
