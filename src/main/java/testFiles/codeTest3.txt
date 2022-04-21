@@ -25,4 +25,15 @@ int main() {
   } else {
       float c = 10.543 #
   }
+
+  while (t >= s) {
+    boolean q = false #
+  }
+
+  for (int i = 0, i < 10, i++) {
+    print("for loop") #
+  }
+  for (int i = 0, i < len, i++) {
+    print("for loop") #
+  }
 }

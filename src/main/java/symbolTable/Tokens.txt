@@ -112,4 +112,57 @@
 [ FLOATLIT ] 10.543
 [ HASH ] #
 [ RCURLY ] }
+[ WHILE ] while
+[ LPAREN ] (
+[ ID 22 ] t - Found in symbol table: 1
+[ GTE ] >=
+[ ID 23 ] s - Found in symbol table: 1
+[ RPAREN ] )
+[ LCURLY ] {
+[ BOOL ] boolean
+[ ID 24 ] q - Found in symbol table: 2
+[ EQ ] =
+[ FALSE ] false
+[ HASH ] #
+[ RCURLY ] }
+[ FOR ] for
+[ LPAREN ] (
+[ INT ] int
+[ ID 25 ] i - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 0
+[ COMMA ] ,
+[ ID 26 ] i - Found in symbol table: 1
+[ LT ] <
+[ INTLIT ] 10
+[ COMMA ] ,
+[ ID 27 ] i - Found in symbol table: 1
+[ PADD ] ++
+[ RPAREN ] )
+[ LCURLY ] {
+[ FUNC ] print(
+[ STRINGLIT ] "for loop"
+[ RPAREN ] )
+[ HASH ] #
+[ RCURLY ] }
+[ FOR ] for
+[ LPAREN ] (
+[ INT ] int
+[ ID 28 ] i - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 0
+[ COMMA ] ,
+[ ID 29 ] i - Found in symbol table: 1
+[ LT ] <
+[ ID 30 ] len - Found in symbol table: 1
+[ COMMA ] ,
+[ ID 31 ] i - Found in symbol table: 1
+[ PADD ] ++
+[ RPAREN ] )
+[ LCURLY ] {
+[ FUNC ] print(
+[ STRINGLIT ] "for loop"
+[ RPAREN ] )
+[ HASH ] #
+[ RCURLY ] }
 [ RCURLY ] }

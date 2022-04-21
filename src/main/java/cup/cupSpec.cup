@@ -93,7 +93,8 @@ non terminal    literal, numLiteral, lettersLiteral, boolLit;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
 non terminal    mathOperand, relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
-non terminal    if;
+non terminal    if, while, for;
+non terminal    zero;
 //non terminal  expr, factor, termino;
 // Precedence and associativity declarations
 
@@ -219,7 +220,7 @@ expression ::=
           | 
           readFunction HASH
           |
-          if
+          if | while | for
           ;
 literal ::=
           numLiteral | lettersLiteral | boolLit
@@ -280,8 +281,17 @@ logicalOperator ::=
           ;
 // ---------- IF THEN ELSE structure ----------
 
-if ::=
+if ::=  // Add rule to make it work with a boolean literal: true/false
         IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY
         |
         IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY ELSE LCURLY codeBlock RCURLY
+        ;
+while ::=
+        WHILE LPAREN logRelExpression RPAREN LCURLY codeBlock RCURLY
+        ;
+for ::=
+        FOR LPAREN INT ID EQ zero COMMA logRelExpression COMMA unaryExpression RPAREN LCURLY codeBlock RCURLY
+        ;
+zero ::=
+        INTLIT
         ;
