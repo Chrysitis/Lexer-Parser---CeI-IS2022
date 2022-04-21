@@ -47,6 +47,7 @@ scan with {: return s.next_token(); :};
 terminal    INT, FLOAT;
 terminal    BOOL;
 terminal    CHAR, STRING, ARRAY;
+terminal    INTARR, CHARARR;
 terminal    BEGIN, END;
 terminal    IF, THEN, ELSE;
 terminal    FOR, BREAK, WHILE;
@@ -83,12 +84,12 @@ non terminal    ini;
 //non terminal    Integer  expr;      
 non terminal    main, function, functionInv;    
 non terminal    codeBlock;
-non terminal    varCreation, varCreationAsign;
+non terminal    varCreation;
 non terminal    printFunction, readFunction;
 non terminal    expression, mathExpression, logRelExpression;
 non terminal    unaryExpression;
 non terminal    parameters, parametersInv;
-non terminal    literal, numLiteral, lettersLiteral;
+non terminal    literal, numLiteral, lettersLiteral, boolLit;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
 non terminal    mathOperand, relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
@@ -106,32 +107,33 @@ ini ::=
           function ini
           ;
 
-// ---------- main function (no params) ----------
+// ---------- main function (no params, MAIN is recognized as main()) ----------
 main ::= 
-          INT MAIN LPAREN RPAREN LCURLY RCURLY
+          INT MAIN LCURLY RCURLY
           |
-          INT MAIN LPAREN RPAREN LCURLY codeBlock RCURLY
+          INT MAIN LCURLY codeBlock RCURLY
           ;
 // ---------- Other functions ----------
 /* These include functions with parameters and no parameters. 
-  Also, function definition and function invocations.*/
+  Also, function definition and function invocations.
+  The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT ID LPAREN RPAREN LCURLY codeBlock RCURLY
+          INT FUNC RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR ID LPAREN RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC RPAREN LCURLY codeBlock RCURLY
           |
-          BOOL ID LPAREN RPAREN LCURLY codeBlock RCURLY
+          BOOL FUNC RPAREN LCURLY codeBlock RCURLY
           |
-          INT ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
+          INT FUNC parameters RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC parameters RPAREN LCURLY codeBlock RCURLY
           |
-          BOOL ID LPAREN parameters RPAREN LCURLY codeBlock RCURLY
+          BOOL FUNC parameters RPAREN LCURLY codeBlock RCURLY
           ;
 functionInv ::=
-          ID LPAREN RPAREN
+          FUNC RPAREN
           |
-          ID LPAREN parametersInv RPAREN
+          FUNC parametersInv RPAREN
           ;
 // ---------- Parameters/Parameters inv ----------
 // Rules for parameters in functions and parameter invocation.
@@ -149,7 +151,7 @@ parameters ::=
           STRING ID COMMA parameters
           ;
 parametersInv ::=
-          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | BOOL | ID
+          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | boolLit | ID
           |
           INTLIT COMMA parametersInv
           |
@@ -159,9 +161,10 @@ parametersInv ::=
           |
           STRINGLIT COMMA parametersInv
           |
+          boolLit COMMA parametersInv
+          |
           ID COMMA parametersInv
           ;
-
 // ---------- Block of code ----------
 // Block of code with all kind of expressions.
 codeBlock ::=
@@ -171,73 +174,52 @@ codeBlock ::=
           ;
 // ---------- variable creation and assignation ----------
 varCreation ::=   
-          INT ID HASH
+          INT ID | INT ID EQ INTLIT | INT ID EQ functionInv
           |
-          CHAR ID HASH
+          FLOAT ID | FLOAT ID EQ FLOATLIT
           |
-          BOOL ID HASH
+          CHAR ID | CHAR ID EQ CHARLIT | CHAR ID EQ functionInv
           |
-          ARRAY ID HASH
+          BOOL ID | BOOL ID EQ boolLit
           |
-          STRING ID HASH
-          ;
-varCreationAsign ::=
-          INT ID EQ INTLIT HASH
+          //ARRAY ID | ARRAY ID 
           |
-          BOOL ID EQ TRUE HASH
-          |
-          BOOL ID EQ FALSE HASH
-          | 
-          CHAR ID EQ CHARLIT HASH 
-          | 
-          FLOAT ID EQ FLOATLIT HASH
-          |
-          STRING ID EQ STRINGLIT HASH
-          |
-          INT ID EQ functionInv HASH
-          |
-          CHAR ID EQ functionInv HASH
-          //|
-          //ARRAY ID EQ ARRAYLIT HASH
+          STRING ID | STRING ID EQ STRINGLIT
           ;
 // ---------- Print function ----------
 // Print function taking int, float, char and string literals. Also identifiers.
 printFunction ::=
-          PRINT LPAREN INTLIT RPAREN HASH
+          PRINT LPAREN INTLIT RPAREN
           |
-          PRINT LPAREN FLOATLIT RPAREN HASH
+          PRINT LPAREN FLOATLIT RPAREN
           |
-          PRINT LPAREN CHARLIT RPAREN HASH
+          PRINT LPAREN CHARLIT RPAREN
           |
-          PRINT LPAREN STRINGLIT RPAREN HASH
+          PRINT LPAREN STRINGLIT RPAREN
           |
-          PRINT LPAREN ID RPAREN HASH
+          PRINT LPAREN ID RPAREN
           ;
 // ---------- Read function ----------
 // I believe this one is just like a system call to read input.
 readFunction ::=
-          READ HASH
+          READ
           ;
 // ---------- Expressions ----------
 expression ::=
           mathExpression
           |
-          unaryExpression
+          unaryExpression HASH
           |
-          logRelExpression
+          logRelExpression HASH
           |
-          varCreation 
+          varCreation HASH
           | 
-          varCreationAsign 
+          printFunction HASH
           | 
-          printFunction 
-          | 
-          readFunction 
+          readFunction HASH
           ;
 literal ::=
-          numLiteral | lettersLiteral 
-          //| 
-          //BOOL
+          numLiteral | lettersLiteral | boolLit
           ;
 numLiteral ::=
           INTLIT | FLOATLIT
@@ -245,12 +227,15 @@ numLiteral ::=
 lettersLiteral ::=
           CHARLIT | STRINGLIT
           ;
+boolLit ::=
+          TRUE | FALSE
+          ;
 unaryExpression ::=
-          ID PADD HASH | ID PSUBS HASH
+          ID PADD | ID PSUBS 
           |
-          INTLIT PADD HASH | INTLIT PSUBS HASH
+          INTLIT PADD | INTLIT PSUBS 
           |
-          FLOATLIT PADD HASH | FLOATLIT PSUBS HASH
+          FLOATLIT PADD | FLOATLIT PSUBS 
           ;
 mathExpression ::=
           mathOperand
@@ -261,10 +246,10 @@ logRelExpression ::=
           logicalExpression | relationalExpression
           ;
 relationalExpression ::=
-          relationalOperand relationalOperator relationalOperand HASH
+          relationalOperand relationalOperator relationalOperand
           ;
 logicalExpression ::=
-          logicalOperand logicalOperator logicalExpr HASH
+          logicalOperand logicalOperator logicalExpr //HASH
           ;
 logicalExpr ::=
           logicalOperand
@@ -273,15 +258,13 @@ logicalExpr ::=
           ;
 // ---------- Operands and operators ----------
 mathOperand ::=
-          literal | functionInv
-          //| 
-          //ID
+          literal | functionInv | ID
           ;
 relationalOperand ::=
           mathOperand | LPAREN mathExpression RPAREN
           ;
 logicalOperand ::=
-          ID | BOOL | functionInv | LPAREN relationalExpression RPAREN
+          ID | boolLit | functionInv | LPAREN relationalExpression RPAREN
           ;
 mathOperator ::=
           ADD | SUBS | DIV | MULT | EXP | MOD

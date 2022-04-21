@@ -57,7 +57,7 @@ public class Main {
     int optInt = 0;
     String fileName;
     boolean exit = false;
-    
+    /*
     do {
       Scanner inputScan = new Scanner(System.in);
       System.out.println("Name of the file to analyze:");
@@ -81,9 +81,9 @@ public class Main {
         default:
           break;
       }
-    } while(!exit);
+    } while(!exit); */
     //lexicalAnalysis(testFilePackageDir + "lexerTest.txt");
-    //syntacticAnalysis(testFilePackageDir + "codeTest3.txt");
+    syntacticAnalysis(testFilePackageDir + "codeTest3.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {

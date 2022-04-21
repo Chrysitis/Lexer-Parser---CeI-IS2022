@@ -2,11 +2,14 @@
 Esto es un comentario */
 "Esto es un string"
 main()
+int[
+char[
 ~
 ^
 main
 {
 funcOne()
+if ()
 char funcTwo(int param) {}
 }
 int funcThree(char paramOne, string paramTwo)

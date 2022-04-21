@@ -4,13 +4,17 @@ int main() {
   int x = 5 #
   int y = 10 #
   float z = 5.5 #
+  boolean t #
+  boolean p = true #
+  boolean u = false #
   x++ #
   y-- #
   z++ #
+  x && (12 > 5) #
   x == y #
-  12 > 5 #
-  15 <= 3 #
-  x > y #
+  12 > 5 # 
+  15 <= 3 # 
+  12 > func(12, true, 'c') #
   x < y #
 
 }
