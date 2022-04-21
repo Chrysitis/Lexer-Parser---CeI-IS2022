@@ -139,9 +139,10 @@ function = {identifier} "("
 
     // Keywords
     "main()"    { saveToken(sym.MAIN, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.MAIN); }
+    "print"     { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
     {function}  { saveToken(sym.FUNC, yytext()); tokenInfo("-FUNC- ", yytext()); return symbol(sym.FUNC); }
     "int["      { saveToken(sym.INT, yytext()); tokenInfo("-INTARR- ", yytext()); return symbol(sym.INTARR); }     
-    "char["      { saveToken(sym.INT, yytext()); tokenInfo("-CHARARR- ", yytext()); return symbol(sym.CHARARR); }     
+    "char["     { saveToken(sym.INT, yytext()); tokenInfo("-CHARARR- ", yytext()); return symbol(sym.CHARARR); }     
     "int"       { saveToken(sym.INT, yytext()); tokenInfo("-INT- ", yytext()); return symbol(sym.INT); }
     "float"     { saveToken(sym.FLOAT, yytext()); tokenInfo("-FLOAT- ", yytext()); return symbol(sym.FLOAT); }
     "char"      { saveToken(sym.CHAR, yytext()); tokenInfo("-CHAR- ", yytext()); return symbol(sym.CHAR); }
@@ -159,7 +160,6 @@ function = {identifier} "("
     "case"      { saveToken(sym.CASE, yytext()); tokenInfo("-CASE- ", yytext()); return symbol(sym.CASE); }
     "return"    { saveToken(sym.RETURN, yytext()); tokenInfo("-RETURN- ", yytext()); return symbol(sym.RETURN); }
     "read()"    { saveToken(sym.READ, yytext()); tokenInfo("-MAIN- ", yytext()); return symbol(sym.READ); }
-    "print"     { saveToken(sym.PRINT, yytext()); tokenInfo("-PRINT- ", yytext()); return symbol(sym.PRINT); }
 
     // Boolean literals.
     "true"      { saveToken(sym.TRUE, yytext()); tokenInfo("-TRUE- ", yytext()); return symbol(sym.TRUE); }
