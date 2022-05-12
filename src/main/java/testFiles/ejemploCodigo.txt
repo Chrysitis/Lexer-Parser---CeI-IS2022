@@ -1,0 +1,49 @@
+int main(){
+	char miChar = '!'#
+	miFunc (hola, 'a')#
+	float fl1#
+	int arr[10]#
+	arr[0] = 5 * 5#
+	arr[1] = 10 - arr[0] * miFunc (hola, 'a')#
+	fl1 = 4.5~miChar^-0.005#
+	int in1 = fl1-- * -14 / in1++ + 7#
+	bool bl1 = in1 >= fl1 & false | not(func1(3,miVar) > 56)#
+	return bl1#
+}
+
+float miFunc (int dif, char otra){
+	int a;
+	string str = "Hola $%&/#$&) mundo" #
+	int var = 34 + id * miFunc2 (func3(34,id))#
+	if ((var+23) > 45 & true | otra == dif)
+	{
+		while(true == (asd>12) & ((34+34)>12))
+		{
+			dif = str++#
+		}
+		if (var)
+		{
+			print("entra al if")#
+			switch(otra)
+			{
+				case 1:
+					print("!#")#
+				case 2:
+					otra = 10#
+					break#
+				default:
+					otra = -10.5 * -1.9#
+			}
+		}
+		else
+		{
+			read(read)#
+		}
+	}
+	
+	return 1#
+}
+
+char miOtraFun(){
+	return -5.6#
+}
