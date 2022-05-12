@@ -82,8 +82,8 @@ public class Main {
           break;
       }
     } while(!exit); */
-    //lexicalAnalysis(testFilePackageDir + "lexerTest.txt");
-    syntacticAnalysis(testFilePackageDir + "codeTest3.txt");
+    lexicalAnalysis(testFilePackageDir + "ejemploCodigo.txt");
+    //syntacticAnalysis(testFilePackageDir + "codeTest2.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {

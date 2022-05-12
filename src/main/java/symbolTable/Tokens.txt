@@ -3,166 +3,133 @@
 [ LCURLY ] {
 [ INT ] int
 [ ID 0 ] x - Found in symbol table: 1
+[ INT ] int
+[ ID 1 ] y - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 2 ] a - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
-[ INT ] int
-[ ID 1 ] y - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 10
-[ HASH ] #
 [ FLOAT ] float
-[ ID 2 ] z - Found in symbol table: 1
+[ ID 3 ] b - Found in symbol table: 1
 [ EQ ] =
-[ FLOATLIT ] 5.5
+[ FLOATLIT ] 2.5
+[ HASH ] #
+[ STRING ] string
+[ ID 4 ] c - Found in symbol table: 1
+[ EQ ] =
+[ STRINGLIT ] "Un string"
+[ HASH ] #
+[ CHAR ] char
+[ ID 5 ] d - Found in symbol table: 1
+[ EQ ] =
+[ CHARLIT ] 'c'
 [ HASH ] #
 [ BOOL ] boolean
-[ ID 3 ] t - Found in symbol table: 1
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 4 ] p - Found in symbol table: 1
+[ ID 6 ] e - Found in symbol table: 1
 [ EQ ] =
 [ TRUE ] true
 [ HASH ] #
 [ BOOL ] boolean
-[ ID 5 ] u - Found in symbol table: 1
+[ ID 7 ] f - Found in symbol table: 1
 [ EQ ] =
 [ FALSE ] false
 [ HASH ] #
-[ ID 6 ] x - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ ID 7 ] y - Found in symbol table: 1
-[ PSUBS ] --
-[ HASH ] #
-[ ID 8 ] z - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ ID 9 ] x - Found in symbol table: 1
-[ AND ] &&
-[ LPAREN ] (
-[ INTLIT ] 12
-[ GT ] >
-[ INTLIT ] 5
+[ FUNC ] print(
+[ STRINGLIT ] "Printeando un string"
 [ RPAREN ] )
 [ HASH ] #
-[ ID 10 ] x - Found in symbol table: 1
-[ EQEQ ] ==
-[ ID 11 ] y - Found in symbol table: 1
-[ HASH ] #
-[ INTLIT ] 12
-[ GT ] >
-[ INTLIT ] 5
-[ HASH ] #
-[ INTLIT ] 15
-[ LTE ] <=
-[ INTLIT ] 3
-[ HASH ] #
-[ INTLIT ] 12
-[ GT ] >
-[ FUNC ] func(
-[ INTLIT ] 12
-[ COMMA ] ,
-[ TRUE ] true
-[ COMMA ] ,
+[ FUNC ] print(
 [ CHARLIT ] 'c'
 [ RPAREN ] )
 [ HASH ] #
-[ LPAREN ] (
-[ ID 12 ] x - Found in symbol table: 1
-[ LT ] <
-[ ID 13 ] y - Found in symbol table: 1
+[ FUNC ] print(
+[ INTLIT ] 5
 [ RPAREN ] )
-[ AND ] &&
-[ ID 14 ] Z - Found in symbol table: 1
 [ HASH ] #
-[ IF ] if
-[ LPAREN ] (
-[ ID 15 ] x - Found in symbol table: 1
-[ GT ] >
-[ ID 16 ] y - Found in symbol table: 1
-[ RPAREN ] )
-[ THEN ] then
-[ LCURLY ] {
-[ INT ] int
-[ ID 17 ] z - Found in symbol table: 2
-[ EQ ] =
-[ INTLIT ] 10
-[ HASH ] #
-[ RCURLY ] }
-[ IF ] if
-[ LPAREN ] (
-[ ID 18 ] a - Found in symbol table: 1
-[ LTE ] <=
-[ ID 19 ] b - Found in symbol table: 1
-[ RPAREN ] )
-[ THEN ] then
-[ LCURLY ] {
-[ FLOAT ] float
-[ ID 20 ] c - Found in symbol table: 2
-[ EQ ] =
+[ FUNC ] print(
 [ FLOATLIT ] 5.5
+[ RPAREN ] )
 [ HASH ] #
-[ RCURLY ] }
-[ ELSE ] else
-[ LCURLY ] {
-[ FLOAT ] float
-[ ID 21 ] c - Found in symbol table: 2
+[ FUNC ] print(
+[ ID 8 ] x - Found in symbol table: 1
+[ RPAREN ] )
+[ HASH ] #
+[ READ ] read()
+[ HASH ] #
+[ INT ] int
+[ ID 9 ] test - Found in symbol table: 1
 [ EQ ] =
-[ FLOATLIT ] 10.543
+[ FUNC ] fun(
+[ RPAREN ] )
 [ HASH ] #
+[ CHAR ] char
+[ ID 10 ] test2 - Found in symbol table: 1
+[ EQ ] =
+[ FUNC ] fun2(
+[ ID 11 ] x - Found in symbol table: 1
+[ COMMA ] ,
+[ STRINGLIT ] "val"
+[ COMMA ] ,
+[ INTLIT ] 5
+[ RPAREN ] )
+[ HASH ] #
+[ FUNC ] functionFive(
+[ STRINGLIT ] "Esto es un mensaje"
+[ RPAREN ] )
+[ FUNC ] functionSix(
+[ INTLIT ] 5
+[ COMMA ] ,
+[ FLOATLIT ] 23.0
+[ RPAREN ] )
+[ FUNC ] functionSeven(
+[ CHARLIT ] 'c'
+[ COMMA ] ,
+[ STRINGLIT ] "test"
+[ RPAREN ] )
 [ RCURLY ] }
-[ WHILE ] while
-[ LPAREN ] (
-[ ID 22 ] t - Found in symbol table: 1
-[ GTE ] >=
-[ ID 23 ] s - Found in symbol table: 1
+[ INT ] int
+[ FUNC ] functionOne(
 [ RPAREN ] )
 [ LCURLY ] {
+[ INT ] int
+[ ID 12 ] x - Found in symbol table: 1
+[ HASH ] #
+[ RCURLY ] }
+[ CHAR ] char
+[ FUNC ] functionTwo(
+[ INT ] int
+[ ID 13 ] paramOne - Found in symbol table: 0
+[ RPAREN ] )
+[ LCURLY ] {
+[ INT ] int
+[ ID 14 ] x - Found in symbol table: 1
+[ HASH ] #
+[ RCURLY ] }
+[ INT ] int
+[ FUNC ] functionThree(
+[ INT ] int
+[ ID 15 ] paramOne - Found in symbol table: 0
+[ COMMA ] ,
+[ CHAR ] char
+[ ID 16 ] paramTwo - Found in symbol table: 0
+[ RPAREN ] )
+[ LCURLY ] {
+[ INT ] int
+[ ID 17 ] x - Found in symbol table: 1
+[ HASH ] #
+[ RCURLY ] }
 [ BOOL ] boolean
-[ ID 24 ] q - Found in symbol table: 2
-[ EQ ] =
-[ FALSE ] false
-[ HASH ] #
-[ RCURLY ] }
-[ FOR ] for
-[ LPAREN ] (
-[ INT ] int
-[ ID 25 ] i - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 0
+[ FUNC ] functionFour(
+[ BOOL ] boolean
+[ ID 18 ] paramOne - Found in symbol table: 0
 [ COMMA ] ,
-[ ID 26 ] i - Found in symbol table: 1
-[ LT ] <
-[ INTLIT ] 10
-[ COMMA ] ,
-[ ID 27 ] i - Found in symbol table: 1
-[ PADD ] ++
+[ STRING ] string
+[ ID 19 ] paramTwo - Found in symbol table: 0
 [ RPAREN ] )
 [ LCURLY ] {
-[ FUNC ] print(
-[ STRINGLIT ] "for loop"
-[ RPAREN ] )
-[ HASH ] #
-[ RCURLY ] }
-[ FOR ] for
-[ LPAREN ] (
 [ INT ] int
-[ ID 28 ] i - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 0
-[ COMMA ] ,
-[ ID 29 ] i - Found in symbol table: 1
-[ LT ] <
-[ ID 30 ] len - Found in symbol table: 1
-[ COMMA ] ,
-[ ID 31 ] i - Found in symbol table: 1
-[ PADD ] ++
-[ RPAREN ] )
-[ LCURLY ] {
-[ FUNC ] print(
-[ STRINGLIT ] "for loop"
-[ RPAREN ] )
+[ ID 20 ] x - Found in symbol table: 1
 [ HASH ] #
-[ RCURLY ] }
 [ RCURLY ] }

@@ -1,5 +1,5 @@
 int main() {
-  int x #
+  int x 
   int y #
   int a = 5 #
   float b = 2.5 #
@@ -19,7 +19,10 @@ int main() {
   functionSix(5, 23.0)
   functionSeven('c', "test")
 }
+
 int functionOne() {int x #}
 char functionTwo(int paramOne) {int x #}
 int functionThree(int paramOne, char paramTwo) {int x #}
 boolean functionFour(boolean paramOne, string paramTwo) {int x #}
+
+

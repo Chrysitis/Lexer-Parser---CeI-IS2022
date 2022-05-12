@@ -12,14 +12,11 @@ parser code {:
     public parser(int t, Scanner s){ this.s=s; }
     public boolean syntaxErrors;
     public int syntaxErrs = 0;
-    
+
     @Override
     public void syntax_error(Symbol current_token) {
-      syntaxErrs += 1;
-      System.out.println(
-        "SYNTAX ERROR AT LINE " + (current_token.left+1) + " COLUMN " + current_token.right +
-          " VALUE: " + current_token.value + " - ");
-    }
+      System.out.println("JAJAJAJAJAJJA ERR.");
+    }    
 
     public void initParser(String file){
         try {
@@ -215,12 +212,14 @@ expression ::=
           logRelExpression HASH
           |
           varCreation HASH
-          | 
+          |
           printFunction HASH
           | 
           readFunction HASH
           |
-          if | while | for
+          if | while | for  
+          |
+          error HASH
           ;
 literal ::=
           numLiteral | lettersLiteral | boolLit
