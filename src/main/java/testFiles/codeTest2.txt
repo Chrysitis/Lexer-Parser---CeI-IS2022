@@ -1,5 +1,8 @@
+
 int main() {
-  int x 
+  {1,2,3,4,5}
+  {'a','b','c'}
+  int x  
   int y #
   int a = 5 #
   float b = 2.5 #
@@ -17,12 +20,19 @@ int main() {
   char test2 = fun2(x, "val", 5) #
   functionFive("Esto es un mensaje")
   functionSix(5, 23.0)
-  functionSeven('c', "test")
+  string c = "hkasd#%(dhs)g#d!d¡?¿"
+  /* functionSeven('c', "test") */
+
+  -54
+  -16.7
+  default:
+  /* This is a
+    multiline comment
+    for the code */
 }
 
 int functionOne() {int x #}
 char functionTwo(int paramOne) {int x #}
 int functionThree(int paramOne, char paramTwo) {int x #}
 boolean functionFour(boolean paramOne, string paramTwo) {int x #}
-
 

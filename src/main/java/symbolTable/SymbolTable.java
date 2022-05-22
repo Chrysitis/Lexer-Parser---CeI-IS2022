@@ -5,6 +5,7 @@
  */
 package symbolTable;
 
+import cup.sym;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,26 +18,36 @@ import java.util.Map;
 public final class SymbolTable {
   
   private Map<String, ArrayList<String>> symbolTable;
-  private int tableId;
-  private String funcId;
-
-  public SymbolTable(int tableId, String funcId) {
-    //Pair<Integer, String> pair = new MutablePair<>(tableId , funcId);  
-    this.tableId = tableId;
-    this.funcId = funcId;
-    this.symbolTable = new HashMap<String, ArrayList<String>>();
+  private final int tableScope;
+  private final String funcName;
+  private final sym funcType;
+  private ArrayList<String> funcParams;
+  
+  public SymbolTable(int tableScope, String funcName, sym funcType) {
+    this.tableScope = tableScope;
+    this.funcName = funcName;
+    this.symbolTable = new HashMap<>();
+    this.funcType = funcType;
+  }
+ 
+  public SymbolTable(int tableScope, String funcName, sym funcType, ArrayList<String> params) {
+    this.tableScope = tableScope;
+    this.funcName = funcName;
+    this.symbolTable = new HashMap<>();
+    this.funcType = funcType;
+    this.funcParams = params;
   }
 
-  public Map getSymbolTable() {
-    return symbolTable;
+  public Map<String, ArrayList<String>> getSymbolTable() {
+    return this.symbolTable;
   }
 
-  public int getTableId() {
-    return tableId;
+  public int getTableScope() {
+    return this.tableScope;
   }
 
-  public String getFuncId() {
-    return funcId;
+  public String getFuncName() {
+    return this.funcName;
   }
   
   public boolean isSymbolPresent(String key) {
@@ -48,7 +59,16 @@ public final class SymbolTable {
     } else return null;
   }
  
-  public void addSymbol(String symbol, ArrayList attributes) {
-    symbolTable.put(symbol, attributes);
+  public void addSymbol(String lexeme, ArrayList<String> attributes) {
+    symbolTable.put(lexeme, attributes);
   }
+
+  public sym getFuncType() {
+    return funcType;
+  }
+
+  public ArrayList<String> getFuncParams() {
+    return funcParams;
+  }
+  
 }

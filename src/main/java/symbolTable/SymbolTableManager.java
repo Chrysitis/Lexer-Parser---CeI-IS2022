@@ -5,7 +5,7 @@
  */
 package symbolTable;
 
-import symbolTable.SymbolTable;
+import cup.sym;
 import java.util.ArrayList;
 
 /**
@@ -28,19 +28,19 @@ public class SymbolTableManager {
     return symbolTables;
   }
   
-  public void createNewSymbolTable(int scopeLevel, String scopeFuncName) {
-    SymbolTable newSymbolTable = new SymbolTable(scopeLevel, scopeFuncName);
+  public void createNewSymbolTable(int scope, String scopeFuncName, sym funcType) {
+    SymbolTable newSymbolTable = new SymbolTable(scope, scopeFuncName, funcType);
     symbolTables.add(newSymbolTable);
     scopeLevel += 1;
   }
-  public void addToSymbolTable(int scopeLevel, String scopeFuncName, String symbol, ArrayList attributes) {
+  public void addToSymbolTable(int scope, String scopeFuncName, sym funcType, String lexeme, ArrayList<String> attributes) {
     
     // In case we have to add to a completely new scope. We create a new symbol table and add it to the arrayList.
-    if (scopeLevel > symbolTables.size()) {
-      createNewSymbolTable(scopeLevel, scopeFuncName);
+    if (scope > this.scopeLevel) {
+      createNewSymbolTable(scope, scopeFuncName, funcType);
     }
     // Then, we add to the new scope or a previous scope if the pre-condition is false.
-    symbolTables.get(scopeLevel).addSymbol(symbol, attributes);
+    symbolTables.get(scope).addSymbol(lexeme, attributes);
    
   }
   

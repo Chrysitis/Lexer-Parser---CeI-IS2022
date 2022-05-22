@@ -82,8 +82,8 @@ public class Main {
           break;
       }
     } while(!exit); */
-    lexicalAnalysis(testFilePackageDir + "ejemploCodigo.txt");
-    //syntacticAnalysis(testFilePackageDir + "codeTest2.txt");
+    //lexicalAnalysis(testFilePackageDir + "codeTest2.txt");
+    syntacticAnalysis(testFilePackageDir + "codeTest.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {
@@ -108,7 +108,7 @@ public class Main {
         token = lexer.next_token();
       } while (token.sym != sym.EOF);
       System.out.println("*************** LEXYCAL ANALYSIS RESULT ***************");
-      //lexer.printTokens();
+      lexer.printTokens();
       System.out.println("*************** RESULTS WRITTEN TO TOKENS.TXT FILE ***************");
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
