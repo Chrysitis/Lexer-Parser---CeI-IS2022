@@ -4,6 +4,8 @@ import java_cup.runtime.*;
 import jflex.*;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import fileManager.*;
+
 /* Parser code to change the way the parser reports errors (include
   line and column number of the error). */
 
@@ -15,9 +17,17 @@ parser code {:
 
     @Override
     public void syntax_error(Symbol current_token) {
-      System.out.println("JAJAJAJAJAJJA ERR.");
+      String errInfo = "SYNTAX ERROR AT LINE " + (current_token.left) + " COLUMN " 
+        + (current_token.right) + " VALUE: " + current_token.value + " - ";
+      System.out.println(errInfo); 
+      reportErrToFile(errInfo);
+      this.syntaxErrs += 1;
     }    
 
+    private void reportErrToFile(String info){
+      FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+      fileManager.writeToFile(info);
+  }
     public void initParser(String file){
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -27,10 +37,16 @@ parser code {:
             String res = this.syntaxErrs > 0? "THERE WERE " + syntaxErrs + 
               "ERRORS. THE CODE CANNOT BE GENERATED." : "THE CODE CAN BE GENERATED.";
             System.out.println(res);
+            System.out.println(this.syntaxErrs);
         } catch (Exception ex) {
             System.err.println("AN ERROR HAS BEEN FOUND. PROCEEDING WITH THE REST OF THE FILE.");
             //ex.printStackTrace();
         }
+    }
+
+    public void fun() {
+    
+      System.out.println("SE EJECUTO EL CODIGO DENTRO DEL PROCESO.");
     }
 
 :}
@@ -48,12 +64,18 @@ terminal    INTARR, CHARARR;
 terminal    BEGIN, END;
 terminal    IF, THEN, ELSE;
 terminal    FOR, BREAK, WHILE;
-terminal    SWITCH, CASE;
+terminal    SWITCH, CASE, DEFAULT;
 terminal    RETURN, MAIN, FUNC;
 terminal    READ, PRINT;
+terminal    COMMENT;
 
 // Boolean.
 terminal    TRUE, FALSE;
+
+// Literals.
+terminal    INTLIT, FLOATLIT;
+terminal    CHARLIT, STRINGLIT;
+terminal    ARRAYLIT;
 
 // Separator
 terminal    HASH, EQ, EQEQ;
@@ -61,7 +83,7 @@ terminal    LPAREN, RPAREN;
 terminal    LCURLY, RCURLY;
 terminal    LSQUARE, RSQUARE;
 terminal    DOT;
-terminal    COMMA;
+terminal    COMMA, COLON;
 
 // Operators.
 terminal    ADD, SUBS, MULT, DIV;
@@ -70,9 +92,6 @@ terminal    PADD, PSUBS;
 terminal    GTE, GT, LTE, LT;
 terminal    AND, OR, NOT;
 
-// Literals.
-terminal    INTLIT, FLOATLIT;
-terminal    CHARLIT, STRINGLIT;
 // Identifiers.
 terminal    ID;
 
@@ -81,7 +100,7 @@ non terminal    ini;
 //non terminal    Integer  expr;      
 non terminal    main, function, functionInv;    
 non terminal    codeBlock;
-non terminal    varCreation;
+non terminal    varCreationAsign, varAsign;
 non terminal    printFunction, readFunction;
 non terminal    expression, mathExpression, logRelExpression;
 non terminal    unaryExpression;
@@ -90,8 +109,10 @@ non terminal    literal, numLiteral, lettersLiteral, boolLit;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
 non terminal    mathOperand, relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
-non terminal    if, while, for;
+non terminal    if, while, for, switch, switchBody;
 non terminal    zero;
+non terminal    arrayAccess, arrayValModification;
+non terminal    return;
 //non terminal  expr, factor, termino;
 // Precedence and associativity declarations
 
@@ -108,26 +129,29 @@ ini ::=
 
 // ---------- main function (no params, MAIN is recognized as main()) ----------
 main ::= 
-          INT MAIN LCURLY RCURLY
+          INT MAIN LCURLY return HASH RCURLY {:System.out.println("ESTE ES EL MAIN");:}
           |
-          INT MAIN LCURLY codeBlock RCURLY
+          INT MAIN LCURLY codeBlock return HASH RCURLY
+          ;
+return ::=
+          RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT
           ;
 // ---------- Other functions ----------
 /* These include functions with parameters and no parameters. 
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC RPAREN LCURLY codeBlock RCURLY
+          INT FUNC RPAREN LCURLY codeBlock return HASH RCURLY
           |
-          CHAR FUNC RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC RPAREN LCURLY codeBlock return HASH RCURLY
           |
-          BOOL FUNC RPAREN LCURLY codeBlock RCURLY
+          FLOAT FUNC RPAREN LCURLY codeBlock return HASH RCURLY
           |
-          INT FUNC parameters RPAREN LCURLY codeBlock RCURLY
+          INT FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
           |
-          CHAR FUNC parameters RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
           |
-          BOOL FUNC parameters RPAREN LCURLY codeBlock RCURLY
+          FLOAT FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
           ;
 functionInv ::=
           FUNC RPAREN
@@ -139,7 +163,11 @@ functionInv ::=
 parameters ::= 
           INT ID | CHAR ID | BOOL ID | ARRAY ID | STRING ID
           |
-          INT ID COMMA parameters
+          INT ID:param COMMA parameters 
+            {: 
+              RESULT = param;
+              System.out.println("PARAMETRO ES: " + param);
+            :}
           |
           CHAR ID COMMA parameters
           |
@@ -150,7 +178,7 @@ parameters ::=
           STRING ID COMMA parameters
           ;
 parametersInv ::=
-          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | boolLit | ID
+          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | boolLit | ID | functionInv
           |
           INTLIT COMMA parametersInv
           |
@@ -163,27 +191,52 @@ parametersInv ::=
           boolLit COMMA parametersInv
           |
           ID COMMA parametersInv
+          |
+          functionInv COMMA parametersInv
           ;
 // ---------- Block of code ----------
 // Block of code with all kind of expressions.
 codeBlock ::=
-          expression
+          expression | COMMENT
           |
           expression codeBlock
           ;
 // ---------- variable creation and assignation ----------
-varCreation ::=   
-          INT ID | INT ID EQ INTLIT | INT ID EQ functionInv
+varCreationAsign ::=   
+          INT ID | INT ID EQ mathExpression
           |
-          FLOAT ID | FLOAT ID EQ FLOATLIT
+          FLOAT ID | FLOAT ID EQ mathExpression
           |
-          CHAR ID | CHAR ID EQ CHARLIT | CHAR ID EQ functionInv
+          CHAR ID | CHAR ID:id EQ CHARLIT {: System.out.println("EL ID ES:" + id); :} | CHAR ID EQ functionInv
           |
-          BOOL ID | BOOL ID EQ boolLit
+          BOOL ID | BOOL ID EQ boolLit | BOOL ID EQ logicalExpression
           |
-          //ARRAY ID | ARRAY ID 
+          INTARR INTLIT RSQUARE ID | INTARR INTLIT RSQUARE ID EQ ARRAYLIT
+          |
+          CHARARR INTLIT RSQUARE ID | CHARARR INTLIT RSQUARE ID EQ ARRAYLIT
           |
           STRING ID | STRING ID EQ STRINGLIT
+          ;
+varAsign ::=
+          ID EQ mathExpression
+          ;
+arrayAccess ::=
+          ID LSQUARE INTLIT RSQUARE
+          |
+          ID LSQUARE ID RSQUARE
+          ;
+arrayValModification ::=
+          //ID LSQUARE INTLIT RSQUARE EQ INTLIT
+          //|
+          //ID LSQUARE INTLIT RSQUARE EQ ID
+          //|
+          ID LSQUARE INTLIT RSQUARE EQ mathExpression
+          |
+          //ID LSQUARE ID RSQUARE EQ INTLIT
+          //|
+          //ID LSQUARE ID RSQUARE EQ ID
+          //|
+          ID LSQUARE ID RSQUARE EQ mathExpression
           ;
 // ---------- Print function ----------
 // Print function taking int, float, char and string literals. Also identifiers.
@@ -211,11 +264,19 @@ expression ::=
           |
           logRelExpression HASH
           |
-          varCreation HASH
+          varCreationAsign HASH
+          |
+          varAsign HASH
           |
           printFunction HASH
           | 
           readFunction HASH
+          |
+          functionInv HASH
+          |
+          arrayAccess HASH
+          |
+          arrayValModification HASH
           |
           if | while | for  
           |
@@ -243,7 +304,11 @@ unaryExpression ::=
 mathExpression ::=
           mathOperand
           |
-          mathOperand mathOperator mathExpression
+          mathOperand:o1 mathOperator mathExpression:o2
+            {: 
+              System.out.println("El primer operador es: " + o1);
+              System.out.println("Resultado es: " + Integer.parseInt(o1) + Integer.parseInt(o2));
+            :} 
           ;
 logRelExpression ::=
           logicalExpression | relationalExpression
@@ -261,7 +326,7 @@ logicalExpr ::=
           ;
 // ---------- Operands and operators ----------
 mathOperand ::=
-          literal | functionInv | ID
+          literal | functionInv | ID | arrayAccess | unaryExpression
           ;
 relationalOperand ::=
           mathOperand | LPAREN mathExpression RPAREN
@@ -285,11 +350,22 @@ if ::=  // Add rule to make it work with a boolean literal: true/false
         |
         IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY ELSE LCURLY codeBlock RCURLY
         ;
+// ---------- WHILE structure ----------
 while ::=
         WHILE LPAREN logRelExpression RPAREN LCURLY codeBlock RCURLY
         ;
+// ---------- FOR structure ----------
 for ::=
         FOR LPAREN INT ID EQ zero COMMA logRelExpression COMMA unaryExpression RPAREN LCURLY codeBlock RCURLY
+        ;
+// ---------- SWITCH structure ----------
+switch ::=
+        SWITCH LPAREN ID RPAREN LCURLY switchBody RCURLY
+        ;
+switchBody ::=
+        CASE INTLIT COLON codeBlock
+        |
+        CASE INTLIT COLON codeBlock switchBody
         ;
 zero ::=
         INTLIT

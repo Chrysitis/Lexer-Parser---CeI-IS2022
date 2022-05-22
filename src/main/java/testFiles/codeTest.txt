@@ -1,19 +1,7 @@
-int main (){
-  int temp = 12 * residuo(45)#
-  if temp == 12{
-    temp = read() - --temp#
-    break#
-  } 
-  else:
-  { 
-    temp = (var+23) > 45 & true | otra == dif #
-  }
-  string miString = “$#%&/()!¡¿??¡?”#
-  boolean miBool = 2 >= 7#
-  int numero = 45.5 / (34.0 ~ 4.0)#
-  print(numero)#
-}
+int main(){
 
-int residuo (int num){
-  return num + 10 * num#
+  int x = 5#
+  int y = 5 + 5#
+  
+  return x#
 }
