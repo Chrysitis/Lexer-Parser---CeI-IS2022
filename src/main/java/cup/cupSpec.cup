@@ -27,26 +27,31 @@ parser code {:
     private void reportErrToFile(String info){
       FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
       fileManager.writeToFile(info);
-  }
-    public void initParser(String file){
+    }
+
+    private Integer convertToInteger(Object val){
+      return Integer.parseInt(val.toString());
+    }
+    private Float convertToFloat(Object val){
+      return Float.parseFloat(val.toString());
+    }
+    public void initParser(){
+        //Object result;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            //BufferedReader br = new BufferedReader(new FileReader(file));
             parser codeParser = new parser(0,
-                    new Lexer(br));
+                    s);
             Object result = codeParser.parse().value;
+            //result = codeParser.parse().value;
+            System.out.println("THE PARSER RESULT IS: " + result);
             String res = this.syntaxErrs > 0? "THERE WERE " + syntaxErrs + 
               "ERRORS. THE CODE CANNOT BE GENERATED." : "THE CODE CAN BE GENERATED.";
             System.out.println(res);
-            System.out.println(this.syntaxErrs);
         } catch (Exception ex) {
+            //System.err.println("AT THIS TIME RESULT IS: " + result);
             System.err.println("AN ERROR HAS BEEN FOUND. PROCEEDING WITH THE REST OF THE FILE.");
-            //ex.printStackTrace();
+            ex.printStackTrace();
         }
-    }
-
-    public void fun() {
-    
-      System.out.println("SE EJECUTO EL CODIGO DENTRO DEL PROCESO.");
     }
 
 :}
@@ -69,14 +74,6 @@ terminal    RETURN, MAIN, FUNC;
 terminal    READ, PRINT;
 terminal    COMMENT;
 
-// Boolean.
-terminal    TRUE, FALSE;
-
-// Literals.
-terminal    INTLIT, FLOATLIT;
-terminal    CHARLIT, STRINGLIT;
-terminal    ARRAYLIT;
-
 // Separator
 terminal    HASH, EQ, EQEQ;
 terminal    LPAREN, RPAREN;
@@ -92,30 +89,59 @@ terminal    PADD, PSUBS;
 terminal    GTE, GT, LTE, LT;
 terminal    AND, OR, NOT;
 
+// Boolean.
+terminal Boolean        TRUE, FALSE;
+
+// Literals.
+terminal Object         INTLIT;
+terminal Object         FLOATLIT;
+terminal Object         CHARLIT;
+terminal String         STRINGLIT;
+terminal    ARRAYLIT;
+
 // Identifiers.
-terminal    ID;
+terminal String ID;
 
 /* Non terminals */
 non terminal    ini;       
-//non terminal    Integer  expr;      
 non terminal    main, function, functionInv;    
 non terminal    codeBlock;
-non terminal    varCreationAsign, varAsign;
+non terminal    varAsign;
 non terminal    printFunction, readFunction;
-non terminal    expression, mathExpression, logRelExpression;
+non terminal    expression;
+non terminal    logRelExpression;
 non terminal    unaryExpression;
 non terminal    parameters, parametersInv;
-non terminal    literal, numLiteral, lettersLiteral, boolLit;
+non terminal    literal;
+non terminal    numLiteral;
+non terminal    lettersLiteral;
 non terminal    logicalExpression, logicalExpr, relationalExpression;
-non terminal    mathOperand, relationalOperand, logicalOperand;
+non terminal    relationalOperand, logicalOperand;
 non terminal    mathOperator, relationalOperator, logicalOperator;
 non terminal    if, while, for, switch, switchBody;
 non terminal    zero;
 non terminal    arrayAccess, arrayValModification;
 non terminal    return;
-//non terminal  expr, factor, termino;
-// Precedence and associativity declarations
+non terminal    varCreationAsign;
+non terminal Object   mathExpression;
+non terminal    mathOperand;
+non terminal Integer intMathExpression;
+non terminal Float   floatMathExpression;
+non terminal Character  charCreationAssign;
+non terminal Integer    intCreationAssign;
+non terminal Float      floatCreationAssign;
+non terminal String     stringCreationAssign;
+non terminal Boolean    boolCreationAssign;
+non terminal Integer    intMathOperand;
+non terminal Float      floatMathOperand;
+non terminal Boolean    boolLit;
+non terminal Integer    intTerm, intFactor;
+non terminal Float      floatTerm, floatFactor;
 
+
+// Precedence and associativity declarations
+precedence left ADD, SUBS; 
+precedence left MULT, DIV; 
 // The grammar.
 start with ini;
 // ---------- Init point ----------
@@ -129,9 +155,9 @@ ini ::=
 
 // ---------- main function (no params, MAIN is recognized as main()) ----------
 main ::= 
-          INT MAIN LCURLY return HASH RCURLY {:System.out.println("ESTE ES EL MAIN");:}
+          INT MAIN LCURLY return HASH RCURLY 
           |
-          INT MAIN LCURLY codeBlock return HASH RCURLY
+          INT MAIN:m LCURLY codeBlock return HASH RCURLY {:System.out.println("ESTE ES EL MAIN: " + m);:}
           ;
 return ::=
           RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT
@@ -161,13 +187,9 @@ functionInv ::=
 // ---------- Parameters/Parameters inv ----------
 // Rules for parameters in functions and parameter invocation.
 parameters ::= 
-          INT ID | CHAR ID | BOOL ID | ARRAY ID | STRING ID
+          INT ID:id {: System.out.println("PARAM ES: " + id); :} | CHAR ID | BOOL ID | ARRAY ID | STRING ID
           |
           INT ID:param COMMA parameters 
-            {: 
-              RESULT = param;
-              System.out.println("PARAMETRO ES: " + param);
-            :}
           |
           CHAR ID COMMA parameters
           |
@@ -178,7 +200,7 @@ parameters ::=
           STRING ID COMMA parameters
           ;
 parametersInv ::=
-          INTLIT | FLOATLIT | CHARLIT | STRINGLIT | boolLit | ID | functionInv
+          INTLIT | FLOATLIT | CHARLIT {: System.out.println("PARAM ES: "); :} | STRINGLIT | boolLit | ID | functionInv
           |
           INTLIT COMMA parametersInv
           |
@@ -203,19 +225,83 @@ codeBlock ::=
           ;
 // ---------- variable creation and assignation ----------
 varCreationAsign ::=   
-          INT ID | INT ID EQ mathExpression
+          intCreationAssign
           |
-          FLOAT ID | FLOAT ID EQ mathExpression
+          floatCreationAssign
           |
-          CHAR ID | CHAR ID:id EQ CHARLIT {: System.out.println("EL ID ES:" + id); :} | CHAR ID EQ functionInv
+          charCreationAssign
           |
-          BOOL ID | BOOL ID EQ boolLit | BOOL ID EQ logicalExpression
+          stringCreationAssign
+          |
+          boolCreationAssign
           |
           INTARR INTLIT RSQUARE ID | INTARR INTLIT RSQUARE ID EQ ARRAYLIT
           |
           CHARARR INTLIT RSQUARE ID | CHARARR INTLIT RSQUARE ID EQ ARRAYLIT
+          ;
+intCreationAssign ::=
+          INT ID 
+          | 
+          INT ID:id EQ intMathExpression:val
+            {:
+              System.out.println("EL ID DE INT ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+            :}
+          ;
+floatCreationAssign ::=
+          FLOAT ID:id
+            {:
+              System.out.println("EL ID DE FLOAT ES: " + id);
+            :}
           |
-          STRING ID | STRING ID EQ STRINGLIT
+          FLOAT ID:id EQ floatMathExpression:val
+            {:
+              System.out.println("EL ID DE FLOAT ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+            :}
+          ;
+charCreationAssign ::=
+          CHAR ID:id
+            {:
+              RESULT = null;
+              System.out.println("EL ID DE CHARLIT ES: " + id);
+            :}
+          |
+          CHAR ID:id EQ CHARLIT:val
+            {:
+              RESULT = Character.valueOf(val.toString().charAt(0));
+              System.out.println("EL ID DE CHARLIT ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + val); 
+            :}
+          |
+          CHAR ID:id EQ functionInv:val
+          ;
+stringCreationAssign ::=
+          STRING ID:id 
+            {:
+              System.out.println("EL ID DE STRING ES: " + id);
+            :}
+          | 
+          STRING ID:id EQ STRINGLIT:val
+            {:
+              System.out.println("EL ID DE STRING ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              RESULT = val;
+            :}
+          ;
+boolCreationAssign ::=
+          BOOL ID:id 
+            {:
+              System.out.println("EL ID DE BOOL ES: " + id);
+            :} 
+          | 
+          BOOL ID:id EQ boolLit:val
+            {:
+              System.out.println("EL ID DE BOOL ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+            :} 
+          | 
+          BOOL ID EQ logicalExpression
           ;
 varAsign ::=
           ID EQ mathExpression
@@ -258,10 +344,6 @@ readFunction ::=
           ;
 // ---------- Expressions ----------
 expression ::=
-          mathExpression
-          |
-          unaryExpression HASH
-          |
           logRelExpression HASH
           |
           varCreationAsign HASH
@@ -272,27 +354,14 @@ expression ::=
           | 
           readFunction HASH
           |
-          functionInv HASH
-          |
-          arrayAccess HASH
-          |
           arrayValModification HASH
           |
           if | while | for  
           |
           error HASH
           ;
-literal ::=
-          numLiteral | lettersLiteral | boolLit
-          ;
-numLiteral ::=
-          INTLIT | FLOATLIT
-          ;
-lettersLiteral ::=
-          CHARLIT | STRINGLIT
-          ;
 boolLit ::=
-          TRUE | FALSE
+          TRUE {: RESULT = true; :} | FALSE {: RESULT = false; :}
           ;
 unaryExpression ::=
           ID PADD | ID PSUBS 
@@ -302,13 +371,102 @@ unaryExpression ::=
           FLOATLIT PADD | FLOATLIT PSUBS 
           ;
 mathExpression ::=
-          mathOperand
+          intMathExpression:val
+            {:
+              System.out.println("EL RESULTADO FINAL ES: " + val);
+            :}
           |
-          mathOperand:o1 mathOperator mathExpression:o2
+          floatMathExpression
+          ;
+intMathExpression ::=
+          intMathExpression:op1 ADD intFactor:op2
+            {:
+              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              RESULT = op1 + op2;
+            :}
+          |
+          intMathExpression:op1 SUBS intFactor:op2
+            {:
+              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              RESULT = op1 - op2;
+            :}
+          |
+          intFactor:val
+            {:
+              RESULT = convertToInteger(val);
+            :}
+          ;
+intFactor ::=
+          intFactor:f MULT intTerm:t
             {: 
-              System.out.println("El primer operador es: " + o1);
-              System.out.println("Resultado es: " + Integer.parseInt(o1) + Integer.parseInt(o2));
-            :} 
+              RESULT = convertToInteger(f) * convertToInteger(t); 
+            :}
+          |
+          intFactor:f DIV intTerm:t
+            {: 
+              RESULT = convertToInteger(f) / convertToInteger(t); 
+            :}
+          |
+          intTerm:t
+            {: 
+              RESULT = convertToInteger(t); 
+            :}
+          ;
+intTerm ::=
+          /*LPAREN intMathExpression:e RPAREN
+            {: 
+              RESULT = e; 
+            :}
+          |*/ 
+          INTLIT:n
+            {: 
+              RESULT = convertToInteger(n); 
+            :}
+          ;
+floatMathExpression ::=
+          floatMathExpression:op1 ADD floatFactor:op2
+            {:
+              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              RESULT = op1 + op2;
+            :}
+          |
+          floatMathExpression:op1 SUBS floatFactor:op2
+            {:
+              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              RESULT = op1 - op2;
+            :}
+          |
+          floatFactor:val
+            {:
+              RESULT = convertToFloat(val);
+            :}
+          ;
+floatFactor ::=
+          floatFactor:f MULT floatTerm:t
+            {: 
+              RESULT = convertToFloat(f) * convertToFloat(t); 
+            :}
+          |
+          floatFactor:f DIV floatTerm:t
+            {: 
+              RESULT = convertToFloat(f) / convertToFloat(t); 
+            :}
+          |
+          floatTerm:t
+            {: 
+              RESULT = convertToFloat(t); 
+            :}
+          ;
+floatTerm ::=
+          /*LPAREN floatMathExpression:e RPAREN
+            {: 
+              RESULT = e; 
+            :}
+          |*/ 
+          FLOATLIT:n
+            {: 
+              RESULT = convertToFloat(n); 
+            :}
           ;
 logRelExpression ::=
           logicalExpression | relationalExpression
@@ -326,7 +484,16 @@ logicalExpr ::=
           ;
 // ---------- Operands and operators ----------
 mathOperand ::=
-          literal | functionInv | ID | arrayAccess | unaryExpression
+          //unaryExpression | ID | functionInv | 
+          intMathOperand:val {: RESULT = val; :}
+          | 
+          floatMathOperand:val {: RESULT = val; :}
+          ;
+intMathOperand ::=
+          INTLIT:val {: RESULT = convertToInteger(val); :} //| arrayAccess  
+          ;
+floatMathOperand ::=
+          FLOATLIT:val {: RESULT = convertToFloat(val); :}
           ;
 relationalOperand ::=
           mathOperand | LPAREN mathExpression RPAREN
@@ -359,14 +526,16 @@ for ::=
         FOR LPAREN INT ID EQ zero COMMA logRelExpression COMMA unaryExpression RPAREN LCURLY codeBlock RCURLY
         ;
 // ---------- SWITCH structure ----------
+/*
 switch ::=
         SWITCH LPAREN ID RPAREN LCURLY switchBody RCURLY
         ;
 switchBody ::=
-        CASE INTLIT COLON codeBlock
+        CASE INTLIT COLON codeBlock | DEFAULT
         |
         CASE INTLIT COLON codeBlock switchBody
         ;
+*/
 zero ::=
         INTLIT
         ;

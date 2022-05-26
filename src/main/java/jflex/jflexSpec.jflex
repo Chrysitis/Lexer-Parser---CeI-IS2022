@@ -32,6 +32,11 @@ import fileManager.*;
   }
 
   private Symbol symbol(int type, Object value) {
+    if (type == 39) {
+      increaseScope();
+    } else if (type == 40) {
+      decreaseScope();
+    }
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
@@ -115,7 +120,7 @@ strSymbols = [$=><#\+\-%&|/()!¡¿?\"\'\,]
 stringLit = {stringDelimiter} ({letter} | {digs} | [ ] | {strSymbols}) + {stringDelimiter}
 
 // ---------- array ----------
-arrayLit = "{" ({integer} \,)+ {integer} "}" | "{" ({char} \,)+ {char} "}" 
+arrayLit = "{" (-?(0 | {digR}{digs}*) \,)+ -?(0 | {digR}{digs}*) "}" | "{" ({charDelimiter} ({letter} | {strSymbols}) {charDelimiter} \,)+ {charDelimiter} ({letter} | {strSymbols}) {charDelimiter} "}" 
 // ---------- one/multi line comments ----------
 comment = "//" ({letter} | {digs}| [ ] )* {newLine}
 comment = "/*" ({letter} | {digs}| [ ] | {newLine} | {strSymbols})* "*/"
@@ -125,90 +130,84 @@ newLine = \r | \n | \r\n
 // ---------- whitespace ----------
 whitespace = {newLine} | [ \t\f]
 
-// ---------- parameters ----------
-type = "int" | "char" | "boolean" | "array" | "string"
-parameters = {type} {identifier}
-parameters = {type} {identifier} {parameters}
-parameters = "," {type} {identifier} {parameters}
 // ---------- function ----------
-function = {type}{identifier} "("
 function = {identifier} "("
-//function = {type}{identifier} "(" parameters ")"
+function = {identifier} "("
 
 %%
 /* Lexical rules */
 <YYINITIAL> {
 
     // Keywords
-    "main()"    { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN); }
-    "print"     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT); }
-    {function}  { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC); }
-    {arrayLit}  { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT); }  
-    "int["      { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR); }     
-    "char["     { saveToken(sym.CHARARR, yytext()); return symbol(sym.CHARARR); }     
-    "int"       { saveToken(sym.INT, yytext()); return symbol(sym.INT); }
-    "float"     { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT); }
-    "char"      { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR); }
-    "boolean"   { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL); }
-    "string"    { saveToken(sym.STRING, yytext()); return symbol(sym.STRING); }
-    "begin"     { saveToken(sym.BEGIN, yytext()); return symbol(sym.BEGIN); }
-    "end"       { saveToken(sym.END, yytext()); return symbol(sym.END); }
-    "if"        { saveToken(sym.IF, yytext()); return symbol(sym.IF); }
-    "then"      { saveToken(sym.THEN, yytext()); return symbol(sym.THEN); }
-    "else"      { saveToken(sym.ELSE, yytext()); return symbol(sym.ELSE); }
-    "for"       { saveToken(sym.FOR, yytext()); return symbol(sym.FOR); }
-    "break"     { saveToken(sym.BREAK, yytext()); return symbol(sym.BREAK); }
-    "while"     { saveToken(sym.WHILE, yytext()); return symbol(sym.WHILE); }
-    "switch"    { saveToken(sym.SWITCH, yytext()); return symbol(sym.SWITCH); }
-    "case"      { saveToken(sym.CASE, yytext()); return symbol(sym.CASE); }
-    "return"    { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN); }
-    "read()"    { saveToken(sym.READ, yytext()); return symbol(sym.READ); }
-    "default"   { saveToken(sym.DEFAULT, yytext()); return symbol(sym.DEFAULT); }
+    "main()"    { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN, yytext()); }
+    "print"     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext()); }
+    {function}  { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC, yytext()); }
+    {arrayLit}  { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT, yytext()); }  
+    "int["      { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR, yytext()); }     
+    "char["     { saveToken(sym.CHARARR, yytext()); return symbol(sym.CHARARR, yytext()); }     
+    "int"       { saveToken(sym.INT, yytext()); return symbol(sym.INT, yytext()); }
+    "float"     { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT, yytext()); }
+    "char"      { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR, yytext()); }
+    "boolean"   { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL, yytext()); }
+    "string"    { saveToken(sym.STRING, yytext()); return symbol(sym.STRING, yytext()); }
+    "begin"     { saveToken(sym.BEGIN, yytext()); return symbol(sym.BEGIN, yytext()); }
+    "end"       { saveToken(sym.END, yytext()); return symbol(sym.END, yytext()); }
+    "if"        { saveToken(sym.IF, yytext()); return symbol(sym.IF, yytext()); }
+    "then"      { saveToken(sym.THEN, yytext()); return symbol(sym.THEN, yytext()); }
+    "else"      { saveToken(sym.ELSE, yytext()); return symbol(sym.ELSE, yytext()); }
+    "for"       { saveToken(sym.FOR, yytext()); return symbol(sym.FOR, yytext()); }
+    "break"     { saveToken(sym.BREAK, yytext()); return symbol(sym.BREAK, yytext()); }
+    "while"     { saveToken(sym.WHILE, yytext()); return symbol(sym.WHILE, yytext()); }
+    "switch"    { saveToken(sym.SWITCH, yytext()); return symbol(sym.SWITCH, yytext()); }
+    "case"      { saveToken(sym.CASE, yytext()); return symbol(sym.CASE, yytext()); }
+    "return"    { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN, yytext()); }
+    "read()"    { saveToken(sym.READ, yytext()); return symbol(sym.READ, yytext()); }
+    "default"   { saveToken(sym.DEFAULT, yytext()); return symbol(sym.DEFAULT, yytext()); }
     
     // Boolean literals.
-    "true"      { saveToken(sym.TRUE, yytext()); return symbol(sym.TRUE); }
-    "false"     { saveToken(sym.FALSE, yytext()); return symbol(sym.FALSE); }
+    "true"      { saveToken(sym.TRUE, yytext()); return symbol(sym.TRUE, yytext()); }
+    "false"     { saveToken(sym.FALSE, yytext()); return symbol(sym.FALSE, yytext()); }
 
     // Separator.
-    "=="        { saveToken(sym.EQEQ, yytext()); return symbol(sym.EQEQ); }
-    "="         { saveToken(sym.EQ, yytext()); return symbol(sym.EQ); }
-    "#"         { saveToken(sym.HASH, yytext()); return symbol(sym.HASH); }
-    "("         { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN); }
-    ")"         { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN); }
-    "{"         { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY); }
-    "}"         { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY); }
-    "["         { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE); }
-    "]"         { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE); }
-    "."         { saveToken(sym.DOT, yytext()); return symbol(sym.DOT); }
-    ","         { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA); }
-    ":"         { saveToken(sym.COLON, yytext()); return symbol(sym.COLON); }
+    "=="        { saveToken(sym.EQEQ, yytext()); return symbol(sym.EQEQ, yytext()); }
+    "="         { saveToken(sym.EQ, yytext()); return symbol(sym.EQ, yytext()); }
+    "#"         { saveToken(sym.HASH, yytext()); return symbol(sym.HASH, yytext()); }
+    "("         { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN, yytext()); }
+    ")"         { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext()); }
+    "{"         { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY, yytext()); }
+    "}"         { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY, yytext()); }
+    "["         { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE, yytext()); }
+    "]"         { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE, yytext()); }
+    "."         { saveToken(sym.DOT, yytext()); return symbol(sym.DOT, yytext()); }
+    ","         { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA, yytext()); }
+    ":"         { saveToken(sym.COLON, yytext()); return symbol(sym.COLON, yytext()); }
 
     {comment}   { saveToken(sym.COMMENT, yytext()); tokenInfo("-COMMENT- ", yytext()); return symbol(sym.COMMENT);}
 
     // Operators.
-    "++"        { saveToken(sym.PADD, yytext()); return symbol(sym.PADD); }
-    "--"        { saveToken(sym.PSUBS, yytext()); return symbol(sym.PSUBS); }
-    "+"         { saveToken(sym.ADD, yytext()); return symbol(sym.ADD); }
-    "-"         { saveToken(sym.SUBS, yytext()); return symbol(sym.SUBS); }
-    "*"         { saveToken(sym.MULT, yytext()); return symbol(sym.MULT); }
-    "~"         { saveToken(sym.MOD, yytext()); return symbol(sym.MOD); } 
-    "^"         { saveToken(sym.EXP, yytext()); return symbol(sym.EXP); }    
+    "++"        { saveToken(sym.PADD, yytext()); return symbol(sym.PADD, yytext()); }
+    "--"        { saveToken(sym.PSUBS, yytext()); return symbol(sym.PSUBS, yytext()); }
+    "+"         { saveToken(sym.ADD, yytext()); return symbol(sym.ADD, yytext()); }
+    "-"         { saveToken(sym.SUBS, yytext()); return symbol(sym.SUBS, yytext()); }
+    "*"         { saveToken(sym.MULT, yytext()); return symbol(sym.MULT, yytext()); }
+    "~"         { saveToken(sym.MOD, yytext()); return symbol(sym.MOD, yytext()); } 
+    "^"         { saveToken(sym.EXP, yytext()); return symbol(sym.EXP, yytext()); }    
 
-    "/"         { saveToken(sym.DIV, yytext()); return symbol(sym.DIV); }
-    "&&"        { saveToken(sym.AND, yytext()); return symbol(sym.AND); }
-    "||"        { saveToken(sym.OR, yytext()); return symbol(sym.OR); }
-    "!"         { saveToken(sym.NOT, yytext()); return symbol(sym.NOT); }
+    "/"         { saveToken(sym.DIV, yytext()); return symbol(sym.DIV, yytext()); }
+    "&&"        { saveToken(sym.AND, yytext()); return symbol(sym.AND, yytext()); }
+    "||"        { saveToken(sym.OR, yytext()); return symbol(sym.OR, yytext()); }
+    "!"         { saveToken(sym.NOT, yytext()); return symbol(sym.NOT, yytext()); }
 
-    ">="        { saveToken(sym.GTE, yytext()); return symbol(sym.GTE); }
-    ">"         { saveToken(sym.GT, yytext()); return symbol(sym.GT); }
-    "<="        { saveToken(sym.LTE, yytext()); return symbol(sym.LTE); }
-    "<"         { saveToken(sym.LT, yytext()); return symbol(sym.LT); }
+    ">="        { saveToken(sym.GTE, yytext()); return symbol(sym.GTE, yytext()); }
+    ">"         { saveToken(sym.GT, yytext()); return symbol(sym.GT, yytext()); }
+    "<="        { saveToken(sym.LTE, yytext()); return symbol(sym.LTE, yytext()); }
+    "<"         { saveToken(sym.LT, yytext()); return symbol(sym.LT, yytext()); }
 
-    {integer}   { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT); }
-    {floatNum}  { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT); }
-    {char}      { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT); }
-    {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT); }
-    {identifier}  { saveToken(sym.ID, yytext()); return symbol(sym.ID); }      
+    {integer}   { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT, yytext()); }
+    {floatNum}  { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT, yytext()); }
+    {char}      { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT, yytext()); }
+    {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext()); }
+    {identifier}  { saveToken(sym.ID, yytext()); return symbol(sym.ID, yytext()); }      
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }
 }

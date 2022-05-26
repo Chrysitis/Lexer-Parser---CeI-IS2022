@@ -52,36 +52,6 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) throws IOException {
-
-    String opt = "";
-    int optInt = 0;
-    String fileName;
-    boolean exit = false;
-    /*
-    do {
-      Scanner inputScan = new Scanner(System.in);
-      System.out.println("Name of the file to analyze:");
-      System.out.print("> ");
-      fileName = inputScan.nextLine();
-      System.out.println("Choose an action to execute:");
-      System.out.println("1. Lexical Analysis\n2. Syntactic Analysis\nAny other to exit.");
-      System.out.println("Indica lo que desea realizar.");
-      System.out.print("> ");
-      opt = inputScan.next();
-      optInt = Character.getNumericValue(opt.charAt(0));
-      switch(optInt) {
-        case 1:
-          lexicalAnalysis(testFilePackageDir + fileName);
-          exit = true;
-          break;
-        case 2:
-          syntacticAnalysis(testFilePackageDir + fileName);
-          exit = true;
-          break;
-        default:
-          break;
-      }
-    } while(!exit); */
     //lexicalAnalysis(testFilePackageDir + "codeTest2.txt");
     syntacticAnalysis(testFilePackageDir + "codeTest.txt");
   }
@@ -99,7 +69,6 @@ public class Main {
     moveFile(new File("sym.java"), cupPackageDir);
 
     BufferedReader br = null;
-    BufferedReader br2 = null;
     try {
       br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
@@ -138,9 +107,8 @@ public class Main {
     try {
       br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
-      ComplexSymbolFactory csf = new ComplexSymbolFactory();
       parser codeParser = new parser(0, lexer);
-      codeParser.initParser(file);
+      codeParser.initParser();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
