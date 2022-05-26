@@ -20,17 +20,17 @@ public final class SymbolTable {
   private Map<String, ArrayList<String>> symbolTable;
   private final int tableScope;
   private final String funcName;
-  private final sym funcType;
+  private final String funcType;
   private ArrayList<String> funcParams;
   
-  public SymbolTable(int tableScope, String funcName, sym funcType) {
+  public SymbolTable(int tableScope, String funcName, String funcType) {
     this.tableScope = tableScope;
     this.funcName = funcName;
     this.symbolTable = new HashMap<>();
     this.funcType = funcType;
   }
  
-  public SymbolTable(int tableScope, String funcName, sym funcType, ArrayList<String> params) {
+  public SymbolTable(int tableScope, String funcName, String funcType, ArrayList<String> params) {
     this.tableScope = tableScope;
     this.funcName = funcName;
     this.symbolTable = new HashMap<>();
@@ -63,7 +63,7 @@ public final class SymbolTable {
     symbolTable.put(lexeme, attributes);
   }
 
-  public sym getFuncType() {
+  public String getFuncType() {
     return funcType;
   }
 

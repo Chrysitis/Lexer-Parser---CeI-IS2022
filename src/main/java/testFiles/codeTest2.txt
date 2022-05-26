@@ -1,38 +1,50 @@
+int main(){
 
-int main() {
-  {1,2,3,4,5}
-  {'a','b','c'}
-  int x  
-  int y #
-  int a = 5 #
-  float b = 2.5 #
-  string c = "Un string" #
-  char d = 'c' #
-  boolean e = true #
-  boolean f = false #
-  print("Printeando un string") #
-  print('c') #
-  print(5) #
-  print(5.5) #
-  print(x) #
-  read() #
-  int test = fun() #
-  char test2 = fun2(x, "val", 5) #
-  functionFive("Esto es un mensaje")
-  functionSix(5, 23.0)
-  string c = "hkasd#%(dhs)g#d!d¡?¿"
-  /* functionSeven('c', "test") */
+  /* string creation, creation/assignation and assignation */
+  string str = "Esto es un string"#
 
-  -54
-  -16.7
-  default:
-  /* This is a
-    multiline comment
-    for the code */
+  /* boolean creation, creation/assignation and assignation */
+  boolean boo11 = true#
+  boolean bool2 = false#
+  boolean bool3#
+
+  /* int creation, creation/assignation and assignation */
+  int int1#
+  int int2 = 5#
+  int int3 = 5 + 2 + 3 + 4 * 4 / 2#
+  /* int int4 = fun# */
+
+  /* float creation, creation/assignation and assignation */
+  float float1#
+  float float2 = 5.5#
+  float float3 = 3.5 + 6.5#
+
+  /* char creation, creation/assignation and assignation */
+  char a#
+  char b = 'x'#
+
+  if (true) {
+    char m#
+    boolean u#
+    if (true) {
+      float p#
+      string h#
+    }
+  }
+
+  return str#
 }
 
-int functionOne() {int x #}
-char functionTwo(int paramOne) {int x #}
-int functionThree(int paramOne, char paramTwo) {int x #}
-boolean functionFour(boolean paramOne, string paramTwo) {int x #}
+char fun() {
 
+  char x = 'c'#
+  int num = 5#
+  boolean b = true#
+  float f#
+
+  if (true) {
+    int y = 0#
+    float z = 5.5#
+  }
+  return x#
+}

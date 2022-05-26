@@ -5,16 +5,24 @@ import jflex.*;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import fileManager.*;
+import java.util.Map;
+import symbolTable.*;
+import java.util.ArrayList;
 
 /* Parser code to change the way the parser reports errors (include
   line and column number of the error). */
 
 parser code {:
     Scanner s;
-    public parser(int t, Scanner s){ this.s=s; }
+    public parser(int t, Scanner s, SymbolTableManager manager){ 
+      this.s=s; 
+      this.stManager = manager;
+      }
     public boolean syntaxErrors;
     public int syntaxErrs = 0;
-
+    public SymbolTableManager stManager;
+    public SymbolTable currentSymbolTable = null;
+    public String currentFunction;
     @Override
     public void syntax_error(Symbol current_token) {
       String errInfo = "SYNTAX ERROR AT LINE " + (current_token.left) + " COLUMN " 
@@ -35,12 +43,12 @@ parser code {:
     private Float convertToFloat(Object val){
       return Float.parseFloat(val.toString());
     }
-    public void initParser(){
+    public void initParser(Lexer lexer){
         //Object result;
         try {
             //BufferedReader br = new BufferedReader(new FileReader(file));
             parser codeParser = new parser(0,
-                    s);
+                    s, lexer.getSymbolTableManager());
             Object result = codeParser.parse().value;
             //result = codeParser.parse().value;
             System.out.println("THE PARSER RESULT IS: " + result);
@@ -53,6 +61,108 @@ parser code {:
             ex.printStackTrace();
         }
     }
+
+  public void printSymbolTable() {
+
+    int index = 0;
+    int size = stManager.getSymbolTables().size();
+    for(int i = 0; i < size; i++) {
+      System.out.println();
+      String funcName = stManager.getSymbolTables().get(i).getFuncName();
+      int funcScope = stManager.getSymbolTables().get(i).getTableScope();
+      Map<String,ArrayList<String>> current = stManager.getSymbolTables().get(i).getSymbolTable();
+      System.out.println("FUNCTION \t SCOPE \t\t VARIABLES \t ATTRIBUTES");
+      current.forEach(
+        (k, v) -> System.out.println(funcName + "\t\t " + funcScope +" \t\t " + k + " \t\t " + v
+          + "\n____________________________________________________________")
+      );
+    } 
+  }
+
+  public void updateIntegerSymbolTable(Object id, Object type, Integer val) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    ArrayList<String> attributes = new ArrayList<>();
+    attributes.add(type.toString());
+    attributes.add(val != null? Integer.toString(val) : null);
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        st.getSymbolTable().
+          computeIfPresent(id.toString(), (key, value) -> value = attributes);
+      }
+    }
+  }
+
+  public void updateFloatSymbolTable(Object id, Object type, Float val) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    ArrayList<String> attributes = new ArrayList<>();
+    attributes.add(type.toString());
+    attributes.add(val != null? Float.toString(val) : null);
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        st.getSymbolTable().
+          computeIfPresent(id.toString(), (key, value) -> value = attributes);
+      }
+    }
+  }
+
+  public void updateCharacterSymbolTable(Object id, Object type, Character val) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    ArrayList<String> attributes = new ArrayList<>();
+    attributes.add(type.toString());
+    attributes.add(val != null? String.valueOf(val) : null);
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        st.getSymbolTable().
+          computeIfPresent(id.toString(), (key, value) -> value = attributes);
+      }
+    }
+  }
+
+  public void updateStringSymbolTable(Object id, Object type, String val) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    ArrayList<String> attributes = new ArrayList<>();
+    attributes.add(type.toString());
+    attributes.add(val != null? val : null);
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        st.getSymbolTable().
+          computeIfPresent(id.toString(), (key, value) -> value = attributes);
+      }
+    }
+  }
+
+  public void updateBooleanSymbolTable(Object id, Object type, String val) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    ArrayList<String> attributes = new ArrayList<>();
+    attributes.add(type.toString());
+    attributes.add(val != null? val : null);
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        st.getSymbolTable().
+          computeIfPresent(id.toString(), (key, value) -> value = attributes);
+      }
+    }
+  }
+
+  public void updateCurrentFunction(Object name) {
+    System.out.println("CURRENT FUNCTION IS: " + name.toString());
+    this.currentFunction = name.toString();
+  }
 
 :}
 /* define how to connect to the scanner! */
@@ -104,7 +214,8 @@ terminal String ID;
 
 /* Non terminals */
 non terminal    ini;       
-non terminal    main, function, functionInv;    
+non terminal    main, function;
+non terminal Object    functionInv;    
 non terminal    codeBlock;
 non terminal    varAsign;
 non terminal    printFunction, readFunction;
@@ -123,10 +234,10 @@ non terminal    zero;
 non terminal    arrayAccess, arrayValModification;
 non terminal    return;
 non terminal    varCreationAsign;
-non terminal Object   mathExpression;
+non terminal Object     mathExpression;
 non terminal    mathOperand;
-non terminal Integer intMathExpression;
-non terminal Float   floatMathExpression;
+non terminal Integer    intMathExpression;
+non terminal Float      floatMathExpression;
 non terminal Character  charCreationAssign;
 non terminal Integer    intCreationAssign;
 non terminal Float      floatCreationAssign;
@@ -137,6 +248,7 @@ non terminal Float      floatMathOperand;
 non terminal Boolean    boolLit;
 non terminal Integer    intTerm, intFactor;
 non terminal Float      floatTerm, floatFactor;
+non terminal Integer    intVarAsign;
 
 
 // Precedence and associativity declarations
@@ -155,9 +267,7 @@ ini ::=
 
 // ---------- main function (no params, MAIN is recognized as main()) ----------
 main ::= 
-          INT MAIN LCURLY return HASH RCURLY 
-          |
-          INT MAIN:m LCURLY codeBlock return HASH RCURLY {:System.out.println("ESTE ES EL MAIN: " + m);:}
+          INT MAIN:name {: updateCurrentFunction(name); :} LCURLY codeBlock return HASH RCURLY
           ;
 return ::=
           RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT
@@ -240,71 +350,116 @@ varCreationAsign ::=
           CHARARR INTLIT RSQUARE ID | CHARARR INTLIT RSQUARE ID EQ ARRAYLIT
           ;
 intCreationAssign ::=
-          INT ID 
-          | 
-          INT ID:id EQ intMathExpression:val
+          INT:dType ID:id 
             {:
+              RESULT = null;
               System.out.println("EL ID DE INT ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              updateIntegerSymbolTable(id, dType, null);
+            :} 
+          | 
+          INT:dType ID:id EQ intMathExpression:val
+            {:
+              if(val.getClass().toString().equals("class java.lang.Integer")) {
+                RESULT = val;
+                System.out.println("EL ID DE INT ES: " + id);
+                System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+                updateIntegerSymbolTable(id, dType, RESULT);
+              } else {
+              System.out.println("*** SEMANTIC ERR *** ID: " + id + " ES INT ES Y ASIGNO FLOAT.");
+              }
+            :}
+          | 
+          INT:dType ID:id EQ floatMathExpression:val
+            {:
+              RESULT = null;
+              System.out.println("*** SEMANTIC ERR *** ID ES INT Y ASIGNO FLOAT.");
             :}
           ;
 floatCreationAssign ::=
-          FLOAT ID:id
+          FLOAT:dType ID:id
             {:
+              RESULT = null;
               System.out.println("EL ID DE FLOAT ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              updateFloatSymbolTable(id, dType, RESULT);
             :}
           |
-          FLOAT ID:id EQ floatMathExpression:val
+          FLOAT:dType ID:id EQ floatMathExpression:val
             {:
+              RESULT = val;
               System.out.println("EL ID DE FLOAT ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              updateFloatSymbolTable(id, dType, RESULT);
             :}
           ;
 charCreationAssign ::=
-          CHAR ID:id
+          CHAR:dType ID:id
             {:
               RESULT = null;
               System.out.println("EL ID DE CHARLIT ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              updateCharacterSymbolTable(id, dType, RESULT);
             :}
           |
-          CHAR ID:id EQ CHARLIT:val
+          CHAR:dType ID:id EQ CHARLIT:val
             {:
-              RESULT = Character.valueOf(val.toString().charAt(0));
+              RESULT = Character.valueOf(val.toString().charAt(1));
               System.out.println("EL ID DE CHARLIT ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + val); 
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              updateCharacterSymbolTable(id, dType, RESULT); 
             :}
           |
           CHAR ID:id EQ functionInv:val
           ;
 stringCreationAssign ::=
-          STRING ID:id 
+          STRING:dType ID:id 
             {:
+              RESULT = null;
               System.out.println("EL ID DE STRING ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              updateStringSymbolTable(id, dType, RESULT); 
             :}
           | 
-          STRING ID:id EQ STRINGLIT:val
+          STRING:dType ID:id EQ STRINGLIT:val
             {:
+              RESULT = val;
               System.out.println("EL ID DE STRING ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
-              RESULT = val;
+              updateStringSymbolTable(id, dType, RESULT); 
             :}
           ;
 boolCreationAssign ::=
-          BOOL ID:id 
+          BOOL:dType ID:id 
             {:
+              RESULT = null;
               System.out.println("EL ID DE BOOL ES: " + id);
+              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //updateBooleanSymbolTable(id, dType, null.toString());
+              updateBooleanSymbolTable(id, dType, "null"); 
             :} 
           | 
-          BOOL ID:id EQ boolLit:val
+          BOOL:dType ID:id EQ boolLit:val
             {:
+              RESULT = val;
               System.out.println("EL ID DE BOOL ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              updateBooleanSymbolTable(id, dType, RESULT.toString()); 
             :} 
           | 
           BOOL ID EQ logicalExpression
           ;
 varAsign ::=
-          ID EQ mathExpression
+          intVarAsign
+          ;
+intVarAsign ::=
+          ID:id EQ intMathExpression:val
+            {:
+              RESULT = val;
+              System.out.println("EL ID DE INT ES: " + id);
+              System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
+              updateIntegerSymbolTable(id, "int", val);
+            :} 
           ;
 arrayAccess ::=
           ID LSQUARE INTLIT RSQUARE
@@ -387,7 +542,7 @@ intMathExpression ::=
           |
           intMathExpression:op1 SUBS intFactor:op2
             {:
-              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
               RESULT = op1 - op2;
             :}
           |
@@ -422,6 +577,11 @@ intTerm ::=
             {: 
               RESULT = convertToInteger(n); 
             :}
+          |
+          functionInv:n
+            {: 
+              RESULT = convertToInteger(n); 
+            :}
           ;
 floatMathExpression ::=
           floatMathExpression:op1 ADD floatFactor:op2
@@ -432,7 +592,7 @@ floatMathExpression ::=
           |
           floatMathExpression:op1 SUBS floatFactor:op2
             {:
-              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
               RESULT = op1 - op2;
             :}
           |

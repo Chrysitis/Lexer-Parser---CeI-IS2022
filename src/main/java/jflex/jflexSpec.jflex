@@ -7,6 +7,8 @@ import cup.*;
 import symbolTable.*;
 import java.util.ArrayList;
 import fileManager.*;
+import java.util.Map;
+
 %%
 
 /* options and declarations */
@@ -18,26 +20,38 @@ import fileManager.*;
 %column
 
 %{
+  SymbolTableManager stManager = new SymbolTableManager();
+  SymbolTable currentSymbolTable = null;
+  SymbolTable globalSymbolTable = new SymbolTable(0, "global", null);
   StringBuilder string = new StringBuilder();
   public ArrayList<Token> tokens = new ArrayList<>();
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
+  public String idType;
   private Symbol symbol(int type) {
-    if (type == 39) {
-      increaseScope();
-    } else if (type == 40) {
-      decreaseScope();
-    }
     return new Symbol(type, yyline+1, yycolumn+1);
   }
 
   private Symbol symbol(int type, Object value) {
-    if (type == 39) {
-      increaseScope();
-    } else if (type == 40) {
-      decreaseScope();
-    }
     return new Symbol(type, yyline+1, yycolumn+1, value);
+  }
+
+  private void createSymbolTable(boolean params, String funcName, String funcType) {
+    if (params) {
+      System.out.println();
+    } else {
+      SymbolTable newSymbolTable = new SymbolTable(this.scope, funcName, funcType);
+      //System.out.println("SE CREO TABLA CON SCOPE " + this.scope + " EN " + funcName);
+      stManager.addSymbolTable(newSymbolTable);
+      updateCurrentTable(stManager.getSymbolTables().size()-1);
+      //increaseScope();
+    }
+  }
+
+  private boolean verifyIdentifier(String lexeme) {
+
+    return this.currentSymbolTable.getSymbolTable().containsKey(lexeme);
+    
   }
 
   private void tokenInfo(String token, String val) {
@@ -67,6 +81,10 @@ import fileManager.*;
   private void decreaseScope() {
     scope -= 1;
   }
+  private void updateCurrentTable(int index) {
+    currentSymbolTable = stManager.getSymbolTables().get(index);
+    //0System.out.println("CURRENT TABLE FUNC NAME IS: " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope() );
+  }
 
   public void printTokens() {
     int tokensSize = tokens.size();
@@ -81,6 +99,23 @@ import fileManager.*;
     }
   }
 
+  public void printSymbolTable() {
+
+    int index = 0;
+    int size = stManager.getSymbolTables().size();
+    for(int i = 0; i < size; i++) {
+      System.out.println();
+      String funcName = stManager.getSymbolTables().get(i).getFuncName();
+      int funcScope = stManager.getSymbolTables().get(i).getTableScope();
+      Map<String,ArrayList<String>> current = stManager.getSymbolTables().get(i).getSymbolTable();
+      System.out.println("FUNCTION \t SCOPE \t\t VARIABLES \t ATTRIBUTES");
+      current.forEach(
+        (k, v) -> System.out.println(funcName + "\t\t " + funcScope +" \t\t " + k + " \t\t " + v
+          + "\n____________________________________________________________")
+      );
+    } 
+  }
+
   private void writeTokensToFile(String info){
     FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
     fileManager.writeToFile(info);
@@ -91,6 +126,10 @@ import fileManager.*;
     String err = "LEXICAL ERROR AT LINE " + String.valueOf(line) + " - COLUMN " + String.valueOf(column) + " ::> " + yytext();
     writeTokensToFile(err);
   }
+
+  public SymbolTableManager getSymbolTableManager() {
+    return stManager;
+}
 
 %}
 
@@ -139,17 +178,45 @@ function = {identifier} "("
 <YYINITIAL> {
 
     // Keywords
-    "main()"    { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN, yytext()); }
+    "main()"    { 
+                  saveToken(sym.MAIN, yytext());
+                  createSymbolTable(false, "main()", "INT"); 
+                  return symbol(sym.MAIN, yytext()); 
+                }
     "print"     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext()); }
-    {function}  { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC, yytext()); }
+    {function}  { 
+                  saveToken(sym.FUNC, yytext());
+                  createSymbolTable(false, yytext(), null); 
+                  return symbol(sym.FUNC, yytext()); 
+                }
     {arrayLit}  { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT, yytext()); }  
     "int["      { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR, yytext()); }     
     "char["     { saveToken(sym.CHARARR, yytext()); return symbol(sym.CHARARR, yytext()); }     
-    "int"       { saveToken(sym.INT, yytext()); return symbol(sym.INT, yytext()); }
-    "float"     { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT, yytext()); }
-    "char"      { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR, yytext()); }
-    "boolean"   { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL, yytext()); }
-    "string"    { saveToken(sym.STRING, yytext()); return symbol(sym.STRING, yytext()); }
+    "int"       { 
+                  saveToken(sym.INT, yytext());
+                  idType = "int";
+                  return symbol(sym.INT, yytext()); 
+                }
+    "float"     { 
+                  saveToken(sym.FLOAT, yytext());
+                  idType = "float";
+                  return symbol(sym.FLOAT, yytext()); 
+                }
+    "char"      { 
+                  saveToken(sym.CHAR, yytext());
+                  idType = "char";
+                  return symbol(sym.CHAR, yytext()); 
+                }
+    "boolean"   { 
+                  saveToken(sym.BOOL, yytext());
+                  idType = "boolean";
+                  return symbol(sym.BOOL, yytext()); 
+                }
+    "string"    { 
+                  saveToken(sym.STRING, yytext());
+                  idType = "string";
+                  return symbol(sym.STRING, yytext()); 
+                }
     "begin"     { saveToken(sym.BEGIN, yytext()); return symbol(sym.BEGIN, yytext()); }
     "end"       { saveToken(sym.END, yytext()); return symbol(sym.END, yytext()); }
     "if"        { saveToken(sym.IF, yytext()); return symbol(sym.IF, yytext()); }
@@ -174,8 +241,18 @@ function = {identifier} "("
     "#"         { saveToken(sym.HASH, yytext()); return symbol(sym.HASH, yytext()); }
     "("         { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN, yytext()); }
     ")"         { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext()); }
-    "{"         { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY, yytext()); }
-    "}"         { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY, yytext()); }
+    "{"         { 
+                  saveToken(sym.LCURLY, yytext());
+                  increaseScope();
+                  createSymbolTable(false, currentSymbolTable.getFuncName(), currentSymbolTable.getFuncType());
+                  return symbol(sym.LCURLY, yytext()); 
+                }
+    "}"         { 
+                  saveToken(sym.RCURLY, yytext());
+                  currentSymbolTable = stManager.getSymbolTables().get((stManager.getSymbolTables().indexOf(currentSymbolTable)) - 1);
+                  decreaseScope();
+                  return symbol(sym.RCURLY, yytext()); 
+                }
     "["         { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE, yytext()); }
     "]"         { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE, yytext()); }
     "."         { saveToken(sym.DOT, yytext()); return symbol(sym.DOT, yytext()); }
@@ -207,7 +284,16 @@ function = {identifier} "("
     {floatNum}  { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT, yytext()); }
     {char}      { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT, yytext()); }
     {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext()); }
-    {identifier}  { saveToken(sym.ID, yytext()); return symbol(sym.ID, yytext()); }      
+    {identifier}  { 
+                    saveToken(sym.ID, yytext()); 
+                    //if(!verifyIdentifier()) {
+                      ArrayList<String> tokenAttributes = new ArrayList<>();
+                      tokenAttributes.add(idType);
+                      //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
+                      currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      return symbol(sym.ID, yytext()); }  
+                    //}
+    
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }
 }
