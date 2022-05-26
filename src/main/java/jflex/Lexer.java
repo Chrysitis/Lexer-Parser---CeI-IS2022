@@ -11,6 +11,8 @@ import cup.*;
 import symbolTable.*;
 import java.util.ArrayList;
 import fileManager.*;
+import java.util.Map;
+
 
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
@@ -443,26 +445,38 @@ public class Lexer implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
+  SymbolTableManager stManager = new SymbolTableManager();
+  SymbolTable currentSymbolTable = null;
+  SymbolTable globalSymbolTable = new SymbolTable(0, "global", null);
   StringBuilder string = new StringBuilder();
   public ArrayList<Token> tokens = new ArrayList<>();
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
+  public String idType;
   private Symbol symbol(int type) {
-    if (type == 39) {
-      increaseScope();
-    } else if (type == 40) {
-      decreaseScope();
-    }
     return new Symbol(type, yyline+1, yycolumn+1);
   }
 
   private Symbol symbol(int type, Object value) {
-    if (type == 39) {
-      increaseScope();
-    } else if (type == 40) {
-      decreaseScope();
-    }
     return new Symbol(type, yyline+1, yycolumn+1, value);
+  }
+
+  private void createSymbolTable(boolean params, String funcName, String funcType) {
+    if (params) {
+      System.out.println();
+    } else {
+      SymbolTable newSymbolTable = new SymbolTable(this.scope, funcName, funcType);
+      //System.out.println("SE CREO TABLA CON SCOPE " + this.scope + " EN " + funcName);
+      stManager.addSymbolTable(newSymbolTable);
+      updateCurrentTable(stManager.getSymbolTables().size()-1);
+      //increaseScope();
+    }
+  }
+
+  private boolean verifyIdentifier(String lexeme) {
+
+    return this.currentSymbolTable.getSymbolTable().containsKey(lexeme);
+    
   }
 
   private void tokenInfo(String token, String val) {
@@ -492,6 +506,10 @@ public class Lexer implements java_cup.runtime.Scanner {
   private void decreaseScope() {
     scope -= 1;
   }
+  private void updateCurrentTable(int index) {
+    currentSymbolTable = stManager.getSymbolTables().get(index);
+    //0System.out.println("CURRENT TABLE FUNC NAME IS: " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope() );
+  }
 
   public void printTokens() {
     int tokensSize = tokens.size();
@@ -506,6 +524,23 @@ public class Lexer implements java_cup.runtime.Scanner {
     }
   }
 
+  public void printSymbolTable() {
+
+    int index = 0;
+    int size = stManager.getSymbolTables().size();
+    for(int i = 0; i < size; i++) {
+      System.out.println();
+      String funcName = stManager.getSymbolTables().get(i).getFuncName();
+      int funcScope = stManager.getSymbolTables().get(i).getTableScope();
+      Map<String,ArrayList<String>> current = stManager.getSymbolTables().get(i).getSymbolTable();
+      System.out.println("FUNCTION \t SCOPE \t\t VARIABLES \t ATTRIBUTES");
+      current.forEach(
+        (k, v) -> System.out.println(funcName + "\t\t " + funcScope +" \t\t " + k + " \t\t " + v
+          + "\n____________________________________________________________")
+      );
+    } 
+  }
+
   private void writeTokensToFile(String info){
     FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
     fileManager.writeToFile(info);
@@ -516,6 +551,10 @@ public class Lexer implements java_cup.runtime.Scanner {
     String err = "LEXICAL ERROR AT LINE " + String.valueOf(line) + " - COLUMN " + String.valueOf(column) + " ::> " + yytext();
     writeTokensToFile(err);
   }
+
+  public SymbolTableManager getSymbolTableManager() {
+    return stManager;
+}
 
 
 
@@ -1010,7 +1049,13 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 78: break;
           case 18:
-            { saveToken(sym.ID, yytext()); return symbol(sym.ID, yytext());
+            { saveToken(sym.ID, yytext()); 
+                    //if(!verifyIdentifier()) {
+                      ArrayList<String> tokenAttributes = new ArrayList<>();
+                      tokenAttributes.add(idType);
+                      //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
+                      currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      return symbol(sym.ID, yytext());
             }
             // fall through
           case 79: break;
@@ -1030,12 +1075,18 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 82: break;
           case 22:
-            { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY, yytext());
+            { saveToken(sym.LCURLY, yytext());
+                  increaseScope();
+                  createSymbolTable(false, currentSymbolTable.getFuncName(), currentSymbolTable.getFuncType());
+                  return symbol(sym.LCURLY, yytext());
             }
             // fall through
           case 83: break;
           case 23:
-            { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY, yytext());
+            { saveToken(sym.RCURLY, yytext());
+                  currentSymbolTable = stManager.getSymbolTables().get((stManager.getSymbolTables().indexOf(currentSymbolTable)) - 1);
+                  decreaseScope();
+                  return symbol(sym.RCURLY, yytext());
             }
             // fall through
           case 84: break;
@@ -1080,7 +1131,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 92: break;
           case 32:
-            { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC, yytext());
+            { saveToken(sym.FUNC, yytext());
+                  createSymbolTable(false, yytext(), null); 
+                  return symbol(sym.FUNC, yytext());
             }
             // fall through
           case 93: break;
@@ -1115,7 +1168,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 99: break;
           case 39:
-            { saveToken(sym.INT, yytext()); return symbol(sym.INT, yytext());
+            { saveToken(sym.INT, yytext());
+                  idType = "int";
+                  return symbol(sym.INT, yytext());
             }
             // fall through
           case 100: break;
@@ -1130,7 +1185,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 102: break;
           case 42:
-            { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR, yytext());
+            { saveToken(sym.CHAR, yytext());
+                  idType = "char";
+                  return symbol(sym.CHAR, yytext());
             }
             // fall through
           case 103: break;
@@ -1175,7 +1232,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 111: break;
           case 51:
-            { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT, yytext());
+            { saveToken(sym.FLOAT, yytext());
+                  idType = "float";
+                  return symbol(sym.FLOAT, yytext());
             }
             // fall through
           case 112: break;
@@ -1195,7 +1254,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 115: break;
           case 55:
-            { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN, yytext());
+            { saveToken(sym.MAIN, yytext());
+                  createSymbolTable(false, "main()", "INT"); 
+                  return symbol(sym.MAIN, yytext());
             }
             // fall through
           case 116: break;
@@ -1210,7 +1271,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 118: break;
           case 58:
-            { saveToken(sym.STRING, yytext()); return symbol(sym.STRING, yytext());
+            { saveToken(sym.STRING, yytext());
+                  idType = "string";
+                  return symbol(sym.STRING, yytext());
             }
             // fall through
           case 119: break;
@@ -1220,7 +1283,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 120: break;
           case 60:
-            { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL, yytext());
+            { saveToken(sym.BOOL, yytext());
+                  idType = "boolean";
+                  return symbol(sym.BOOL, yytext());
             }
             // fall through
           case 121: break;

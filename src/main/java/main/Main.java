@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,7 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) throws IOException {
-    //lexicalAnalysis(testFilePackageDir + "codeTest2.txt");
+    //lexicalAnalysis(testFilePackageDir + "codeTest.txt");
     syntacticAnalysis(testFilePackageDir + "codeTest.txt");
   }
 
@@ -77,7 +78,9 @@ public class Main {
         token = lexer.next_token();
       } while (token.sym != sym.EOF);
       System.out.println("*************** LEXYCAL ANALYSIS RESULT ***************");
-      lexer.printTokens();
+      //lexer.printTokens();
+      System.out.println(lexer.getSymbolTableManager().getSymbolTables().size());
+      lexer.printSymbolTable();
       System.out.println("*************** RESULTS WRITTEN TO TOKENS.TXT FILE ***************");
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,8 +110,9 @@ public class Main {
     try {
       br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
-      parser codeParser = new parser(0, lexer);
-      codeParser.initParser();
+      parser codeParser = new parser(0, lexer, lexer.getSymbolTableManager());
+      codeParser.initParser(lexer);
+      codeParser.printSymbolTable();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {

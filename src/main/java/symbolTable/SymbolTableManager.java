@@ -28,12 +28,15 @@ public class SymbolTableManager {
     return symbolTables;
   }
   
-  public void createNewSymbolTable(int scope, String scopeFuncName, sym funcType) {
+  public void addSymbolTable(SymbolTable st) {
+    this.symbolTables.add(st);
+  }
+  public void createNewSymbolTable(int scope, String scopeFuncName, String funcType) {
     SymbolTable newSymbolTable = new SymbolTable(scope, scopeFuncName, funcType);
     symbolTables.add(newSymbolTable);
     scopeLevel += 1;
   }
-  public void addToSymbolTable(int scope, String scopeFuncName, sym funcType, String lexeme, ArrayList<String> attributes) {
+  public void addToSymbolTable(int scope, String scopeFuncName, String funcType, String lexeme, ArrayList<String> attributes) {
     
     // In case we have to add to a completely new scope. We create a new symbol table and add it to the arrayList.
     if (scope > this.scopeLevel) {
@@ -49,13 +52,11 @@ public class SymbolTableManager {
   }
 
   public int getCurrentScope() {
-    return currentScope;
+    return this.currentScope;
   }
 
   public int getScopeLevel() {
-    return scopeLevel;
+    return this.scopeLevel;
   }
-  
-  
   
 }

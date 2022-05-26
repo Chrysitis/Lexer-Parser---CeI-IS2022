@@ -1,16 +1,22 @@
 int main(){
 
   string str = "Esto es un string"#
+
   boolean boo11 = true#
   boolean bool2 = false#
   boolean bool3#
+
   int int1#
   int int2 = 5#
   int int3 = 5 + 2 + 3 + 4 * 4 / 2#
+  int int4 = 10.3#
+
   float float1#
   float float2 = 5.5#
   float float3 = 3.5 + 6.5#
+
   char a#
   char b = 'x'#
-  return x#
+
+  return str#
 }
