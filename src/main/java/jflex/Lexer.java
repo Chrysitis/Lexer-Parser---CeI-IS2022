@@ -457,6 +457,11 @@ public class Lexer implements java_cup.runtime.Scanner {
   }
 
   private Symbol symbol(int type, Object value) {
+    if (type == 39) {
+      increaseScope();
+    } else if (type == 40) {
+      decreaseScope();
+    }
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
@@ -930,187 +935,187 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 63: break;
           case 3:
-            { saveToken(sym.NOT, yytext()); return symbol(sym.NOT);
+            { saveToken(sym.NOT, yytext()); return symbol(sym.NOT, yytext());
             }
             // fall through
           case 64: break;
           case 4:
-            { saveToken(sym.HASH, yytext()); return symbol(sym.HASH);
+            { saveToken(sym.HASH, yytext()); return symbol(sym.HASH, yytext());
             }
             // fall through
           case 65: break;
           case 5:
-            { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN);
+            { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN, yytext());
             }
             // fall through
           case 66: break;
           case 6:
-            { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN);
+            { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext());
             }
             // fall through
           case 67: break;
           case 7:
-            { saveToken(sym.MULT, yytext()); return symbol(sym.MULT);
+            { saveToken(sym.MULT, yytext()); return symbol(sym.MULT, yytext());
             }
             // fall through
           case 68: break;
           case 8:
-            { saveToken(sym.ADD, yytext()); return symbol(sym.ADD);
+            { saveToken(sym.ADD, yytext()); return symbol(sym.ADD, yytext());
             }
             // fall through
           case 69: break;
           case 9:
-            { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA);
+            { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA, yytext());
             }
             // fall through
           case 70: break;
           case 10:
-            { saveToken(sym.SUBS, yytext()); return symbol(sym.SUBS);
+            { saveToken(sym.SUBS, yytext()); return symbol(sym.SUBS, yytext());
             }
             // fall through
           case 71: break;
           case 11:
-            { saveToken(sym.DOT, yytext()); return symbol(sym.DOT);
+            { saveToken(sym.DOT, yytext()); return symbol(sym.DOT, yytext());
             }
             // fall through
           case 72: break;
           case 12:
-            { saveToken(sym.DIV, yytext()); return symbol(sym.DIV);
+            { saveToken(sym.DIV, yytext()); return symbol(sym.DIV, yytext());
             }
             // fall through
           case 73: break;
           case 13:
-            { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT);
+            { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT, yytext());
             }
             // fall through
           case 74: break;
           case 14:
-            { saveToken(sym.COLON, yytext()); return symbol(sym.COLON);
+            { saveToken(sym.COLON, yytext()); return symbol(sym.COLON, yytext());
             }
             // fall through
           case 75: break;
           case 15:
-            { saveToken(sym.LT, yytext()); return symbol(sym.LT);
+            { saveToken(sym.LT, yytext()); return symbol(sym.LT, yytext());
             }
             // fall through
           case 76: break;
           case 16:
-            { saveToken(sym.EQ, yytext()); return symbol(sym.EQ);
+            { saveToken(sym.EQ, yytext()); return symbol(sym.EQ, yytext());
             }
             // fall through
           case 77: break;
           case 17:
-            { saveToken(sym.GT, yytext()); return symbol(sym.GT);
+            { saveToken(sym.GT, yytext()); return symbol(sym.GT, yytext());
             }
             // fall through
           case 78: break;
           case 18:
-            { saveToken(sym.ID, yytext()); return symbol(sym.ID);
+            { saveToken(sym.ID, yytext()); return symbol(sym.ID, yytext());
             }
             // fall through
           case 79: break;
           case 19:
-            { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE);
+            { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE, yytext());
             }
             // fall through
           case 80: break;
           case 20:
-            { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE);
+            { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE, yytext());
             }
             // fall through
           case 81: break;
           case 21:
-            { saveToken(sym.EXP, yytext()); return symbol(sym.EXP);
+            { saveToken(sym.EXP, yytext()); return symbol(sym.EXP, yytext());
             }
             // fall through
           case 82: break;
           case 22:
-            { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY);
+            { saveToken(sym.LCURLY, yytext()); return symbol(sym.LCURLY, yytext());
             }
             // fall through
           case 83: break;
           case 23:
-            { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY);
+            { saveToken(sym.RCURLY, yytext()); return symbol(sym.RCURLY, yytext());
             }
             // fall through
           case 84: break;
           case 24:
-            { saveToken(sym.MOD, yytext()); return symbol(sym.MOD);
+            { saveToken(sym.MOD, yytext()); return symbol(sym.MOD, yytext());
             }
             // fall through
           case 85: break;
           case 25:
-            { saveToken(sym.AND, yytext()); return symbol(sym.AND);
+            { saveToken(sym.AND, yytext()); return symbol(sym.AND, yytext());
             }
             // fall through
           case 86: break;
           case 26:
-            { saveToken(sym.PADD, yytext()); return symbol(sym.PADD);
+            { saveToken(sym.PADD, yytext()); return symbol(sym.PADD, yytext());
             }
             // fall through
           case 87: break;
           case 27:
-            { saveToken(sym.PSUBS, yytext()); return symbol(sym.PSUBS);
+            { saveToken(sym.PSUBS, yytext()); return symbol(sym.PSUBS, yytext());
             }
             // fall through
           case 88: break;
           case 28:
-            { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT);
+            { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT, yytext());
             }
             // fall through
           case 89: break;
           case 29:
-            { saveToken(sym.LTE, yytext()); return symbol(sym.LTE);
+            { saveToken(sym.LTE, yytext()); return symbol(sym.LTE, yytext());
             }
             // fall through
           case 90: break;
           case 30:
-            { saveToken(sym.EQEQ, yytext()); return symbol(sym.EQEQ);
+            { saveToken(sym.EQEQ, yytext()); return symbol(sym.EQEQ, yytext());
             }
             // fall through
           case 91: break;
           case 31:
-            { saveToken(sym.GTE, yytext()); return symbol(sym.GTE);
+            { saveToken(sym.GTE, yytext()); return symbol(sym.GTE, yytext());
             }
             // fall through
           case 92: break;
           case 32:
-            { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC);
+            { saveToken(sym.FUNC, yytext()); return symbol(sym.FUNC, yytext());
             }
             // fall through
           case 93: break;
           case 33:
-            { saveToken(sym.IF, yytext()); return symbol(sym.IF);
+            { saveToken(sym.IF, yytext()); return symbol(sym.IF, yytext());
             }
             // fall through
           case 94: break;
           case 34:
-            { saveToken(sym.OR, yytext()); return symbol(sym.OR);
+            { saveToken(sym.OR, yytext()); return symbol(sym.OR, yytext());
             }
             // fall through
           case 95: break;
           case 35:
-            { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT);
+            { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext());
             }
             // fall through
           case 96: break;
           case 36:
-            { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT);
+            { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT, yytext());
             }
             // fall through
           case 97: break;
           case 37:
-            { saveToken(sym.END, yytext()); return symbol(sym.END);
+            { saveToken(sym.END, yytext()); return symbol(sym.END, yytext());
             }
             // fall through
           case 98: break;
           case 38:
-            { saveToken(sym.FOR, yytext()); return symbol(sym.FOR);
+            { saveToken(sym.FOR, yytext()); return symbol(sym.FOR, yytext());
             }
             // fall through
           case 99: break;
           case 39:
-            { saveToken(sym.INT, yytext()); return symbol(sym.INT);
+            { saveToken(sym.INT, yytext()); return symbol(sym.INT, yytext());
             }
             // fall through
           case 100: break;
@@ -1120,107 +1125,107 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 101: break;
           case 41:
-            { saveToken(sym.CASE, yytext()); return symbol(sym.CASE);
+            { saveToken(sym.CASE, yytext()); return symbol(sym.CASE, yytext());
             }
             // fall through
           case 102: break;
           case 42:
-            { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR);
+            { saveToken(sym.CHAR, yytext()); return symbol(sym.CHAR, yytext());
             }
             // fall through
           case 103: break;
           case 43:
-            { saveToken(sym.ELSE, yytext()); return symbol(sym.ELSE);
+            { saveToken(sym.ELSE, yytext()); return symbol(sym.ELSE, yytext());
             }
             // fall through
           case 104: break;
           case 44:
-            { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR);
+            { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR, yytext());
             }
             // fall through
           case 105: break;
           case 45:
-            { saveToken(sym.THEN, yytext()); return symbol(sym.THEN);
+            { saveToken(sym.THEN, yytext()); return symbol(sym.THEN, yytext());
             }
             // fall through
           case 106: break;
           case 46:
-            { saveToken(sym.TRUE, yytext()); return symbol(sym.TRUE);
+            { saveToken(sym.TRUE, yytext()); return symbol(sym.TRUE, yytext());
             }
             // fall through
           case 107: break;
           case 47:
-            { saveToken(sym.BEGIN, yytext()); return symbol(sym.BEGIN);
+            { saveToken(sym.BEGIN, yytext()); return symbol(sym.BEGIN, yytext());
             }
             // fall through
           case 108: break;
           case 48:
-            { saveToken(sym.BREAK, yytext()); return symbol(sym.BREAK);
+            { saveToken(sym.BREAK, yytext()); return symbol(sym.BREAK, yytext());
             }
             // fall through
           case 109: break;
           case 49:
-            { saveToken(sym.CHARARR, yytext()); return symbol(sym.CHARARR);
+            { saveToken(sym.CHARARR, yytext()); return symbol(sym.CHARARR, yytext());
             }
             // fall through
           case 110: break;
           case 50:
-            { saveToken(sym.FALSE, yytext()); return symbol(sym.FALSE);
+            { saveToken(sym.FALSE, yytext()); return symbol(sym.FALSE, yytext());
             }
             // fall through
           case 111: break;
           case 51:
-            { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT);
+            { saveToken(sym.FLOAT, yytext()); return symbol(sym.FLOAT, yytext());
             }
             // fall through
           case 112: break;
           case 52:
-            { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT);
+            { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext());
             }
             // fall through
           case 113: break;
           case 53:
-            { saveToken(sym.WHILE, yytext()); return symbol(sym.WHILE);
+            { saveToken(sym.WHILE, yytext()); return symbol(sym.WHILE, yytext());
             }
             // fall through
           case 114: break;
           case 54:
-            { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT);
+            { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT, yytext());
             }
             // fall through
           case 115: break;
           case 55:
-            { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN);
+            { saveToken(sym.MAIN, yytext()); return symbol(sym.MAIN, yytext());
             }
             // fall through
           case 116: break;
           case 56:
-            { saveToken(sym.READ, yytext()); return symbol(sym.READ);
+            { saveToken(sym.READ, yytext()); return symbol(sym.READ, yytext());
             }
             // fall through
           case 117: break;
           case 57:
-            { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN);
+            { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN, yytext());
             }
             // fall through
           case 118: break;
           case 58:
-            { saveToken(sym.STRING, yytext()); return symbol(sym.STRING);
+            { saveToken(sym.STRING, yytext()); return symbol(sym.STRING, yytext());
             }
             // fall through
           case 119: break;
           case 59:
-            { saveToken(sym.SWITCH, yytext()); return symbol(sym.SWITCH);
+            { saveToken(sym.SWITCH, yytext()); return symbol(sym.SWITCH, yytext());
             }
             // fall through
           case 120: break;
           case 60:
-            { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL);
+            { saveToken(sym.BOOL, yytext()); return symbol(sym.BOOL, yytext());
             }
             // fall through
           case 121: break;
           case 61:
-            { saveToken(sym.DEFAULT, yytext()); return symbol(sym.DEFAULT);
+            { saveToken(sym.DEFAULT, yytext()); return symbol(sym.DEFAULT, yytext());
             }
             // fall through
           case 122: break;

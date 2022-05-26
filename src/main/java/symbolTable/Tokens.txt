@@ -1,15 +1,71 @@
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
+[ STRING ] string
+[ ID 0 ] str - Found in symbol table: 0
+[ EQ ] =
+[ STRINGLIT ] "Esto es un string"
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 1 ] boo11 - Found in symbol table: 0
+[ EQ ] =
+[ TRUE ] true
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 2 ] bool2 - Found in symbol table: 0
+[ EQ ] =
+[ FALSE ] false
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 3 ] bool3 - Found in symbol table: 0
+[ HASH ] #
 [ INT ] int
-[ ID 0 ] x - Found in symbol table: 1
+[ ID 4 ] int1 - Found in symbol table: 0
+[ HASH ] #
+[ INT ] int
+[ ID 5 ] int2 - Found in symbol table: 0
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
 [ INT ] int
-[ ID 1 ] y - Found in symbol table: 1
+[ ID 6 ] int3 - Found in symbol table: 0
 [ EQ ] =
 [ INTLIT ] 5
 [ ADD ] +
-[ INTLIT ] 5
+[ INTLIT ] 2
+[ ADD ] +
+[ INTLIT ] 3
+[ ADD ] +
+[ INTLIT ] 4
+[ MULT ] *
+[ INTLIT ] 4
+[ DIV ] /
+[ INTLIT ] 2
 [ HASH ] #
+[ FLOAT ] float
+[ ID 7 ] float1 - Found in symbol table: 3
+[ HASH ] #
+[ FLOAT ] float
+[ ID 8 ] float2 - Found in symbol table: 3
+[ EQ ] =
+[ FLOATLIT ] 5.5
+[ HASH ] #
+[ FLOAT ] float
+[ ID 9 ] float3 - Found in symbol table: 3
+[ EQ ] =
+[ FLOATLIT ] 3.5
+[ ADD ] +
+[ FLOATLIT ] 6.5
+[ HASH ] #
+[ CHAR ] char
+[ ID 10 ] a - Found in symbol table: 4
+[ HASH ] #
+[ CHAR ] char
+[ ID 11 ] b - Found in symbol table: 4
+[ EQ ] =
+[ CHARLIT ] 'x'
+[ HASH ] #
+[ RETURN ] return
+[ ID 12 ] x - Found in symbol table: 4
+[ HASH ] #
+[ RCURLY ] }
