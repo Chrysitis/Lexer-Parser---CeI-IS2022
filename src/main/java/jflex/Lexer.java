@@ -452,7 +452,8 @@ public class Lexer implements java_cup.runtime.Scanner {
   public ArrayList<Token> tokens = new ArrayList<>();
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
-  public String idType;
+  public String idType = "";
+  public boolean eqOperator = false;
   private Symbol symbol(int type) {
     return new Symbol(type, yyline+1, yycolumn+1);
   }
@@ -1039,7 +1040,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 76: break;
           case 16:
-            { saveToken(sym.EQ, yytext()); return symbol(sym.EQ, yytext());
+            { saveToken(sym.EQ, yytext()); 
+                  this.eqOperator = true;
+                  return symbol(sym.EQ, yytext());
             }
             // fall through
           case 77: break;
@@ -1050,12 +1053,13 @@ public class Lexer implements java_cup.runtime.Scanner {
           case 78: break;
           case 18:
             { saveToken(sym.ID, yytext()); 
-                    //if(!verifyIdentifier()) {
+                    if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();
                       tokenAttributes.add(idType);
                       //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
                       currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
-                      return symbol(sym.ID, yytext());
+                      this.idType = "";
+                      return symbol(sym.ID, yytext()); }
             }
             // fall through
           case 79: break;

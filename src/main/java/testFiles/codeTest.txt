@@ -1,22 +1,24 @@
 int main(){
 
-  string str = "Esto es un string"#
-
-  boolean boo11 = true#
-  boolean bool2 = false#
-  boolean bool3#
-
-  int int1#
-  int int2 = 5#
-  int int3 = 5 + 2 + 3 + 4 * 4 / 2#
-  int int4 = 10.3#
-
+  boolean boolOne#
+  int int_1#
   float float1#
-  float float2 = 5.5#
-  float float3 = 3.5 + 6.5#
-
   char a#
+  string strOne#
+
+  string strTwo = "Esto es un string"#
+  boolean boolTwo = false#
+  boolean boo1Three = true#
+  int int_2 = 5#
+  float float2 = 5.5#
   char b = 'x'#
 
-  return str#
+  int var = noVar#
+
+  int int_3 = 5 + 2 + 3 + 4 * 4 / 2#
+  float float3 = 3.5 + 6.5#
+
+  int int_4 = 10.3#
+
+  return 0#
 }

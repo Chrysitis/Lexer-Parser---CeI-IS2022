@@ -1,56 +1,29 @@
+int main(){
 
-int main() {
+  /* Just assign */
+  boolean boolOne#
+  int int_1#
+  float float1#
+  char a#
+  string strOne#
 
-  int x = 5 #
-  int y = 10 #
-  float z = 5.5 #
-  boolean t #
-  boolean p = true #
-  boolean u = false #
-  x++ #
-  y-- #
-  z++ #
-  x && (12 > 5) #
-  x == y #
-  12 > 5 # 
-  15 <= 3 # 
-  12 > func(12, true, 'c') #
-  (x < y) && Z #
-  if (x > y) then {
-    int z = 10 #
-  }
+  /* Creation and assignation literals */
+  string strTwo = "Esto es un string"#
+  boolean boolTwo = false#
+  boolean boo1Three = true#
+  int int_2 = 5#
+  float float2 = 5.5#
+  char b = 'x'#
 
-  if (a <= b) then {
-    float c = 5.5 #
-  } else {
-      float c = 10.543 #
-  }
+  /* Creation and assignation with ids */
+  int var = noVar#
 
-  while (t >= s) {
-    boolean q = false #
-  }
+  /* Creation and assignation math op literals */
+  int int_3 = 5 + 2 + 3 + 4 * 4 / 2#
+  float float3 = 3.5 + 6.5#
 
-  for (int i = 0, i < 10, i++) {
-    print("for loop") #
-  }
-  for (int i = 0, i < len, i++) {
-    print("for loop") #
-  }
+  /* Semantic Err Assign int variable float literal */
+  int int_4 = 10.3#
+
+  return 0#
 }
-
-
-int fun() {
-  int x = 0 #
-  if (true) {
-    int y = 5 #
-  }
-  return y #
-  }
-
-int fun2() {
-  int x = 5 #
-  if (true) {
-    int z = 5 #
-  }
-  return y #
-  }

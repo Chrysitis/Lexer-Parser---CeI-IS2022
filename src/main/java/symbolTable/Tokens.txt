@@ -1,34 +1,59 @@
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
+[ BOOL ] boolean
+[ ID 0 ] boolOne - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 1 ] int_1 - Found in symbol table: 1
+[ HASH ] #
+[ FLOAT ] float
+[ ID 2 ] float1 - Found in symbol table: 1
+[ HASH ] #
+[ CHAR ] char
+[ ID 3 ] a - Found in symbol table: 1
+[ HASH ] #
 [ STRING ] string
-[ ID 0 ] str - Found in symbol table: 1
+[ ID 4 ] strOne - Found in symbol table: 1
+[ HASH ] #
+[ STRING ] string
+[ ID 5 ] strTwo - Found in symbol table: 1
 [ EQ ] =
 [ STRINGLIT ] "Esto es un string"
 [ HASH ] #
 [ BOOL ] boolean
-[ ID 1 ] boo11 - Found in symbol table: 1
-[ EQ ] =
-[ TRUE ] true
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 2 ] bool2 - Found in symbol table: 1
+[ ID 6 ] boolTwo - Found in symbol table: 1
 [ EQ ] =
 [ FALSE ] false
 [ HASH ] #
 [ BOOL ] boolean
-[ ID 3 ] bool3 - Found in symbol table: 1
+[ ID 7 ] boo1Three - Found in symbol table: 1
+[ EQ ] =
+[ TRUE ] true
 [ HASH ] #
 [ INT ] int
-[ ID 4 ] int1 - Found in symbol table: 1
-[ HASH ] #
-[ INT ] int
-[ ID 5 ] int2 - Found in symbol table: 1
+[ ID 8 ] int_2 - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
+[ FLOAT ] float
+[ ID 9 ] float2 - Found in symbol table: 1
+[ EQ ] =
+[ FLOATLIT ] 5.5
+[ HASH ] #
+[ CHAR ] char
+[ ID 10 ] b - Found in symbol table: 1
+[ EQ ] =
+[ CHARLIT ] 'x'
+[ HASH ] #
 [ INT ] int
-[ ID 6 ] int3 - Found in symbol table: 1
+[ ID 11 ] var - Found in symbol table: 1
+[ EQ ] =
+[ ID 12 ] noVar - Found in symbol table: 1
+[ HASH ] #
+SYNTAX ERROR AT LINE 16 COLUMN 18 VALUE: # - 
+[ INT ] int
+[ ID 13 ] int_3 - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ ADD ] +
@@ -42,35 +67,19 @@
 [ DIV ] /
 [ INTLIT ] 2
 [ HASH ] #
-[ INT ] int
-[ ID 7 ] int4 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 10.3
-[ HASH ] #
 [ FLOAT ] float
-[ ID 8 ] float1 - Found in symbol table: 1
-[ HASH ] #
-[ FLOAT ] float
-[ ID 9 ] float2 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 5.5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 10 ] float3 - Found in symbol table: 1
+[ ID 14 ] float3 - Found in symbol table: 1
 [ EQ ] =
 [ FLOATLIT ] 3.5
 [ ADD ] +
 [ FLOATLIT ] 6.5
 [ HASH ] #
-[ CHAR ] char
-[ ID 11 ] a - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 12 ] b - Found in symbol table: 1
+[ INT ] int
+[ ID 15 ] int_4 - Found in symbol table: 1
 [ EQ ] =
-[ CHARLIT ] 'x'
+[ FLOATLIT ] 10.3
 [ HASH ] #
 [ RETURN ] return
-[ ID 13 ] str - Found in symbol table: 1
+[ INTLIT ] 0
 [ HASH ] #
 [ RCURLY ] }

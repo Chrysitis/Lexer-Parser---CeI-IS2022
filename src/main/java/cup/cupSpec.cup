@@ -2,27 +2,30 @@
 package cup;
 import java_cup.runtime.*;
 import jflex.*;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import fileManager.*;
 import java.util.Map;
 import symbolTable.*;
 import java.util.ArrayList;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /* Parser code to change the way the parser reports errors (include
   line and column number of the error). */
 
 parser code {:
     Scanner s;
-    public parser(int t, Scanner s, SymbolTableManager manager){ 
+    public parser(int t, Scanner s, SymbolTableManager manager, Lexer lexer){ 
       this.s=s; 
       this.stManager = manager;
+      this.lexer = lexer;
       }
     public boolean syntaxErrors;
     public int syntaxErrs = 0;
     public SymbolTableManager stManager;
     public SymbolTable currentSymbolTable = null;
     public String currentFunction;
+    public Lexer lexer;
+
+
     @Override
     public void syntax_error(Symbol current_token) {
       String errInfo = "SYNTAX ERROR AT LINE " + (current_token.left) + " COLUMN " 
@@ -37,9 +40,11 @@ parser code {:
       fileManager.writeToFile(info);
     }
 
+    // Converts String to Integer.
     private Integer convertToInteger(Object val){
       return Integer.parseInt(val.toString());
     }
+    // Converts String to Float.
     private Float convertToFloat(Object val){
       return Float.parseFloat(val.toString());
     }
@@ -48,7 +53,7 @@ parser code {:
         try {
             //BufferedReader br = new BufferedReader(new FileReader(file));
             parser codeParser = new parser(0,
-                    s, lexer.getSymbolTableManager());
+                    s, lexer.getSymbolTableManager(), lexer);
             Object result = codeParser.parse().value;
             //result = codeParser.parse().value;
             System.out.println("THE PARSER RESULT IS: " + result);
@@ -63,7 +68,6 @@ parser code {:
     }
 
   public void printSymbolTable() {
-
     int index = 0;
     int size = stManager.getSymbolTables().size();
     for(int i = 0; i < size; i++) {
@@ -79,6 +83,7 @@ parser code {:
     } 
   }
 
+  // Updates the symbol table entries for type and value for the given id.
   public void updateIntegerSymbolTable(Object id, Object type, Integer val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
@@ -95,6 +100,7 @@ parser code {:
     }
   }
 
+  // Updates the symbol table entries for type and value for the given id.
   public void updateFloatSymbolTable(Object id, Object type, Float val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
@@ -111,6 +117,7 @@ parser code {:
     }
   }
 
+  // Updates the symbol table entries for type and value for the given id.
   public void updateCharacterSymbolTable(Object id, Object type, Character val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
@@ -127,6 +134,7 @@ parser code {:
     }
   }
 
+  // Updates the symbol table entries for type and value for the given id.
   public void updateStringSymbolTable(Object id, Object type, String val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
@@ -143,6 +151,7 @@ parser code {:
     }
   }
 
+  // Updates the symbol table entries for type and value for the given id.
   public void updateBooleanSymbolTable(Object id, Object type, String val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
@@ -159,10 +168,78 @@ parser code {:
     }
   }
 
+  // To manage variable scope and presence.
   public void updateCurrentFunction(Object name) {
     System.out.println("CURRENT FUNCTION IS: " + name.toString());
     this.currentFunction = name.toString();
   }
+
+  public String getIdValue(String id) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    String res = "";
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        res = st.getSymbolTable().get(id.toString()).get(1);
+      }
+    }
+    return res;
+  }
+
+  // id means refers to variale id and idType refers to either variable or function.
+  // requiredType refers to the required data type for the id to be valid in any operation.
+  // Validates the existance of the given id, the scope and value type.
+  public String validate(String id, String type , String dataType) {
+    
+    // First, validates the existance and scope.
+    String result;
+    if(validateScope(id)) {
+      result = getIdValue(id);
+    } else {
+      result = "-e1";
+    }
+    return result;
+}
+
+  public boolean validateScope(String id) {
+    boolean result = false;
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    SymbolTable st;
+    int limit = sTables.size() - 1;
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        if (st.getSymbolTable().containsKey(id)) {
+          int currentScope = lexer.scope;
+          // Checks for current scope.
+          if (st.getTableScope() < currentScope) {
+            result = true;
+          } // Checks if it exists on higher scopes. 
+          else if (st.getTableScope() == currentScope) {
+            result = true;
+          } else {
+            result = false;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  // Reports semantic err according to the number received.
+  // -e1 means no such id or no such id in the current scope.
+  // -e2 means type conflict.
+  // -e3 means id has null value.
+  // -e4 means no such function.
+  public String reportSemanticErr(String errType) {
+    String err = "";
+    if(errType.equals("2")) {
+      err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE CREATED OR IN SCOPE ---------------";
+    }
+    return err;
+}
 
 :}
 /* define how to connect to the scanner! */
@@ -270,7 +347,7 @@ main ::=
           INT MAIN:name {: updateCurrentFunction(name); :} LCURLY codeBlock return HASH RCURLY
           ;
 return ::=
-          RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT
+          RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT | RETURN STRING
           ;
 // ---------- Other functions ----------
 /* These include functions with parameters and no parameters. 
@@ -576,6 +653,18 @@ intTerm ::=
           INTLIT:n
             {: 
               RESULT = convertToInteger(n); 
+            :}
+          |
+          ID:id
+            {:
+              System.out.println("THE PROBLEM IS HERE.");
+              String validation = validate(id, "int", "id");
+              if (NumberUtils.isParsable(id)) {
+                RESULT = convertToInteger(id); 
+              } else {
+                reportSemanticErr(validation);
+                RESULT = null;
+              }
             :}
           |
           functionInv:n
