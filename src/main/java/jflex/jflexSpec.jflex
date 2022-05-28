@@ -27,7 +27,8 @@ import java.util.Map;
   public ArrayList<Token> tokens = new ArrayList<>();
   public SymbolTableManager newManager = new SymbolTableManager();
   public int scope = 0;
-  public String idType;
+  public String idType = "";
+  public boolean eqOperator = false;
   private Symbol symbol(int type) {
     return new Symbol(type, yyline+1, yycolumn+1);
   }
@@ -237,7 +238,10 @@ function = {identifier} "("
 
     // Separator.
     "=="        { saveToken(sym.EQEQ, yytext()); return symbol(sym.EQEQ, yytext()); }
-    "="         { saveToken(sym.EQ, yytext()); return symbol(sym.EQ, yytext()); }
+    "="         { 
+                  saveToken(sym.EQ, yytext()); 
+                  this.eqOperator = true;
+                  return symbol(sym.EQ, yytext()); }
     "#"         { saveToken(sym.HASH, yytext()); return symbol(sym.HASH, yytext()); }
     "("         { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN, yytext()); }
     ")"         { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext()); }
@@ -286,13 +290,14 @@ function = {identifier} "("
     {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext()); }
     {identifier}  { 
                     saveToken(sym.ID, yytext()); 
-                    //if(!verifyIdentifier()) {
+                    if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();
                       tokenAttributes.add(idType);
                       //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
                       currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      this.idType = "";
                       return symbol(sym.ID, yytext()); }  
-                    //}
+                    }
     
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }

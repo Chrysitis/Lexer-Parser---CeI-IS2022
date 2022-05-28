@@ -110,7 +110,7 @@ public class Main {
     try {
       br = new BufferedReader(new FileReader(file));
       Lexer lexer = new Lexer(br);
-      parser codeParser = new parser(0, lexer, lexer.getSymbolTableManager());
+      parser codeParser = new parser(0, lexer, lexer.getSymbolTableManager(), lexer);
       codeParser.initParser(lexer);
       codeParser.printSymbolTable();
     } catch (FileNotFoundException ex) {
