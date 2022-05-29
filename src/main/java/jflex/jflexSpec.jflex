@@ -29,6 +29,8 @@ import java.util.Map;
   public int scope = 0;
   public String idType = "";
   public boolean eqOperator = false;
+  public boolean isReturnVal = false;
+  public boolean isFunction = false;
   private Symbol symbol(int type) {
     return new Symbol(type, yyline+1, yycolumn+1);
   }
@@ -186,9 +188,16 @@ function = {identifier} "("
                 }
     "print"     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext()); }
     {function}  { 
+                  Boolean func = (idType != "");
+                  if (func) {
+                    System.out.println("TABLE FOR: " + yytext() + " WITH SCOPE: " + this.scope);
+                    createSymbolTable(false, yytext(), idType);
+                    this.isFunction = true; 
+                  } 
                   saveToken(sym.FUNC, yytext());
-                  createSymbolTable(false, yytext(), null); 
                   return symbol(sym.FUNC, yytext()); 
+                                     
+
                 }
     {arrayLit}  { saveToken(sym.ARRAYLIT, yytext()); return symbol(sym.ARRAYLIT, yytext()); }  
     "int["      { saveToken(sym.INTARR, yytext()); return symbol(sym.INTARR, yytext()); }     
@@ -228,7 +237,11 @@ function = {identifier} "("
     "while"     { saveToken(sym.WHILE, yytext()); return symbol(sym.WHILE, yytext()); }
     "switch"    { saveToken(sym.SWITCH, yytext()); return symbol(sym.SWITCH, yytext()); }
     "case"      { saveToken(sym.CASE, yytext()); return symbol(sym.CASE, yytext()); }
-    "return"    { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN, yytext()); }
+    "return"    { 
+                  saveToken(sym.RETURN, yytext());
+                  isReturnVal = true;
+                  return symbol(sym.RETURN, yytext()); 
+                }
     "read()"    { saveToken(sym.READ, yytext()); return symbol(sym.READ, yytext()); }
     "default"   { saveToken(sym.DEFAULT, yytext()); return symbol(sym.DEFAULT, yytext()); }
     
@@ -244,7 +257,11 @@ function = {identifier} "("
                   return symbol(sym.EQ, yytext()); }
     "#"         { saveToken(sym.HASH, yytext()); return symbol(sym.HASH, yytext()); }
     "("         { saveToken(sym.LPAREN, yytext()); return symbol(sym.LPAREN, yytext()); }
-    ")"         { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext()); }
+    ")"         { 
+                  saveToken(sym.RPAREN, yytext()); 
+                  this.isFunction = false; 
+                  return symbol(sym.RPAREN, yytext()); 
+                }
     "{"         { 
                   saveToken(sym.LCURLY, yytext());
                   increaseScope();
@@ -260,7 +277,11 @@ function = {identifier} "("
     "["         { saveToken(sym.LSQUARE, yytext()); return symbol(sym.LSQUARE, yytext()); }
     "]"         { saveToken(sym.RSQUARE, yytext()); return symbol(sym.RSQUARE, yytext()); }
     "."         { saveToken(sym.DOT, yytext()); return symbol(sym.DOT, yytext()); }
-    ","         { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA, yytext()); }
+    ","         { 
+                  saveToken(sym.COMMA, yytext()); 
+                  isFunction = true;
+                  return symbol(sym.COMMA, yytext()); 
+                }
     ":"         { saveToken(sym.COLON, yytext()); return symbol(sym.COLON, yytext()); }
 
     {comment}   { saveToken(sym.COMMENT, yytext()); tokenInfo("-COMMENT- ", yytext()); return symbol(sym.COMMENT);}
@@ -284,20 +305,56 @@ function = {identifier} "("
     "<="        { saveToken(sym.LTE, yytext()); return symbol(sym.LTE, yytext()); }
     "<"         { saveToken(sym.LT, yytext()); return symbol(sym.LT, yytext()); }
 
-    {integer}   { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT, yytext()); }
-    {floatNum}  { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT, yytext()); }
-    {char}      { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT, yytext()); }
+    {integer}   { 
+                  saveToken(sym.INTLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.INTLIT, yytext()); 
+                }
+    {floatNum}  { 
+                  saveToken(sym.FLOATLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.FLOATLIT, yytext()); }
+    {char}      { 
+                  saveToken(sym.CHARLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.CHARLIT, yytext()); }
     {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext()); }
     {identifier}  { 
                     saveToken(sym.ID, yytext()); 
                     if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();
-                      tokenAttributes.add(idType);
-                      //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
-                      currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      if(isFunction) {
+                        currentSymbolTable.addFuncParams(idType, yytext());
+                        isFunction = false;
+                        System.out.println("AGREGANDO PARAMETRO: " + idType + " " + yytext());
+                      } else {
+                        tokenAttributes.add(idType);
+                        System.out.println("AGREGANDO VARIABLE: " + idType + " " + yytext());
+                        currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      }
                       this.idType = "";
-                      return symbol(sym.ID, yytext()); }  
+                      return symbol(sym.ID, yytext());  
+                    } else {
+                      if (isReturnVal) {
+                        System.out.println("RETURN VALUE IS: " + yytext()); 
+                        currentSymbolTable.setReturnVal(yytext());
+                        isReturnVal = false;
+                      }
+                      return symbol(sym.ID, yytext());
                     }
+                  }
     
     {whitespace}    { /* Does nothing */ }  
     //{functionInv} { tokenInfo("-NOT- ", yytext()); return symbol(sym.FUNCT); }

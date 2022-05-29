@@ -1,85 +1,64 @@
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
-[ BOOL ] boolean
-[ ID 0 ] boolOne - Found in symbol table: 1
+[ INT ] int
+[ ID 0 ] m - Found in symbol table: 1
+[ EQ ] =
+[ ID 1 ] z - Found in symbol table: 1
 [ HASH ] #
 [ INT ] int
-[ ID 1 ] int_1 - Found in symbol table: 1
-[ HASH ] #
-[ FLOAT ] float
-[ ID 2 ] float1 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 3 ] a - Found in symbol table: 1
-[ HASH ] #
-[ STRING ] string
-[ ID 4 ] strOne - Found in symbol table: 1
-[ HASH ] #
-[ STRING ] string
-[ ID 5 ] strTwo - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Esto es un string"
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 6 ] boolTwo - Found in symbol table: 1
-[ EQ ] =
-[ FALSE ] false
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 7 ] boo1Three - Found in symbol table: 1
-[ EQ ] =
-[ TRUE ] true
-[ HASH ] #
-[ INT ] int
-[ ID 8 ] int_2 - Found in symbol table: 1
+[ ID 2 ] x - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
-[ FLOAT ] float
-[ ID 9 ] float2 - Found in symbol table: 1
+[ INT ] int
+[ ID 3 ] y - Found in symbol table: 1
 [ EQ ] =
-[ FLOATLIT ] 5.5
-[ HASH ] #
-[ CHAR ] char
-[ ID 10 ] b - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'x'
+[ INTLIT ] 12
 [ HASH ] #
 [ INT ] int
-[ ID 11 ] var - Found in symbol table: 1
+[ ID 4 ] t - Found in symbol table: 1
 [ EQ ] =
-[ ID 12 ] noVar - Found in symbol table: 1
-[ HASH ] #
-SYNTAX ERROR AT LINE 16 COLUMN 18 VALUE: # - 
-[ INT ] int
-[ ID 13 ] int_3 - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 5
-[ ADD ] +
-[ INTLIT ] 2
-[ ADD ] +
-[ INTLIT ] 3
-[ ADD ] +
-[ INTLIT ] 4
-[ MULT ] *
-[ INTLIT ] 4
-[ DIV ] /
-[ INTLIT ] 2
-[ HASH ] #
-[ FLOAT ] float
-[ ID 14 ] float3 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 3.5
-[ ADD ] +
-[ FLOATLIT ] 6.5
+[ INTLIT ] 0
 [ HASH ] #
 [ INT ] int
-[ ID 15 ] int_4 - Found in symbol table: 1
+[ ID 5 ] u - Found in symbol table: 1
 [ EQ ] =
-[ FLOATLIT ] 10.3
+[ FUNC ] fun(
+[ RPAREN ] )
 [ HASH ] #
 [ RETURN ] return
 [ INTLIT ] 0
+[ HASH ] #
+[ RCURLY ] }
+[ CHAR ] char
+[ FUNC ] fun(
+[ INT ] int
+[ ID 6 ] paramOne - Found in symbol table: 0
+[ COMMA ] ,
+[ CHAR ] char
+[ ID 7 ] paramTwo - Found in symbol table: 0
+[ RPAREN ] )
+[ LCURLY ] {
+[ INT ] int
+[ ID 8 ] c - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 99
+[ HASH ] #
+[ RETURN ] return
+[ CHARLIT ] 'c'
+[ HASH ] #
+[ RCURLY ] }
+[ FLOAT ] float
+[ FUNC ] test(
+[ RPAREN ] )
+[ LCURLY ] {
+[ INT ] int
+[ ID 9 ] y - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 5
+[ HASH ] #
+[ RETURN ] return
+[ FLOATLIT ] 5.5
 [ HASH ] #
 [ RCURLY ] }

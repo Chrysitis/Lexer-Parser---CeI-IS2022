@@ -1,0 +1,23 @@
+int main() {
+
+  int m = z#
+  int x = 5#
+  int y = 12#
+  int t = 0#
+  int u = fun()#
+
+  return 0#
+
+}
+
+char fun(int paramOne, char paramTwo) {
+  
+  int c = 99#
+  return 'c'#
+}
+
+float test() {
+
+  int y = 5#
+  return 5.5#
+}

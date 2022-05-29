@@ -53,8 +53,8 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) throws IOException {
-    //lexicalAnalysis(testFilePackageDir + "codeTest.txt");
-    syntacticAnalysis(testFilePackageDir + "codeTest.txt");
+    //lexicalAnalysis(testFilePackageDir + "test.txt");
+    syntacticAnalysis(testFilePackageDir + "test.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {
@@ -115,11 +115,15 @@ public class Main {
       codeParser.printSymbolTable();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+      System.out.println("FIRST EX");
+      ex.printStackTrace();
     } finally {
       try {
         br.close();
       } catch (IOException ex) {
         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println("SECOND EX");
+        ex.printStackTrace();
       }
     }
   }
