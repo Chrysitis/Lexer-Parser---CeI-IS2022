@@ -454,6 +454,8 @@ public class Lexer implements java_cup.runtime.Scanner {
   public int scope = 0;
   public String idType = "";
   public boolean eqOperator = false;
+  public boolean isReturnVal = false;
+  public boolean isFunction = false;
   private Symbol symbol(int type) {
     return new Symbol(type, yyline+1, yycolumn+1);
   }
@@ -990,7 +992,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 66: break;
           case 6:
-            { saveToken(sym.RPAREN, yytext()); return symbol(sym.RPAREN, yytext());
+            { saveToken(sym.RPAREN, yytext()); 
+                  this.isFunction = false; 
+                  return symbol(sym.RPAREN, yytext());
             }
             // fall through
           case 67: break;
@@ -1005,7 +1009,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 69: break;
           case 9:
-            { saveToken(sym.COMMA, yytext()); return symbol(sym.COMMA, yytext());
+            { saveToken(sym.COMMA, yytext()); 
+                  isFunction = true;
+                  return symbol(sym.COMMA, yytext());
             }
             // fall through
           case 70: break;
@@ -1025,7 +1031,13 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 73: break;
           case 13:
-            { saveToken(sym.INTLIT, yytext()); return symbol(sym.INTLIT, yytext());
+            { saveToken(sym.INTLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.INTLIT, yytext());
             }
             // fall through
           case 74: break;
@@ -1055,11 +1067,25 @@ public class Lexer implements java_cup.runtime.Scanner {
             { saveToken(sym.ID, yytext()); 
                     if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();
-                      tokenAttributes.add(idType);
-                      //System.out.println("AGREGANDO ID: " + yytext() + " EN LA TABLA " + currentSymbolTable.getFuncName() + " WITH SCOPE " + currentSymbolTable.getTableScope());
-                      currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      if(isFunction) {
+                        currentSymbolTable.addFuncParams(idType, yytext());
+                        isFunction = false;
+                        System.out.println("AGREGANDO PARAMETRO: " + idType + " " + yytext());
+                      } else {
+                        tokenAttributes.add(idType);
+                        System.out.println("AGREGANDO VARIABLE: " + idType + " " + yytext());
+                        currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
+                      }
                       this.idType = "";
-                      return symbol(sym.ID, yytext()); }
+                      return symbol(sym.ID, yytext());  
+                    } else {
+                      if (isReturnVal) {
+                        System.out.println("RETURN VALUE IS: " + yytext()); 
+                        currentSymbolTable.setReturnVal(yytext());
+                        isReturnVal = false;
+                      }
+                      return symbol(sym.ID, yytext());
+                    }
             }
             // fall through
           case 79: break;
@@ -1115,7 +1141,13 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 88: break;
           case 28:
-            { saveToken(sym.FLOATLIT, yytext()); return symbol(sym.FLOATLIT, yytext());
+            { saveToken(sym.FLOATLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.FLOATLIT, yytext());
             }
             // fall through
           case 89: break;
@@ -1135,8 +1167,13 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 92: break;
           case 32:
-            { saveToken(sym.FUNC, yytext());
-                  createSymbolTable(false, yytext(), null); 
+            { Boolean func = (idType != "");
+                  if (func) {
+                    System.out.println("TABLE FOR: " + yytext() + " WITH SCOPE: " + this.scope);
+                    createSymbolTable(false, yytext(), idType);
+                    this.isFunction = true; 
+                  } 
+                  saveToken(sym.FUNC, yytext());
                   return symbol(sym.FUNC, yytext());
             }
             // fall through
@@ -1157,7 +1194,13 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 96: break;
           case 36:
-            { saveToken(sym.CHARLIT, yytext()); return symbol(sym.CHARLIT, yytext());
+            { saveToken(sym.CHARLIT, yytext()); 
+                  if (isReturnVal) {
+                    System.out.println("RETURN VALUE IS: " + yytext()); 
+                    currentSymbolTable.setReturnVal(yytext());
+                    isReturnVal = false;
+                  }
+                  return symbol(sym.CHARLIT, yytext());
             }
             // fall through
           case 97: break;
@@ -1270,7 +1313,9 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 117: break;
           case 57:
-            { saveToken(sym.RETURN, yytext()); return symbol(sym.RETURN, yytext());
+            { saveToken(sym.RETURN, yytext());
+                  isReturnVal = true;
+                  return symbol(sym.RETURN, yytext());
             }
             // fall through
           case 118: break;

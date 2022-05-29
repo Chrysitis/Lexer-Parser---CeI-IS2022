@@ -21,6 +21,7 @@ public final class SymbolTable {
   private final int tableScope;
   private final String funcName;
   private final String funcType;
+  private String returnVal;
   private ArrayList<String> funcParams;
   
   public SymbolTable(int tableScope, String funcName, String funcType) {
@@ -28,6 +29,8 @@ public final class SymbolTable {
     this.funcName = funcName;
     this.symbolTable = new HashMap<>();
     this.funcType = funcType;
+    this.funcParams = new ArrayList<>();
+    this.returnVal = "";
   }
  
   public SymbolTable(int tableScope, String funcName, String funcType, ArrayList<String> params) {
@@ -35,7 +38,8 @@ public final class SymbolTable {
     this.funcName = funcName;
     this.symbolTable = new HashMap<>();
     this.funcType = funcType;
-    this.funcParams = params;
+    this.funcParams = new ArrayList<>();
+    this.returnVal = "";
   }
 
   public Map<String, ArrayList<String>> getSymbolTable() {
@@ -68,7 +72,20 @@ public final class SymbolTable {
   }
 
   public ArrayList<String> getFuncParams() {
-    return funcParams;
+    return this.funcParams;
   }
   
+  public String getReturnVal() {
+  
+    return this.returnVal;
+  }
+  public void setReturnVal(String val) {
+  
+    this.returnVal = val;
+  }
+
+  public void addFuncParams(String type, String id) {
+    this.funcParams.add(type);
+    this.funcParams.add(id);
+  }
 }

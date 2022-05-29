@@ -25,7 +25,6 @@ parser code {:
     public String currentFunction;
     public Lexer lexer;
 
-
     @Override
     public void syntax_error(Symbol current_token) {
       String errInfo = "SYNTAX ERROR AT LINE " + (current_token.left) + " COLUMN " 
@@ -73,12 +72,16 @@ parser code {:
     for(int i = 0; i < size; i++) {
       System.out.println();
       String funcName = stManager.getSymbolTables().get(i).getFuncName();
+      String funcType = stManager.getSymbolTables().get(i).getFuncType();
+      String funcReturn = stManager.getSymbolTables().get(i).getReturnVal();
+      ArrayList<String> funcParams = stManager.getSymbolTables().get(i).getFuncParams();
       int funcScope = stManager.getSymbolTables().get(i).getTableScope();
       Map<String,ArrayList<String>> current = stManager.getSymbolTables().get(i).getSymbolTable();
-      System.out.println("FUNCTION \t SCOPE \t\t VARIABLES \t ATTRIBUTES");
+      System.out.println("FUNCTION \t SCOPE \t\t VARIABLES \t ATTRIBUTES \t\t FUNC RETURN TYPE \t\t FUNC RETURN VAL \t\t FUNC PARAMS");
       current.forEach(
         (k, v) -> System.out.println(funcName + "\t\t " + funcScope +" \t\t " + k + " \t\t " + v
-          + "\n____________________________________________________________")
+          + "\t\t\t " + funcType + "\t\t\t " + funcReturn + "\t\t\t\t " + funcParams 
+          + "\n_________________________________________________________________________________________________________________________________________________________")
       );
     } 
   }
@@ -191,18 +194,34 @@ parser code {:
   // id means refers to variale id and idType refers to either variable or function.
   // requiredType refers to the required data type for the id to be valid in any operation.
   // Validates the existance of the given id, the scope and value type.
-  public String validate(String id, String type , String dataType) {
+  public String validateId(String id, String type , String dataType) {
     
     // First, validates the existance and scope.
     String result;
     if(validateScope(id)) {
       result = getIdValue(id);
+      System.out.println("RESULT IS: " + result);
     } else {
       result = "-e1";
     }
     return result;
 }
 
+  public String validateFunc(String id) {
+    
+    // First, validates the existance and scope.
+    String result = "";
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    SymbolTable st;
+    int limit = sTables.size() - 1;
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i); 
+      if(st.getTableScope() == 0) {
+        System.out.println("PARAMS ARE: " + st.getFuncParams());
+      }
+    }
+    return result;
+}
   public boolean validateScope(String id) {
     boolean result = false;
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
@@ -235,7 +254,7 @@ parser code {:
   // -e4 means no such function.
   public String reportSemanticErr(String errType) {
     String err = "";
-    if(errType.equals("2")) {
+    if(errType.equals("-e1")) {
       err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE CREATED OR IN SCOPE ---------------";
     }
     return err;
@@ -257,7 +276,8 @@ terminal    BEGIN, END;
 terminal    IF, THEN, ELSE;
 terminal    FOR, BREAK, WHILE;
 terminal    SWITCH, CASE, DEFAULT;
-terminal    RETURN, MAIN, FUNC;
+terminal    RETURN, MAIN;
+terminal Object         FUNC;
 terminal    READ, PRINT;
 terminal    COMMENT;
 
@@ -287,7 +307,7 @@ terminal String         STRINGLIT;
 terminal    ARRAYLIT;
 
 // Identifiers.
-terminal String ID;
+terminal Object         ID;
 
 /* Non terminals */
 non terminal    ini;       
@@ -344,7 +364,12 @@ ini ::=
 
 // ---------- main function (no params, MAIN is recognized as main()) ----------
 main ::= 
-          INT MAIN:name {: updateCurrentFunction(name); :} LCURLY codeBlock return HASH RCURLY
+          INT MAIN:name 
+            {: 
+              updateCurrentFunction(name); 
+              System.out.println("CURRENT FUNC IS: " + currentFunction); 
+            :} 
+          LCURLY codeBlock RCURLY
           ;
 return ::=
           RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT | RETURN STRING
@@ -354,20 +379,23 @@ return ::=
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC RPAREN LCURLY codeBlock return HASH RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR FUNC RPAREN LCURLY codeBlock return HASH RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} RPAREN LCURLY codeBlock RCURLY
           |
-          FLOAT FUNC RPAREN LCURLY codeBlock return HASH RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} RPAREN LCURLY codeBlock RCURLY
           |
-          INT FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} parameters RPAREN LCURLY codeBlock RCURLY
           |
-          CHAR FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} parameters RPAREN LCURLY codeBlock RCURLY
           |
-          FLOAT FUNC parameters RPAREN LCURLY codeBlock return HASH RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); System.out.println("CURRENT FUNC IS: " + currentFunction); :} parameters RPAREN LCURLY codeBlock RCURLY
           ;
 functionInv ::=
-          FUNC RPAREN
+          FUNC:name RPAREN 
+            {:
+              RESULT = name;
+            :}
           |
           FUNC parametersInv RPAREN
           ;
@@ -437,6 +465,7 @@ intCreationAssign ::=
           | 
           INT:dType ID:id EQ intMathExpression:val
             {:
+            System.out.println("ENTRO A INT:dType ID:id EQ intMathExpression:val");
               if(val.getClass().toString().equals("class java.lang.Integer")) {
                 RESULT = val;
                 System.out.println("EL ID DE INT ES: " + id);
@@ -533,6 +562,7 @@ intVarAsign ::=
           ID:id EQ intMathExpression:val
             {:
               RESULT = val;
+              System.out.println("ENTRO A intVarAsign");
               System.out.println("EL ID DE INT ES: " + id);
               System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
               updateIntegerSymbolTable(id, "int", val);
@@ -590,6 +620,8 @@ expression ::=
           |
           if | while | for  
           |
+          return HASH
+          |
           error HASH
           ;
 boolLit ::=
@@ -613,18 +645,19 @@ mathExpression ::=
 intMathExpression ::=
           intMathExpression:op1 ADD intFactor:op2
             {:
-              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
               RESULT = op1 + op2;
             :}
           |
           intMathExpression:op1 SUBS intFactor:op2
             {:
-              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              System.out.println("HAY OPERACION: " + op1 + " - " + op2 + " = " + (op1 + op2));
               RESULT = op1 - op2;
             :}
           |
           intFactor:val
             {:
+              System.out.println("ENTRO A intFactor:val = " + val);
               RESULT = convertToInteger(val);
             :}
           ;
@@ -641,35 +674,35 @@ intFactor ::=
           |
           intTerm:t
             {: 
+              System.out.println("ENTRO A intTerm:t = " + t);
               RESULT = convertToInteger(t); 
             :}
           ;
 intTerm ::=
-          /*LPAREN intMathExpression:e RPAREN
-            {: 
-              RESULT = e; 
-            :}
-          |*/ 
           INTLIT:n
             {: 
+              System.out.println("ENTRO A INTLIT = " + n);
               RESULT = convertToInteger(n); 
             :}
           |
           ID:id
             {:
-              System.out.println("THE PROBLEM IS HERE.");
-              String validation = validate(id, "int", "id");
-              if (NumberUtils.isParsable(id)) {
-                RESULT = convertToInteger(id); 
+              //RESULT = 99;
+              System.out.println("ENTRO A ID = " + id);
+              String validation = validateId(id.toString(), "int", "id");
+              if (NumberUtils.isParsable(id.toString())) {
+                RESULT = convertToInteger(validation); 
               } else {
-                reportSemanticErr(validation);
-                RESULT = null;
+                System.out.println(reportSemanticErr(validation));
+                RESULT = 0;
               }
             :}
-          |
+            |
           functionInv:n
             {: 
-              RESULT = convertToInteger(n); 
+              System.out.println("ENTRO A functionInv = " + n);
+              validateFunc(n.toString());
+              RESULT = 18; 
             :}
           ;
 floatMathExpression ::=
