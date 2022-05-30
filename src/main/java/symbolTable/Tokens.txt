@@ -1,58 +1,14 @@
-[ INT ] int
-[ MAIN ] main()
-[ LCURLY ] {
-[ INT ] int
-[ ID 0 ] m - Found in symbol table: 1
-[ EQ ] =
-[ ID 1 ] z - Found in symbol table: 1
-[ ADD ] +
-[ INTLIT ] 5
-[ HASH ] #
-[ INT ] int
-[ ID 2 ] x - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 5
-[ HASH ] #
-[ INT ] int
-[ ID 3 ] y - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 12
-[ HASH ] #
-[ INT ] int
-[ ID 4 ] t - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 0
-[ HASH ] #
-[ INT ] int
-[ ID 5 ] u - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] fun(
-[ RPAREN ] )
-[ HASH ] #
-[ INT ] int
-[ ID 6 ] f - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 6
-[ MULT ] *
-[ ID 7 ] y - Found in symbol table: 1
-[ ADD ] +
-[ INTLIT ] 5
-[ HASH ] #
-[ RETURN ] return
-[ INTLIT ] 0
-[ HASH ] #
-[ RCURLY ] }
 [ CHAR ] char
 [ FUNC ] fun(
 [ INT ] int
-[ ID 8 ] paramOne - Found in symbol table: 0
+[ ID 0 ] paramOne - Found in symbol table: 0
 [ COMMA ] ,
 [ CHAR ] char
-[ ID 9 ] paramTwo - Found in symbol table: 0
+[ ID 1 ] paramTwo - Found in symbol table: 0
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 10 ] c - Found in symbol table: 1
+[ ID 2 ] c - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
@@ -65,11 +21,66 @@
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 11 ] y - Found in symbol table: 1
+[ ID 3 ] y - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
 [ RETURN ] return
 [ FLOATLIT ] 5.5
+[ HASH ] #
+[ RCURLY ] }
+[ INT ] int
+[ FUNC ] func2(
+[ RPAREN ] )
+[ LCURLY ] {
+[ INT ] int
+[ ID 4 ] x - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 99
+[ HASH ] #
+[ RETURN ] return
+[ ID 5 ] x - Found in symbol table: 1
+[ HASH ] #
+[ RCURLY ] }
+[ INT ] int
+[ MAIN ] main()
+[ LCURLY ] {
+[ INT ] int
+[ ID 6 ] m - Found in symbol table: 1
+[ EQ ] =
+[ ID 7 ] z - Found in symbol table: 1
+[ ADD ] +
+[ INTLIT ] 5
+[ HASH ] #
+[ INT ] int
+[ ID 8 ] x - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 9 ] y - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 12
+[ HASH ] #
+[ INT ] int
+[ ID 10 ] t - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 0
+[ HASH ] #
+[ INT ] int
+[ ID 11 ] u - Found in symbol table: 1
+[ EQ ] =
+[ FUNC ] func2(
+[ RPAREN ] )
+[ HASH ] #
+[ INT ] int
+[ ID 12 ] f - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 6
+[ MULT ] *
+[ ID 13 ] y - Found in symbol table: 1
+[ ADD ] +
+[ INTLIT ] 5
+[ HASH ] #
+[ RETURN ] return
+[ INTLIT ] 0
 [ HASH ] #
 [ RCURLY ] }

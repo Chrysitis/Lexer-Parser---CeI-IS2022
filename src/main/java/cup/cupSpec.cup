@@ -173,7 +173,7 @@ parser code {:
 
   // To manage variable scope and presence.
   public void updateCurrentFunction(Object name) {
-    System.out.println("CURRENT FUNCTION IS: " + name.toString());
+    //System.out.println("CURRENT FUNCTION IS: " + name.toString());
     this.currentFunction = name.toString();
   }
 
@@ -185,7 +185,7 @@ parser code {:
     for (int i = 0; i <= limit; i++) {
       st = sTables.get(i);
       if(st.getFuncName().equals(this.currentFunction)) {
-        System.out.println("CURRENT FUNCTION IS: " + this.currentFunction + "ST FUNCTION IS: " + st.getFuncName());
+        //System.out.println("CURRENT FUNCTION IS: " + this.currentFunction + "ST FUNCTION IS: " + st.getFuncName());
         if(st.getTableScope() != 0){
           res = st.getSymbolTable().get(id).get(1);
           return res;
@@ -204,28 +204,61 @@ public String validateId(String id, String type , String dataType) {
     String result;
     if(validateScope(id)) {
       result = getIdValue(id);
-      System.out.println("RESULT OF ID VALIDATION IS: " + result);
+      //System.out.println("RESULT OF ID VALIDATION IS: " + result);
     } else {
       result = "-e1";
     }
     return result;
 }
 
-  public String validateFunc(String id) {
+  public String validateFunc(String func, String funcType) {
     
     // First, validates the existance and scope.
     String result = "";
+    String res = "";
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     SymbolTable st;
     int limit = sTables.size() - 1;
     for (int i = 0; i <= limit; i++) {
       st = sTables.get(i); 
-      if(st.getTableScope() == 0) {
-        System.out.println("PARAMS ARE: " + st.getFuncParams());
+      if(st.getTableScope() == 1) {
+        //System.out.println("COMPARING " + st.getFuncName() + " TO " + func);
+        if(st.getFuncName().equals(func)) {
+          //System.out.println("COMPARING TYPES " + st.getFuncType() + " TO " + funcType);
+          if(st.getFuncType().equals(funcType)) {
+            res = st.getReturnVal();
+            if(!NumberUtils.isParsable(res)) {
+                result = getValueFromFunc(func, res);
+                return result;
+              } else {
+                result = st.getReturnVal();
+                }
+          } else {
+            result = "-e2";
+            return result;
+          }
+        }
+        result = "-e4";
       }
     }
     return result;
 }
+
+  public String getValueFromFunc(String func, String id) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    String result = "";
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getTableScope() != 0 && st.getFuncName().equals(func)) {        
+        result = st.getSymbolTable().get(id).get(1);
+        return result;
+      }
+    }
+
+    return result;
+  } 
   public boolean validateScope(String id) {
     boolean result = false;
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
@@ -238,11 +271,11 @@ public String validateId(String id, String type , String dataType) {
           int currentScope = lexer.scope;
           // Checks for current scope.
           if (st.getTableScope() < currentScope) {
-            System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
+            //System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
             result = true;
           } // Checks if it exists on higher scopes. 
           else if (st.getTableScope() == currentScope) {
-            System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
+            //System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
             result = true;
           } else {
             result = false;
@@ -261,8 +294,12 @@ public String validateId(String id, String type , String dataType) {
   public String reportSemanticErr(String errType) {
     String err = "";
     if(errType.equals("-e1")) {
-      err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE CREATED OR IN SCOPE ---------------";
-    }
+      err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE CREATED OR IN SCOPE. ---------------";
+    } else if(errType.equals("-e2")) {
+      err = "--------------- SEMANTIC ERR: FUNCTION OR VARIABLE DATA TYPE CONFLICT. ---------------";
+    } else if(errType.equals("-e4")) {
+      err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION EXISTS. ---------------";
+      }
     return err;
 }
 
@@ -361,11 +398,9 @@ precedence left MULT, DIV;
 start with ini;
 // ---------- Init point ----------
 ini ::=
-          main | function
-          |
-          main ini
-          |
           function ini
+          |
+          main
           ;
 
 // ---------- main function (no params, MAIN is recognized as main()) ----------
@@ -651,26 +686,26 @@ mathExpression ::=
 intMathExpression ::=
           intMathExpression:op1 ADD intFactor:op2
             {:
-              System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
+              //System.out.println("HAY OPERACION: " + op1 + " + " + op2 + " = " + (op1 + op2));
               RESULT = op1 + op2;
             :}
           |
           intMathExpression:op1 SUBS intFactor:op2
             {:
-              System.out.println("HAY OPERACION: " + op1 + " - " + op2 + " = " + (op1 + op2));
+              //System.out.println("HAY OPERACION: " + op1 + " - " + op2 + " = " + (op1 + op2));
               RESULT = op1 - op2;
             :}
           |
           intFactor:val
             {:
-              System.out.println("ENTRO A intFactor:val = " + val);
+              //System.out.println("ENTRO A intFactor:val = " + val);
               RESULT = convertToInteger(val);
             :}
           ;
 intFactor ::=
           intFactor:f MULT intTerm:t
             {: 
-              System.out.println("intFactor:f MULT intTerm:t = " + f + " * " + t); 
+              //System.out.println("intFactor:f MULT intTerm:t = " + f + " * " + t); 
               RESULT = convertToInteger(f) * convertToInteger(t); 
             :}
           |
@@ -681,25 +716,24 @@ intFactor ::=
           |
           intTerm:t
             {: 
-              System.out.println("ENTRO A intTerm:t = " + t);
+              //System.out.println("ENTRO A intTerm:t = " + t);
               RESULT = convertToInteger(t); 
             :}
           ;
 intTerm ::=
           INTLIT:n
             {: 
-              System.out.println("ENTRO A INTLIT = " + n);
+              //System.out.println("ENTRO A INTLIT = " + n);
               RESULT = convertToInteger(n); 
             :}
           |
           ID:id
             {:
               //RESULT = 99;
-              System.out.println("ENTRO A ID = " + id);
+              //System.out.println("ENTRO A ID = " + id);
               String validation = validateId(id.toString(), "int", "id");
-              System.out.println("VALIDATION AT FINAL IS: " + validation);
+              //System.out.println("VALIDATION AT FINAL IS: " + validation);
               if (NumberUtils.isParsable(validation)) {
-                System.out.println("ENTRO A PARSABLE");
                 RESULT = convertToInteger(validation); 
               } else {
                 System.out.println(reportSemanticErr(validation));
@@ -709,9 +743,15 @@ intTerm ::=
             |
           functionInv:n
             {: 
-              System.out.println("ENTRO A functionInv = " + n);
-              validateFunc(n.toString());
-              RESULT = 18; 
+              System.out.println("ENTRO A functionInv = " + n.toString());
+              String res = validateFunc(n.toString(), "int");
+              if (NumberUtils.isParsable(res)) {
+                //System.out.println("ENTRO A PARSABLE");
+                RESULT = convertToInteger(res);
+              } else {
+                System.out.println(reportSemanticErr(res));
+                RESULT = 0;
+              }
             :}
           ;
 floatMathExpression ::=
