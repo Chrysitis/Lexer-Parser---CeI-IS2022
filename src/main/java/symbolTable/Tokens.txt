@@ -5,6 +5,8 @@
 [ ID 0 ] m - Found in symbol table: 1
 [ EQ ] =
 [ ID 1 ] z - Found in symbol table: 1
+[ ADD ] +
+[ INTLIT ] 5
 [ HASH ] #
 [ INT ] int
 [ ID 2 ] x - Found in symbol table: 1
@@ -27,6 +29,15 @@
 [ FUNC ] fun(
 [ RPAREN ] )
 [ HASH ] #
+[ INT ] int
+[ ID 6 ] f - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 6
+[ MULT ] *
+[ ID 7 ] y - Found in symbol table: 1
+[ ADD ] +
+[ INTLIT ] 5
+[ HASH ] #
 [ RETURN ] return
 [ INTLIT ] 0
 [ HASH ] #
@@ -34,14 +45,14 @@
 [ CHAR ] char
 [ FUNC ] fun(
 [ INT ] int
-[ ID 6 ] paramOne - Found in symbol table: 0
+[ ID 8 ] paramOne - Found in symbol table: 0
 [ COMMA ] ,
 [ CHAR ] char
-[ ID 7 ] paramTwo - Found in symbol table: 0
+[ ID 9 ] paramTwo - Found in symbol table: 0
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 8 ] c - Found in symbol table: 1
+[ ID 10 ] c - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
@@ -54,7 +65,7 @@
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 9 ] y - Found in symbol table: 1
+[ ID 11 ] y - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
