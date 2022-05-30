@@ -1,10 +1,11 @@
 int main() {
 
-  int m = z#
+  int m = z + 5#
   int x = 5#
   int y = 12#
   int t = 0#
   int u = fun()#
+  int f = 6 * y + 5#
 
   return 0#
 

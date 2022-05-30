@@ -789,7 +789,11 @@ public class parser extends java_cup.runtime.lr_parser {
     for (int i = 0; i <= limit; i++) {
       st = sTables.get(i);
       if(st.getFuncName().equals(this.currentFunction)) {
-        res = st.getSymbolTable().get(id.toString()).get(1);
+        System.out.println("CURRENT FUNCTION IS: " + this.currentFunction + "ST FUNCTION IS: " + st.getFuncName());
+        if(st.getTableScope() != 0){
+          res = st.getSymbolTable().get(id).get(1);
+          return res;
+        }
       }
     }
     return res;
@@ -798,13 +802,13 @@ public class parser extends java_cup.runtime.lr_parser {
   // id means refers to variale id and idType refers to either variable or function.
   // requiredType refers to the required data type for the id to be valid in any operation.
   // Validates the existance of the given id, the scope and value type.
-  public String validateId(String id, String type , String dataType) {
-    
+  
+public String validateId(String id, String type , String dataType) {    
     // First, validates the existance and scope.
     String result;
     if(validateScope(id)) {
       result = getIdValue(id);
-      System.out.println("RESULT IS: " + result);
+      System.out.println("RESULT OF ID VALIDATION IS: " + result);
     } else {
       result = "-e1";
     }
@@ -838,9 +842,11 @@ public class parser extends java_cup.runtime.lr_parser {
           int currentScope = lexer.scope;
           // Checks for current scope.
           if (st.getTableScope() < currentScope) {
+            System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
             result = true;
           } // Checks if it exists on higher scopes. 
           else if (st.getTableScope() == currentScope) {
+            System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
             result = true;
           } else {
             result = false;
@@ -2165,6 +2171,7 @@ class CUP$parser$actions {
 		int tright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer t = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
+              System.out.println("intFactor:f MULT intTerm:t = " + f + " * " + t); 
               RESULT = convertToInteger(f) * convertToInteger(t); 
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intFactor",47, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2229,7 +2236,9 @@ class CUP$parser$actions {
               //RESULT = 99;
               System.out.println("ENTRO A ID = " + id);
               String validation = validateId(id.toString(), "int", "id");
-              if (NumberUtils.isParsable(id.toString())) {
+              System.out.println("VALIDATION AT FINAL IS: " + validation);
+              if (NumberUtils.isParsable(validation)) {
+                System.out.println("ENTRO A PARSABLE");
                 RESULT = convertToInteger(validation); 
               } else {
                 System.out.println(reportSemanticErr(validation));
