@@ -31,6 +31,8 @@ import java.util.Map;
   public boolean eqOperator = false;
   public boolean isReturnVal = false;
   public boolean isFunction = false;
+  public String idTypeExamination = "";
+
   private Symbol symbol(int type) {
     return new Symbol(type, yyline+1, yycolumn+1);
   }
@@ -56,7 +58,12 @@ import java.util.Map;
     return this.currentSymbolTable.getSymbolTable().containsKey(lexeme);
     
   }
-
+  public void updateToInt() {
+    this.idTypeExamination = "int";
+}
+  public void updateToFloat() {
+    this.idTypeExamination = "float";
+}
   private void tokenInfo(String token, String val) {
     //String info = token + " > " + val + " < ";
     //System.out.println(info);
@@ -158,14 +165,14 @@ identifier = {letter}+ ({letter} | {underScore} | {digs})*
 
 // ---------- string ----------
 stringDelimiter = \"
-strSymbols = [$=><#\+\-%&|/()!¡¿?\"\'\,]
+strSymbols = [$=><#\.\+\_\-%&|/()!¡¿?\"\'\,]
 stringLit = {stringDelimiter} ({letter} | {digs} | [ ] | {strSymbols}) + {stringDelimiter}
 
 // ---------- array ----------
 arrayLit = "{" (-?(0 | {digR}{digs}*) \,)+ -?(0 | {digR}{digs}*) "}" | "{" ({charDelimiter} ({letter} | {strSymbols}) {charDelimiter} \,)+ {charDelimiter} ({letter} | {strSymbols}) {charDelimiter} "}" 
 // ---------- one/multi line comments ----------
-comment = "//" ({letter} | {digs}| [ ] )* {newLine}
-comment = "/*" ({letter} | {digs}| [ ] | {newLine} | {strSymbols})* "*/"
+//comment = "//" ({letter} | {digs}| [ ] )* {newLine}
+comment = "/*" ({letter} | {digs}| [ ] | {newLine} | {strSymbols})* "*/" | "//" ({letter} | {digs}| [ ] )* {newLine}
 
 // ---------- new line ----------
 newLine = \r | \n | \r\n
@@ -205,11 +212,13 @@ function = {identifier} "("
     "int"       { 
                   saveToken(sym.INT, yytext());
                   idType = "int";
+                  this.idTypeExamination = "int";
                   return symbol(sym.INT, yytext()); 
                 }
     "float"     { 
                   saveToken(sym.FLOAT, yytext());
                   idType = "float";
+                  this.idTypeExamination = "float";
                   return symbol(sym.FLOAT, yytext()); 
                 }
     "char"      { 

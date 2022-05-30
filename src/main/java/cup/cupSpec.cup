@@ -24,6 +24,7 @@ parser code {:
     public SymbolTable currentSymbolTable = null;
     public String currentFunction;
     public Lexer lexer;
+    public String idTypeExamination = "";
 
     @Override
     public void syntax_error(Symbol current_token) {
@@ -65,7 +66,7 @@ parser code {:
             ex.printStackTrace();
         }
     }
-
+    
   public void printSymbolTable() {
     int index = 0;
     int size = stManager.getSymbolTables().size();
@@ -85,6 +86,7 @@ parser code {:
       );
     } 
   }
+
 
   // Updates the symbol table entries for type and value for the given id.
   public void updateIntegerSymbolTable(Object id, Object type, Integer val) {
@@ -195,8 +197,8 @@ parser code {:
     return res;
   }
 
-  // id means refers to variale id and idType refers to either variable or function.
-  // requiredType refers to the required data type for the id to be valid in any operation.
+  // id means refers to variale id and type refers to either variable or function.
+  // dataType refers to the required data type for the id to be valid in any operation.
   // Validates the existance of the given id, the scope and value type.
   
 public String validateId(String id, String type , String dataType) {    
@@ -291,14 +293,14 @@ public String validateId(String id, String type , String dataType) {
   // -e2 means type conflict.
   // -e3 means id has null value.
   // -e4 means no such function.
-  public String reportSemanticErr(String errType) {
+  public String reportSemanticErr(String lexeme, String errType) {
     String err = "";
     if(errType.equals("-e1")) {
-      err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE CREATED OR IN SCOPE. ---------------";
+      err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE " + lexeme + " CREATED OR IN SCOPE. ---------------";
     } else if(errType.equals("-e2")) {
-      err = "--------------- SEMANTIC ERR: FUNCTION OR VARIABLE DATA TYPE CONFLICT. ---------------";
+      err = "--------------- SEMANTIC ERR: FUNCTION OR VARIABLE NAMED" + lexeme + " DATA TYPE CONFLICT. ---------------";
     } else if(errType.equals("-e4")) {
-      err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION EXISTS. ---------------";
+      err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION NAMED " + lexeme + " EXISTS. ---------------";
       }
     return err;
 }
@@ -355,13 +357,13 @@ terminal Object         ID;
 /* Non terminals */
 non terminal    ini;       
 non terminal    main, function;
-non terminal Object    functionInv;    
+non terminal Object     functionInv;    
 non terminal    codeBlock;
 non terminal    varAsign;
 non terminal    printFunction, readFunction;
 non terminal    expression;
 non terminal    logRelExpression;
-non terminal    unaryExpression;
+non terminal Object     unaryExpression;
 non terminal    parameters, parametersInv;
 non terminal    literal;
 non terminal    numLiteral;
@@ -389,11 +391,14 @@ non terminal Boolean    boolLit;
 non terminal Integer    intTerm, intFactor;
 non terminal Float      floatTerm, floatFactor;
 non terminal Integer    intVarAsign;
+non terminal Integer    intUnaryExpression;
+non terminal Float      floatUnaryExpression;
 
 
 // Precedence and associativity declarations
 precedence left ADD, SUBS; 
-precedence left MULT, DIV; 
+precedence left MULT, DIV;
+precedence left mathExpression, functionInv; 
 // The grammar.
 start with ini;
 // ---------- Init point ----------
@@ -478,6 +483,8 @@ codeBlock ::=
           expression | COMMENT
           |
           expression codeBlock
+          |
+          COMMENT codeBlock
           ;
 // ---------- variable creation and assignation ----------
 varCreationAsign ::=   
@@ -509,8 +516,8 @@ intCreationAssign ::=
             System.out.println("ENTRO A INT:dType ID:id EQ intMathExpression:val");
               if(val.getClass().toString().equals("class java.lang.Integer")) {
                 RESULT = val;
-                System.out.println("EL ID DE INT ES: " + id);
-                System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+                //System.out.println("EL ID DE INT ES: " + id);
+                //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
                 updateIntegerSymbolTable(id, dType, RESULT);
               } else {
               System.out.println("*** SEMANTIC ERR *** ID: " + id + " ES INT ES Y ASIGNO FLOAT.");
@@ -557,7 +564,33 @@ charCreationAssign ::=
               updateCharacterSymbolTable(id, dType, RESULT); 
             :}
           |
-          CHAR ID:id EQ functionInv:val
+          CHAR:dType ID:id EQ functionInv:val
+            {:
+              System.out.println("ENTRO A functionInv PARA CHAR = " + val.toString());
+              String res = validateFunc(val.toString(), "char");
+              if (!res.contains("-e")) {
+                //System.out.println("ENTRO A PARSABLE");
+                RESULT = res.charAt(0);
+                updateCharacterSymbolTable(id, dType, RESULT);  
+              } else {
+                System.out.println(reportSemanticErr(val.toString(), res));
+                RESULT = null;
+              }
+           :}
+           |
+          CHAR:dType ID:id EQ ID:val
+            {:
+              System.out.println("ENTRO A functionInv PARA CHAR = " + val.toString());
+              String res = validateId(val.toString(), "char", "id");
+              if (!res.contains("-e")) {
+                //System.out.println("ENTRO A PARSABLE");
+                RESULT = res.charAt(0);
+                updateCharacterSymbolTable(id, dType, RESULT);  
+              } else {
+                System.out.println(reportSemanticErr(val.toString(), res));
+                RESULT = null;
+              }
+           :}
           ;
 stringCreationAssign ::=
           STRING:dType ID:id 
@@ -668,9 +701,30 @@ expression ::=
 boolLit ::=
           TRUE {: RESULT = true; :} | FALSE {: RESULT = false; :}
           ;
-unaryExpression ::=
-          ID PADD | ID PSUBS 
-          |
+intUnaryExpression ::=
+          ID:id PADD
+            {:
+              System.out.println("ESTAMOS EN SUMA UNARIA CON ID: " + id);
+              String validation = validateId(id.toString(), "int", "id");
+              if (NumberUtils.isParsable(validation)) {
+                RESULT = convertToInteger(validation) + 1;
+              } else {
+                System.out.println(reportSemanticErr(id.toString(), validation));
+              }
+            :}
+          | 
+          ID:id PSUBS 
+            {:
+              System.out.println("ESTAMOS EN SUMA UNARIA CON ID: " + id);
+              String validation = validateId(id.toString(), "int", "id");
+              if (NumberUtils.isParsable(validation)) {
+                RESULT = convertToInteger(validation) - 1;
+              } else {
+                System.out.println(reportSemanticErr(id.toString(), validation));
+              }
+            :}
+          ;
+floatUnaryExpression ::=
           INTLIT PADD | INTLIT PSUBS 
           |
           FLOATLIT PADD | FLOATLIT PSUBS 
@@ -736,7 +790,7 @@ intTerm ::=
               if (NumberUtils.isParsable(validation)) {
                 RESULT = convertToInteger(validation); 
               } else {
-                System.out.println(reportSemanticErr(validation));
+                System.out.println(reportSemanticErr(id.toString(), validation));
                 RESULT = 0;
               }
             :}
@@ -749,10 +803,15 @@ intTerm ::=
                 //System.out.println("ENTRO A PARSABLE");
                 RESULT = convertToInteger(res);
               } else {
-                System.out.println(reportSemanticErr(res));
+                System.out.println(reportSemanticErr(n.toString(), res));
                 RESULT = 0;
               }
             :}
+            |
+            intUnaryExpression:val
+              {:
+                RESULT = val;
+              :}
           ;
 floatMathExpression ::=
           floatMathExpression:op1 ADD floatFactor:op2
@@ -798,6 +857,44 @@ floatTerm ::=
             {: 
               RESULT = convertToFloat(n); 
             :}
+/*          |
+          ID:id
+            {:
+              //RESULT = 99;
+              //System.out.println("ENTRO A ID = " + id);
+              String validation = validateId(id.toString(), "float", "id");
+              //System.out.println("VALIDATION AT FINAL IS: " + validation);
+              if (NumberUtils.isParsable(validation)) {
+                RESULT = convertToFloat(validation); 
+              } else {
+                System.out.println(reportSemanticErr(id.toString(), validation));
+                RESULT = 0;
+              }
+            :}
+            |
+          functionInv:n
+            {: 
+              System.out.println("ENTRO A functionInv = " + n.toString());
+              String res = validateFunc(n.toString(), "float");
+              if (NumberUtils.isParsable(res)) {
+                //System.out.println("ENTRO A PARSABLE");
+                RESULT = convertToInteger(res);
+              } else {
+                System.out.println(reportSemanticErr(n.toString(), res));
+                RESULT = 0;
+              }
+            :}
+            |
+            intUnaryExpression:val
+              {:
+                if(val.getClass().toString().equals("class java.lang.Float")) {
+                  RESULT = val;
+                } else {
+                  System.out.println(reportSemanticErr("", "-e2"));
+                }
+                
+              :}
+*/
           ;
 logRelExpression ::=
           logicalExpression | relationalExpression

@@ -1,5 +1,5 @@
 [ CHAR ] char
-[ FUNC ] fun(
+[ FUNC ] charFunc(
 [ INT ] int
 [ ID 0 ] paramOne - Found in symbol table: 0
 [ COMMA ] ,
@@ -12,74 +12,129 @@
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
-[ RETURN ] return
+[ CHAR ] char
+[ ID 3 ] x - Found in symbol table: 1
+[ EQ ] =
 [ CHARLIT ] 'c'
+[ HASH ] #
+[ RETURN ] return
+[ ID 4 ] x - Found in symbol table: 1
 [ HASH ] #
 [ RCURLY ] }
 [ FLOAT ] float
-[ FUNC ] test(
+[ FUNC ] floatFun(
 [ RPAREN ] )
 [ LCURLY ] {
-[ INT ] int
-[ ID 3 ] y - Found in symbol table: 1
+[ FLOAT ] float
+[ ID 5 ] y - Found in symbol table: 1
 [ EQ ] =
-[ INTLIT ] 5
+[ FLOATLIT ] 5.3
 [ HASH ] #
 [ RETURN ] return
-[ FLOATLIT ] 5.5
+[ ID 6 ] y - Found in symbol table: 1
 [ HASH ] #
 [ RCURLY ] }
 [ INT ] int
-[ FUNC ] func2(
+[ FUNC ] intFunc(
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 4 ] x - Found in symbol table: 1
+[ ID 7 ] x - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
 [ RETURN ] return
-[ ID 5 ] x - Found in symbol table: 1
+[ ID 8 ] x - Found in symbol table: 1
 [ HASH ] #
 [ RCURLY ] }
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
+[ COMMENT ] /* int creation, creation and assignation, assignation */
 [ INT ] int
-[ ID 6 ] m - Found in symbol table: 1
-[ EQ ] =
-[ ID 7 ] z - Found in symbol table: 1
-[ ADD ] +
-[ INTLIT ] 5
+[ ID 9 ] ni_1 - Found in symbol table: 1
 [ HASH ] #
 [ INT ] int
-[ ID 8 ] x - Found in symbol table: 1
-[ HASH ] #
-[ INT ] int
-[ ID 9 ] y - Found in symbol table: 1
+[ ID 10 ] ni_2 - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 12
 [ HASH ] #
 [ INT ] int
-[ ID 10 ] t - Found in symbol table: 1
+[ ID 11 ] ni_3 - Found in symbol table: 1
 [ EQ ] =
-[ INTLIT ] 0
+[ FUNC ] intFunc(
+[ RPAREN ] )
+[ ADD ] +
+[ INTLIT ] 1
+[ HASH ] #
+[ ID 12 ] ni_3 - Found in symbol table: 1
+[ EQ ] =
+[ ID 13 ] ni_2 - Found in symbol table: 1
+[ MULT ] *
+[ INTLIT ] 3
+[ ADD ] +
+[ INTLIT ] 2
 [ HASH ] #
 [ INT ] int
-[ ID 11 ] u - Found in symbol table: 1
+[ ID 14 ] ni_4 - Found in symbol table: 1
 [ EQ ] =
+[ ID 15 ] ni_2 - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
+[ ID 16 ] ni_4 - Found in symbol table: 1
+[ EQ ] =
+[ ID 17 ] ni_4 - Found in symbol table: 1
+[ PSUBS ] --
+[ HASH ] #
+[ COMMENT ] /* char creation, creation and assignation, assignation */
+[ CHAR ] char
+[ ID 18 ] char_1 - Found in symbol table: 1
+[ HASH ] #
+[ CHAR ] char
+[ ID 19 ] char_2 - Found in symbol table: 1
+[ EQ ] =
+[ CHARLIT ] 'z'
+[ HASH ] #
+[ CHAR ] char
+[ ID 20 ] char_3 - Found in symbol table: 1
+[ EQ ] =
+[ FUNC ] charFunc(
+[ RPAREN ] )
+[ HASH ] #
+[ CHAR ] char
+[ ID 21 ] char_4 - Found in symbol table: 1
+[ EQ ] =
+[ ID 22 ] char_2 - Found in symbol table: 1
+[ HASH ] #
+[ CHAR ] char
+[ ID 23 ] f - Found in symbol table: 1
+[ EQ ] =
+[ ID 24 ] y - Found in symbol table: 1
+[ ADD ] +
+SYNTAX ERROR AT LINE 37 COLUMN 14 VALUE: + - 
+[ INTLIT ] 5
+[ HASH ] #
+[ DIV ] /
+[ DIV ] /
+[ ID 25 ] t - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 18
+[ ADD ] +
 [ FUNC ] func2(
 [ RPAREN ] )
 [ HASH ] #
+[ COMMENT ] /* Recognized semantic errors */
 [ INT ] int
-[ ID 12 ] f - Found in symbol table: 1
+[ ID 26 ] m - Found in symbol table: 1
 [ EQ ] =
-[ INTLIT ] 6
-[ MULT ] *
-[ ID 13 ] y - Found in symbol table: 1
+[ ID 27 ] z - Found in symbol table: 1
 [ ADD ] +
 [ INTLIT ] 5
 [ HASH ] #
+[ COMMENT ] /* Unrecognized semantic errors 
+  char char_5 = 5 + func2()# 
+  New creation of already existing variable. Gotta validate!
+  */
 [ RETURN ] return
 [ INTLIT ] 0
 [ HASH ] #
