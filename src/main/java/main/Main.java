@@ -54,7 +54,7 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     //lexicalAnalysis(testFilePackageDir + "test.txt");
-    syntacticAnalysis(testFilePackageDir + "test.txt");
+    syntacticAnalysis(testFilePackageDir + "structures.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {

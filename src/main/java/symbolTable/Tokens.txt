@@ -1,264 +1,109 @@
-[ CHAR ] char
-[ FUNC ] charFunc(
-[ INT ] int
-[ ID 0 ] paramOne - Found in symbol table: 0
-[ COMMA ] ,
-[ CHAR ] char
-[ ID 1 ] paramTwo - Found in symbol table: 0
-[ RPAREN ] )
-[ LCURLY ] {
-[ INT ] int
-[ ID 2 ] c - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 99
-[ HASH ] #
-[ CHAR ] char
-[ ID 3 ] x - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'c'
-[ HASH ] #
-[ RETURN ] return
-[ ID 4 ] x - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
-[ FLOAT ] float
-[ FUNC ] floatFun(
-[ RPAREN ] )
-[ LCURLY ] {
-[ FLOAT ] float
-[ ID 5 ] y - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 5.3
-[ HASH ] #
-[ RETURN ] return
-[ ID 6 ] y - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
-[ INT ] int
-[ FUNC ] intFunc(
-[ RPAREN ] )
-[ LCURLY ] {
-[ INT ] int
-[ ID 7 ] x - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 99
-[ HASH ] #
-[ RETURN ] return
-[ ID 8 ] x - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
-[ COMMENT ] /* int creation, creation and assignation, assignation */
 [ INT ] int
-[ ID 9 ] ni_1 - Found in symbol table: 1
+[ ID 0 ] c - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 0
 [ HASH ] #
 [ INT ] int
-[ ID 10 ] ni_2 - Found in symbol table: 1
+[ ID 1 ] y - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 12
-[ HASH ] #
-[ INT ] int
-[ ID 11 ] ni_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] intFunc(
-[ RPAREN ] )
-[ ADD ] +
-[ INTLIT ] 1
-[ HASH ] #
-[ ID 12 ] ni_1 - Found in symbol table: 1
-[ EQ ] =
-[ ID 13 ] ni_2 - Found in symbol table: 1
 [ MULT ] *
 [ INTLIT ] 3
-[ ADD ] +
-[ INTLIT ] 2
-[ HASH ] #
-[ INT ] int
-[ ID 14 ] ni_4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 15 ] ni_2 - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ ID 16 ] ni_2 - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 24
-[ HASH ] #
-[ COMMENT ] /* float creation, creation and assignation, assignation */
-[ FLOAT ] float
-[ ID 17 ] nf_1 - Found in symbol table: 1
-[ HASH ] #
-[ FLOAT ] float
-[ ID 18 ] nf_2 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 71.5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 19 ] nf_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] floatFun(
-[ RPAREN ] )
-[ ADD ] +
-[ FLOATLIT ] 2.7
-[ MULT ] *
-[ FLOATLIT ] 0.5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 20 ] nf_4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 21 ] nf_3 - Found in symbol table: 1
-[ MULT ] *
-[ FLOATLIT ] 3.0
-[ ADD ] +
-[ FLOATLIT ] 2.1
-[ HASH ] #
-[ ID 22 ] nf_2 - Found in symbol table: 1
-[ EQ ] =
-[ ID 23 ] nf_2 - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ ID 24 ] nf_3 - Found in symbol table: 1
-[ EQ ] =
-[ ID 25 ] nf_3 - Found in symbol table: 1
-[ PSUBS ] --
-[ HASH ] #
-[ ID 26 ] nf_2 - Found in symbol table: 1
-[ EQ ] =
-[ ID 27 ] nf_4 - Found in symbol table: 1
-[ MULT ] *
-[ FLOATLIT ] 2.0
-[ HASH ] #
-[ COMMENT ] /* char creation, creation and assignation, assignation */
-[ CHAR ] char
-[ ID 28 ] char_1 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 29 ] char_2 - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'z'
-[ HASH ] #
-[ CHAR ] char
-[ ID 30 ] char_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] charFunc(
-[ RPAREN ] )
-[ HASH ] #
-[ CHAR ] char
-[ ID 31 ] char_4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 32 ] char_2 - Found in symbol table: 1
-[ HASH ] #
-[ ID 33 ] char_2 - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'v'
-[ HASH ] #
-[ COMMENT ] /* string and bool creation, creation and assignation, assignation */
-[ STRING ] string
-[ ID 34 ] str_1 - Found in symbol table: 1
-[ HASH ] #
-[ STRING ] string
-[ ID 35 ] str_2 - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Esto es un string"
-[ HASH ] #
-[ ID 36 ] str_1 - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Init string"
 [ HASH ] #
 [ BOOL ] boolean
-[ ID 37 ] b_1 - Found in symbol table: 1
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 38 ] b_2 - Found in symbol table: 1
+[ ID 2 ] b_1 - Found in symbol table: 1
 [ EQ ] =
 [ TRUE ] true
 [ HASH ] #
-[ ID 39 ] b_2 - Found in symbol table: 1
+[ BOOL ] boolean
+[ ID 3 ] b_2 - Found in symbol table: 1
 [ EQ ] =
 [ FALSE ] false
 [ HASH ] #
-[ COMMENT ] /* Recognized semantic errors */
-[ INT ] int
-[ ID 40 ] m - Found in symbol table: 1
+[ BOOL ] boolean
+[ ID 4 ] b_3 - Found in symbol table: 1
 [ EQ ] =
-[ ID 41 ] z - Found in symbol table: 1
-[ ADD ] +
---------------- SEMANTIC ERR: NO SUCH VARIABLE z CREATED OR IN SCOPE. ---------------
-[ INTLIT ] 5
+[ TRUE ] true
 [ HASH ] #
---------------- SEMANTIC ERR: UNDECLARED VARIABLE z.---------------
-[ ID 42 ] ni_1 - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'o'
-[ HASH ] #
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE ni_1 DATA TYPE CONFLICT FOR VARIBLE ni_1. ---------------
-[ FLOAT ] float
-[ ID 43 ] nf_5 - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 5
-[ ADD ] +
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE 5 DATA TYPE CONFLICT FOR VARIBLE nf_5. ---------------
-[ INTLIT ] 12
-[ HASH ] #
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE 12 DATA TYPE CONFLICT FOR VARIBLE nf_5. ---------------
-[ FLOAT ] float
-[ ID 44 ] nf_6 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] intFunc(
+[ IF ] if
+[ LPAREN ] (
+[ ID 5 ] b_2 - Found in symbol table: 1
+[ AND ] &&
+[ ID 6 ] b_1 - Found in symbol table: 1
+[ OR ] ||
+[ ID 7 ] b_3 - Found in symbol table: 1
 [ RPAREN ] )
-[ ADD ] +
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE intFunc( DATA TYPE CONFLICT FOR VARIBLE nf_6. ---------------
-[ FLOATLIT ] 3.0
+[ THEN ] then
+[ LCURLY ] {
+[ ID 8 ] c - Found in symbol table: 2
+[ EQ ] =
+[ INTLIT ] 5
+[ HASH ] #
+[ INT ] int
+[ ID 9 ] x - Found in symbol table: 2
+[ EQ ] =
+[ INTLIT ] 9
+[ MULT ] *
+[ INTLIT ] 9
 [ HASH ] #
 [ FLOAT ] float
-[ ID 45 ] nf_7 - Found in symbol table: 1
+[ ID 10 ] f - Found in symbol table: 2
 [ EQ ] =
-[ ID 46 ] ni_2 - Found in symbol table: 1
-[ ADD ] +
---------------- SEMANTIC ERR: NO SUCH VARIABLE ni_2 CREATED OR IN SCOPE. ---------------
+[ FLOATLIT ] 5.5
+[ MULT ] *
 [ FLOATLIT ] 2.0
 [ HASH ] #
-[ INT ] int
-[ ID 47 ] ni_5 - Found in symbol table: 1
+[ RCURLY ] }
+[ ELSE ] else
+[ LCURLY ] {
+[ CHAR ] char
+[ ID 11 ] c_1 - Found in symbol table: 2
 [ EQ ] =
-[ FLOATLIT ] 5.0
+[ CHARLIT ] 'y'
 [ HASH ] #
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE 5.0 DATA TYPE CONFLICT FOR VARIBLE ni_5. ---------------
-[ INT ] int
-[ ID 48 ] ni_6 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] floatFun(
+[ RCURLY ] }
+[ IF ] if
+[ LPAREN ] (
+[ LPAREN ] (
+[ INTLIT ] 10
+[ GTE ] >=
+[ INTLIT ] 10
 [ RPAREN ] )
-[ HASH ] #
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE floatFun( DATA TYPE CONFLICT FOR VARIBLE ni_6. ---------------
+[ AND ] &&
+[ ID 12 ] b_2 - Found in symbol table: 1
+[ RPAREN ] )
+[ THEN ] then
+[ LCURLY ] {
 [ INT ] int
-[ ID 49 ] ni_7 - Found in symbol table: 1
+[ ID 13 ] v - Found in symbol table: 2
 [ EQ ] =
-[ ID 50 ] nf_2 - Found in symbol table: 1
-[ ADD ] +
---------------- SEMANTIC ERR: NO SUCH VARIABLE nf_2 CREATED OR IN SCOPE. ---------------
-[ FLOATLIT ] 3.2
+[ INTLIT ] 5
 [ HASH ] #
---------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE 3.2 DATA TYPE CONFLICT FOR VARIBLE nf_2. ---------------
-[ ID 51 ] undeclared_var_1 - Found in symbol table: 1
+[ RCURLY ] }
+[ ID 14 ] x - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 10
 [ HASH ] #
---------------- SEMANTIC ERR: UNDECLARED VARIABLE undeclared_var_1.---------------
-[ ID 52 ] undeclared_var_2 - Found in symbol table: 1
+--------------- SEMANTIC ERR: NO SUCH VARIABLE x CREATED OR IN SCOPE. ---------------
+[ ID 15 ] f - Found in symbol table: 1
 [ EQ ] =
 [ FLOATLIT ] 5.4
 [ HASH ] #
---------------- SEMANTIC ERR: UNDECLARED VARIABLE undeclared_var_2.---------------
-[ COMMENT ] /* Unrecognized semantic errors 
-  char char_5 = 5 + func2()# 
-  char_2 = intFunc()# Reduce/Reduce conflict
-  nf_2 = intFunc()#
-  New creation of already existing variable. Gotta validate!
-  Assigning to non existant variable. Gotta validate!
-  */
+--------------- SEMANTIC ERR: NO SUCH VARIABLE f CREATED OR IN SCOPE. ---------------
+[ ID 16 ] g - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 5
+[ HASH ] #
+--------------- SEMANTIC ERR: UNDECLARED VARIABLE g.---------------
+[ ID 17 ] t - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 10
+[ HASH ] #
+--------------- SEMANTIC ERR: UNDECLARED VARIABLE t.---------------
 [ RETURN ] return
-[ INTLIT ] 0
+[ ID 18 ] c - Found in symbol table: 1
 [ HASH ] #
 [ RCURLY ] }
