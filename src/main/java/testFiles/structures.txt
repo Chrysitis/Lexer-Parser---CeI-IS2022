@@ -5,14 +5,13 @@ int main() {
   if (5 < 10) then {
     c = 5#
     int x = 9 * 9#
+    float f = 5.5 * 2.0#
   }
 
-  string str_1#
-  string str_2 = "Esto es un string"#
-  str_1 = "Init string"#
-  boolean b_1#
-  boolean b_2 = true#
-  b_2 = false#
   x = 10#
+  f = 5.4#
+  c = 19#
+  g = 5#
+  t = 10#
   return c#
 }

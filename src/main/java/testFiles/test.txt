@@ -43,6 +43,13 @@ int main() {
   char char_4 = char_2#
   char_2 = 'v'#
 
+  /* string and bool creation, creation and assignation, assignation */
+  string str_1#
+  string str_2 = "Esto es un string"#
+  str_1 = "Init string"#
+  boolean b_1#
+  boolean b_2 = true#
+  b_2 = false#
   /* Recognized semantic errors */
   int m = z + 5#
   ni_1 = 'o'#
@@ -53,8 +60,8 @@ int main() {
   int ni_6 = floatFun()#
   int ni_7 = nf_2 + 3.2#
   
-  ni_2 = 5.6#
-  ni_2 = floatFunc()#
+  undeclared_var_1 = 10#
+  undeclared_var_2 = 5.4#
 
   /* Unrecognized semantic errors 
   char char_5 = 5 + func2()# 
