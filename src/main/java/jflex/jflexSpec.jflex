@@ -197,7 +197,7 @@ function = {identifier} "("
     {function}  { 
                   Boolean func = (idType != "");
                   if (func) {
-                    System.out.println("TABLE FOR: " + yytext() + " WITH SCOPE: " + this.scope);
+                    //System.out.println("TABLE FOR: " + yytext() + " WITH SCOPE: " + this.scope);
                     createSymbolTable(false, yytext(), idType);
                     this.isFunction = true; 
                   } 
@@ -213,6 +213,7 @@ function = {identifier} "("
                   saveToken(sym.INT, yytext());
                   idType = "int";
                   this.idTypeExamination = "int";
+                  //System.out.println("TYPE EXAMINED IS: " + idTypeExamination);
                   return symbol(sym.INT, yytext()); 
                 }
     "float"     { 
@@ -347,17 +348,17 @@ function = {identifier} "("
                       if(isFunction) {
                         currentSymbolTable.addFuncParams(idType, yytext());
                         isFunction = false;
-                        System.out.println("AGREGANDO PARAMETRO: " + idType + " " + yytext());
+                        //System.out.println("AGREGANDO PARAMETRO: " + idType + " " + yytext());
                       } else {
                         tokenAttributes.add(idType);
-                        System.out.println("AGREGANDO VARIABLE: " + idType + " " + yytext());
+                        //System.out.println("AGREGANDO VARIABLE: " + idType + " " + yytext());
                         currentSymbolTable.addSymbol(yytext(), tokenAttributes);  
                       }
                       this.idType = "";
                       return symbol(sym.ID, yytext());  
                     } else {
                       if (isReturnVal) {
-                        System.out.println("RETURN VALUE IS: " + yytext()); 
+                        //System.out.println("RETURN VALUE IS: " + yytext()); 
                         currentSymbolTable.setReturnVal(yytext());
                         isReturnVal = false;
                       }

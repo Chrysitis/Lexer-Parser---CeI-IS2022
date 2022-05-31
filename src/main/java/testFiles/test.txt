@@ -23,10 +23,16 @@ int main() {
   int ni_1#
   int ni_2 = 12#
   int ni_3 = intFunc() + 1#
-  ni_3 = ni_2 * 3 + 2#
+  ni_1 = ni_2 * 3 + 2#
   int ni_4 = ni_2++#
-  ni_4 = ni_4--#
 
+  /* float creation, creation and assignation, assignation */
+  float nf_1#
+  float nf_2 = 71.5#
+  float nf_3 = floatFun() + 2.7 * 0.5#
+  float nf_4 = nf_3 * 3.0 + 2.1#
+  nf_2 = nf_2++#
+  nf_3 = nf_3--#
 
   /* char creation, creation and assignation, assignation */
   char char_1#
@@ -34,14 +40,13 @@ int main() {
   char char_3 = charFunc()#
   char char_4 = char_2#
 
-  char f = y + 5#
-  //t = 18 + func2()#
 
   /* Recognized semantic errors */
   int m = z + 5#
 
   /* Unrecognized semantic errors 
   char char_5 = 5 + func2()# 
+  char f = y + 5#
   New creation of already existing variable. Gotta validate!
   */
 
