@@ -31,6 +31,7 @@ import java.util.Map;
   public boolean eqOperator = false;
   public boolean isReturnVal = false;
   public boolean isFunction = false;
+  public String idExamination = "";
   public String idTypeExamination = "";
 
   private Symbol symbol(int type) {
@@ -225,6 +226,7 @@ function = {identifier} "("
     "char"      { 
                   saveToken(sym.CHAR, yytext());
                   idType = "char";
+                  this.idTypeExamination = "char";
                   return symbol(sym.CHAR, yytext()); 
                 }
     "boolean"   { 
@@ -342,6 +344,7 @@ function = {identifier} "("
                   return symbol(sym.CHARLIT, yytext()); }
     {stringLit} { saveToken(sym.STRINGLIT, yytext()); return symbol(sym.STRINGLIT, yytext()); }
     {identifier}  { 
+                    this.idExamination = yytext();
                     saveToken(sym.ID, yytext()); 
                     if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();

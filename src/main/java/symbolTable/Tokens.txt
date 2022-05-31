@@ -1,158 +1,67 @@
-[ CHAR ] char
-[ FUNC ] charFunc(
-[ INT ] int
-[ ID 0 ] paramOne - Found in symbol table: 0
-[ COMMA ] ,
-[ CHAR ] char
-[ ID 1 ] paramTwo - Found in symbol table: 0
-[ RPAREN ] )
-[ LCURLY ] {
-[ INT ] int
-[ ID 2 ] c - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 99
-[ HASH ] #
-[ CHAR ] char
-[ ID 3 ] x - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'c'
-[ HASH ] #
-[ RETURN ] return
-[ ID 4 ] x - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
-[ FLOAT ] float
-[ FUNC ] floatFun(
-[ RPAREN ] )
-[ LCURLY ] {
-[ FLOAT ] float
-[ ID 5 ] y - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 5.3
-[ HASH ] #
-[ RETURN ] return
-[ ID 6 ] y - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
-[ INT ] int
-[ FUNC ] intFunc(
-[ RPAREN ] )
-[ LCURLY ] {
-[ INT ] int
-[ ID 7 ] x - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 99
-[ HASH ] #
-[ RETURN ] return
-[ ID 8 ] x - Found in symbol table: 1
-[ HASH ] #
-[ RCURLY ] }
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
-[ COMMENT ] /* int creation, creation and assignation, assignation */
 [ INT ] int
-[ ID 9 ] ni_1 - Found in symbol table: 1
+[ ID 0 ] c - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 0
 [ HASH ] #
 [ INT ] int
-[ ID 10 ] ni_2 - Found in symbol table: 1
+[ ID 1 ] y - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 12
-[ HASH ] #
-[ INT ] int
-[ ID 11 ] ni_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] intFunc(
-[ RPAREN ] )
-[ ADD ] +
-[ INTLIT ] 1
-[ HASH ] #
-[ ID 12 ] ni_1 - Found in symbol table: 1
-[ EQ ] =
-[ ID 13 ] ni_2 - Found in symbol table: 1
 [ MULT ] *
 [ INTLIT ] 3
-[ ADD ] +
-[ INTLIT ] 2
 [ HASH ] #
-[ INT ] int
-[ ID 14 ] ni_4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 15 ] ni_2 - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ COMMENT ] /* float creation, creation and assignation, assignation */
-[ FLOAT ] float
-[ ID 16 ] nf_1 - Found in symbol table: 1
-[ HASH ] #
-[ FLOAT ] float
-[ ID 17 ] nf_2 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 71.5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 18 ] nf_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] floatFun(
+[ IF ] if
+[ LPAREN ] (
+[ INTLIT ] 5
+[ LT ] <
+[ INTLIT ] 10
 [ RPAREN ] )
-[ ADD ] +
-[ FLOATLIT ] 2.7
-[ MULT ] *
-[ FLOATLIT ] 0.5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 19 ] nf_4 - Found in symbol table: 1
+[ THEN ] then
+[ LCURLY ] {
+[ ID 2 ] c - Found in symbol table: 2
 [ EQ ] =
-[ ID 20 ] nf_3 - Found in symbol table: 1
-[ MULT ] *
-[ FLOATLIT ] 3.0
-[ ADD ] +
-[ FLOATLIT ] 2.1
-[ HASH ] #
-[ ID 21 ] nf_2 - Found in symbol table: 1
-[ EQ ] =
-[ ID 22 ] nf_2 - Found in symbol table: 1
-[ PADD ] ++
-[ HASH ] #
-[ ID 23 ] nf_3 - Found in symbol table: 1
-[ EQ ] =
-[ ID 24 ] nf_3 - Found in symbol table: 1
-[ PSUBS ] --
-[ HASH ] #
-[ COMMENT ] /* char creation, creation and assignation, assignation */
-[ CHAR ] char
-[ ID 25 ] char_1 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 26 ] char_2 - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'z'
-[ HASH ] #
-[ CHAR ] char
-[ ID 27 ] char_3 - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] charFunc(
-[ RPAREN ] )
-[ HASH ] #
-[ CHAR ] char
-[ ID 28 ] char_4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 29 ] char_2 - Found in symbol table: 1
-[ HASH ] #
-[ COMMENT ] /* Recognized semantic errors */
-[ INT ] int
-[ ID 30 ] m - Found in symbol table: 1
-[ EQ ] =
-[ ID 31 ] z - Found in symbol table: 1
-[ ADD ] +
 [ INTLIT ] 5
 [ HASH ] #
-[ COMMENT ] /* Unrecognized semantic errors 
-  char char_5 = 5 + func2()# 
-  char f = y + 5#
-  New creation of already existing variable. Gotta validate!
-  */
+[ INT ] int
+[ ID 3 ] x - Found in symbol table: 2
+[ EQ ] =
+[ INTLIT ] 9
+[ MULT ] *
+[ INTLIT ] 9
+[ HASH ] #
+[ RCURLY ] }
+[ STRING ] string
+[ ID 4 ] str_1 - Found in symbol table: 1
+[ HASH ] #
+[ STRING ] string
+[ ID 5 ] str_2 - Found in symbol table: 1
+[ EQ ] =
+[ STRINGLIT ] "Esto es un string"
+[ HASH ] #
+[ ID 6 ] str_1 - Found in symbol table: 1
+[ EQ ] =
+[ STRINGLIT ] "Init string"
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 7 ] b_1 - Found in symbol table: 1
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 8 ] b_2 - Found in symbol table: 1
+[ EQ ] =
+[ TRUE ] true
+[ HASH ] #
+[ ID 9 ] b_2 - Found in symbol table: 1
+[ EQ ] =
+[ FALSE ] false
+[ HASH ] #
+[ ID 10 ] x - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 10
+[ HASH ] #
 [ RETURN ] return
-[ INTLIT ] 0
+[ ID 11 ] c - Found in symbol table: 1
 [ HASH ] #
 [ RCURLY ] }

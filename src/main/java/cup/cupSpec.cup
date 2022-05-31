@@ -28,7 +28,7 @@ parser code {:
     @Override
     public void syntax_error(Symbol current_token) {
       String errInfo = "SYNTAX ERROR AT LINE " + (current_token.left) + " COLUMN " 
-        + (current_token.right) + " VALUE: " + current_token.value + " - ";
+        + (current_token.right) + " VALUE: " + current_token.value;
       System.out.println(errInfo); 
       reportErrToFile(errInfo);
       this.syntaxErrs += 1;
@@ -198,6 +198,47 @@ parser code {:
     return res;
   }
 
+  public String getIdType(String id) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    String res = "";
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        //System.out.println("CURRENT FUNCTION IS: " + this.currentFunction + "ST FUNCTION IS: " + st.getFuncName());
+        if(st.getTableScope() != 0){
+          if(st.getSymbolTable().containsKey(id)) {
+            res = st.getSymbolTable().get(id).get(0);
+          } else {
+            res = "-e2";
+          }
+          return res;
+        }
+      }
+    }
+    return res;
+  }
+
+  public String getFuncType(String id) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    String res = "";
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      System.out.println("COMPARING: " + id + "ST FUNCTION IS: " + st.getFuncName());
+      if(st.getTableScope() == 0){
+        if(st.getFuncName().equals(id)) {
+          res = st.getSymbolTable().get(id).get(0);
+          } else {
+            res = "-e4";
+          }
+        }
+      } 
+    return res;
+    }
+
   // id means refers to variale id and type refers to either variable or function.
   // dataType refers to the required data type for the id to be valid in any operation.
   // Validates the existance of the given id, the scope and value type.
@@ -274,18 +315,20 @@ public String validateId(String id, String type , String dataType) {
           int currentScope = lexer.scope;
           // Checks for current scope.
           if (st.getTableScope() < currentScope) {
-            //System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
+            System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
             result = true;
           } // Checks if it exists on higher scopes. 
           else if (st.getTableScope() == currentScope) {
-            //System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
+            System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
             result = true;
           } else {
             result = false;
           }
         }
+        result = false;
       }
     }
+    System.out.println("VER SI VARIABLE EXISTE: " + id + " - " + result);
     return result;
   }
 
@@ -299,10 +342,11 @@ public String validateId(String id, String type , String dataType) {
     if(errType.equals("-e1")) {
       err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE " + lexeme + " CREATED OR IN SCOPE. ---------------";
     } else if(errType.equals("-e2")) {
-      err = "--------------- SEMANTIC ERR: FUNCTION OR VARIABLE NAMED" + lexeme + " DATA TYPE CONFLICT. ---------------";
+      err = "--------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE " + lexeme + " DATA TYPE CONFLICT FOR VARIBLE " + lexer.idExamination + ". ---------------";
     } else if(errType.equals("-e4")) {
-      err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION NAMED " + lexeme + " EXISTS. ---------------";
-      }
+      err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION " + lexeme + " EXISTS. ---------------";
+      } 
+    reportErrToFile(err);
     return err;
 }
 
@@ -360,7 +404,7 @@ non terminal    ini;
 non terminal    main, function;
 non terminal Object     functionInv;    
 non terminal    codeBlock;
-non terminal    varAsign;
+non terminal Object     varAsign;
 non terminal    printFunction, readFunction;
 non terminal    expression;
 non terminal    logRelExpression;
@@ -566,7 +610,6 @@ charCreationAssign ::=
           |
           CHAR:dType ID:id EQ functionInv:val
             {:
-              System.out.println("ENTRO A functionInv PARA CHAR = " + val.toString());
               String res = validateFunc(val.toString(), "char");
               if (!res.contains("-e")) {
                 //System.out.println("ENTRO A PARSABLE");
@@ -591,6 +634,32 @@ charCreationAssign ::=
                 RESULT = null;
               }
            :}
+          | /* SOLO ASIGNACION POR ESTA LADO. */
+          ID:id EQ CHARLIT:val
+            {:
+              String idType = getIdType(id.toString());
+              if(idType.equals("char")) {
+              RESULT = Character.valueOf(val.toString().charAt(1));
+              updateCharacterSymbolTable(id, "char", RESULT); 
+              } else {
+                System.out.println(reportSemanticErr(id.toString(),"-e2"));
+              }       
+            :}
+/*
+          |
+          ID:id EQ functionInv:val
+            {:
+              String idType = getIdType(id.toString());
+              String funcType = getIdType(val.toString());
+              if(idType.equals(funcType)) {
+                String res = validateFunc(val.toString(), "char");
+                RESULT = Character.valueOf(res.charAt(1));
+                updateCharacterSymbolTable(id, "char", RESULT); 
+              } else {
+                System.out.println(reportSemanticErr(id.toString(),"-e2"));
+              }       
+            :}
+*/
           ;
 stringCreationAssign ::=
           STRING:dType ID:id 
@@ -607,6 +676,17 @@ stringCreationAssign ::=
               System.out.println("EL ID DE STRING ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateStringSymbolTable(id, dType, RESULT); 
+            :}
+          | 
+          ID:id EQ STRINGLIT:val
+            {:
+              String idType = getIdType(id.toString());
+              if(idType.equals("string")) {
+              RESULT = val;
+              updateStringSymbolTable(id, "string", RESULT.toString()); 
+              } else {
+                System.out.println(reportSemanticErr(id.toString(),"-e2"));
+              }
             :}
           ;
 boolCreationAssign ::=
@@ -628,6 +708,17 @@ boolCreationAssign ::=
             :} 
           | 
           BOOL ID EQ logicalExpression
+          | 
+          ID:id EQ boolLit:val
+            {:
+              String idType = getIdType(id.toString());
+              if(idType.equals("boolean")) {
+              RESULT = val;
+              updateBooleanSymbolTable(id, "boolean", RESULT.toString()); 
+              } else {
+                System.out.println(reportSemanticErr(id.toString(),"-e2"));
+              }
+            :} 
           ;
 varAsign ::=
           intVarAsign
@@ -636,8 +727,8 @@ intVarAsign ::=
           ID:id EQ intMathExpression:val
             {:
               RESULT = val;
-              System.out.println("ENTRO A intVarAsign");
-              System.out.println("EL ID DE INT ES: " + id);
+              //System.out.println("ENTRO A intVarAsign");
+              System.out.println("EL ID ES: " + id);
               System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
               if(lexer.idTypeExamination.equals("int")) {
                 updateIntegerSymbolTable(id, "int", convertToInteger(val.toString()));
@@ -852,50 +943,51 @@ intFactor ::=
 intTerm ::=
           INTLIT:n
             {: 
+              String idType = getIdType(lexer.idExamination);
               if(lexer.idTypeExamination.equals("int")) {
-              //System.out.println("ENTRO A INTLIT = " + n);
-              RESULT = n;
-              //RESULT = convertToInt(n.toString()); 
-              }
+                RESULT = n;
+              } else {
+                  System.out.println(reportSemanticErr(n.toString(), "-e2"));
+                  RESULT = 0;
+                }
             :}
           |
           FLOATLIT:n
             {: 
+              String idType = getIdType(lexer.idExamination);
               if(lexer.idTypeExamination.equals("float")) {
-              //System.out.println("ENTRO A FLOATLIT = " + n);
-              RESULT = n;
-              //RESULT = convertToFloat(n.toString()); 
-              }
+                RESULT = n;
+              } else {
+                  System.out.println(reportSemanticErr(n.toString(), "-e2"));
+                  RESULT = 0;
+                }
             :}
           |
           ID:id
             {:
               //System.out.println("ENTRO A ID = " + id);
               Object val = 0;
-              String res;
-              System.out.println("TYPE ID EXAM IS: " + lexer.idTypeExamination);
-              if(lexer.idTypeExamination.equals("int")) { 
+              String idType = getIdType(lexer.idExamination);
+              String res = "";
+              if(lexer.idTypeExamination.equals("int") && idType.equals("int")) { 
                 res = validateId(id.toString(), "int", "id");
-              } else {
+              } else if(lexer.idTypeExamination.equals("float") && idType.equals("float")) {
                 res = validateId(id.toString(), "float", "id");
-              }
-              System.out.println("VALIDATION AT FINAL IS: " + res);
-              System.out.println("IS VALIDATION PARSABLE: " + NumberUtils.isParsable(res));
+              } else {
+                  res = "-e1";
+                }
               if (NumberUtils.isParsable(res)) {
                 val = res;
                 RESULT = val;
               } else {
                   System.out.println(reportSemanticErr(id.toString(), res));
-                  //val = res;
                   RESULT = 0;
-                //RESULT = 0;
               }
             :}
             |
           functionInv:n
             {: 
               Object val = 0;
-              System.out.println("ENTRO A functionInv = " + n.toString());
               String res;
               if(lexer.idTypeExamination.equals("int")) { 
                 res = validateFunc(n.toString(), "int");
@@ -903,7 +995,6 @@ intTerm ::=
                 res = validateFunc(n.toString(), "float");
               }
               if (NumberUtils.isParsable(res)) {
-                //System.out.println("ENTRO A PARSABLE");
                 val = res;
                 RESULT = val;
               } else {
