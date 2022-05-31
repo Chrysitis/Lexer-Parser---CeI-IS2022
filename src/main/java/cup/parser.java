@@ -686,7 +686,20 @@ public class parser extends java_cup.runtime.lr_parser {
     } 
   }
 
-
+  public boolean checkVarExistance(String id) {
+    ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
+    int limit = sTables.size() - 1;
+    SymbolTable st;
+    for (int i = 0; i <= limit; i++) {
+      st = sTables.get(i);
+      if(st.getFuncName().equals(this.currentFunction)) {
+        if(st.getSymbolTable().containsKey(id)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   // Updates the symbol table entries for type and value for the given id.
   public void updateIntegerSymbolTable(Object id, Object type, Integer val) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
@@ -913,20 +926,19 @@ public String validateId(String id, String type , String dataType) {
           int currentScope = lexer.scope;
           // Checks for current scope.
           if (st.getTableScope() < currentScope) {
-            System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
+            //System.out.println("LA VARIABLE EXISTE EN SCOPE ARRIBA");
             result = true;
           } // Checks if it exists on higher scopes. 
           else if (st.getTableScope() == currentScope) {
-            System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
+            //System.out.println("LA VARIABLE EXISTE EN SCOPE PRESENTE");
             result = true;
           } else {
             result = false;
           }
         }
-        result = false;
       }
     }
-    System.out.println("VER SI VARIABLE EXISTE: " + id + " - " + result);
+    //System.out.println("VER SI VARIABLE EXISTE: " + id + " - " + result);
     return result;
   }
 
@@ -943,6 +955,8 @@ public String validateId(String id, String type , String dataType) {
       err = "--------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE " + lexeme + " DATA TYPE CONFLICT FOR VARIBLE " + lexer.idExamination + ". ---------------";
     } else if(errType.equals("-e4")) {
       err = "--------------- SEMANTIC ERR: NO SUCH FUNCTION " + lexeme + " EXISTS. ---------------";
+      } else if(errType.equals("-e5")) {
+      err = "--------------- SEMANTIC ERR: UNDECLARED VARIABLE " + lexeme + ".---------------";
       } 
     reportErrToFile(err);
     return err;
@@ -1997,8 +2011,8 @@ class CUP$parser$actions {
 		
               RESULT = val;
               //System.out.println("ENTRO A intVarAsign");
-              System.out.println("EL ID ES: " + id);
-              System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID ES: " + id);
+              //System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
               if(lexer.idTypeExamination.equals("int")) {
                 updateIntegerSymbolTable(id, "int", convertToInteger(val.toString()));
               }else if(lexer.idTypeExamination.equals("float")) {
@@ -2472,6 +2486,7 @@ class CUP$parser$actions {
               Float fRes;
               Integer iRes;
               Object val;
+              RESULT = 0;
               //System.out.println("ENTRO A intTerm:t = " + t);
               if(lexer.idTypeExamination.equals("int")) {
                 iRes = convertToInteger(t.toString()); 
@@ -2494,14 +2509,30 @@ class CUP$parser$actions {
 		int nleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 
-              String idType = getIdType(lexer.idExamination);
-              if(lexer.idTypeExamination.equals("int")) {
-                RESULT = n;
+		
+              if(checkVarExistance(lexer.idExamination)) {
+                System.out.println("LA VARIABLE " + lexer.idExamination + " EXISTE");
+                if(validateScope(lexer.idExamination)) {
+                  System.out.println("LA VARIABLE " + lexer.idExamination + " TIENE SCOPE VALIDO");
+                  //System.out.println("DICE QUE SI EXISTE.");
+                  String idType = getIdType(lexer.idExamination);
+                  System.out.println("LA VARIABLE " + lexer.idExamination + " ES DE TIPO " + idType);
+                  if(lexer.idTypeExamination.equals("int")) {
+                    System.out.println("LA VARIABLE " + lexer.idExamination + " ES ENTERA");
+                    RESULT = n;
+                  } else {
+                      System.out.println(reportSemanticErr(n.toString(), "-e2"));
+                      RESULT = 0;
+                    }
+                  } else {
+                    System.out.println(reportSemanticErr(lexer.idExamination, "-e1"));
+                    RESULT = 0;
+                  }
               } else {
-                  System.out.println(reportSemanticErr(n.toString(), "-e2"));
-                  RESULT = 0;
-                }
+                System.out.println(reportSemanticErr(lexer.idExamination, "-e5"));
+                RESULT = 0;
+              }
+
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intTerm",46, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2514,14 +2545,25 @@ class CUP$parser$actions {
 		int nleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 
-              String idType = getIdType(lexer.idExamination);
-              if(lexer.idTypeExamination.equals("float")) {
-                RESULT = n;
-              } else {
-                  System.out.println(reportSemanticErr(n.toString(), "-e2"));
+		
+              if(checkVarExistance(lexer.idExamination)) {
+                if(validateScope(lexer.idExamination)) {
+                  String idType = getIdType(lexer.idExamination);
+                  if(lexer.idTypeExamination.equals("float")) {
+                    RESULT = n;
+                  } else {
+                    System.out.println(reportSemanticErr(n.toString(), "-e2"));
+                    RESULT = 0;
+                    }
+                } else {
+                  System.out.println(reportSemanticErr(lexer.idExamination, "-e1"));
                   RESULT = 0;
+                  }
+              } else {
+                System.out.println(reportSemanticErr(lexer.idExamination, "-e5"));
+                RESULT = 0;
                 }
+
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intTerm",46, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
