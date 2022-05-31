@@ -2,15 +2,24 @@ int main() {
 
   int c = 0#
   int y = 12 * 3#
-  if (5 < 10) then {
+  boolean b_1 = true#
+  boolean b_2 = false#
+  boolean b_3 = true#
+
+  if (b_2 && b_1 || b_3) then {
     c = 5#
     int x = 9 * 9#
     float f = 5.5 * 2.0#
+  } else {
+    char c_1 = 'y'#
   }
+
+  if ((10 >= 10) && b_2) then {
+  int v = 5#
+}
 
   x = 10#
   f = 5.4#
-  c = 19#
   g = 5#
   t = 10#
   return c#

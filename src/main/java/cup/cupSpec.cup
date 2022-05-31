@@ -421,15 +421,18 @@ non terminal    codeBlock;
 non terminal Object     varAsign;
 non terminal    printFunction, readFunction;
 non terminal    expression;
-non terminal    logRelExpression;
+non terminal Object     logRelExpression;
 non terminal Object     unaryExpression;
 non terminal    parameters, parametersInv;
 non terminal    literal;
 non terminal    numLiteral;
 non terminal    lettersLiteral;
-non terminal    logicalExpression, logicalExpr, relationalExpression;
-non terminal    relationalOperand, logicalOperand;
-non terminal    mathOperator, relationalOperator, logicalOperator;
+non terminal Boolean    logicalExpression, logicalExpr;
+non terminal Object     relationalExpression;
+non terminal Boolean    logicalOperand;
+non terminal Object     relationalOperand;
+non terminal    mathOperator, relationalOperator;
+non terminal Object     logicalOperator;
 non terminal    if, while, for, switch, switchBody;
 non terminal    zero;
 non terminal    arrayAccess, arrayValModification;
@@ -959,14 +962,14 @@ intTerm ::=
           INTLIT:n
             {:
               if(checkVarExistance(lexer.idExamination)) {
-                System.out.println("LA VARIABLE " + lexer.idExamination + " EXISTE");
+                //System.out.println("LA VARIABLE " + lexer.idExamination + " EXISTE");
                 if(validateScope(lexer.idExamination)) {
-                  System.out.println("LA VARIABLE " + lexer.idExamination + " TIENE SCOPE VALIDO");
+                  //System.out.println("LA VARIABLE " + lexer.idExamination + " TIENE SCOPE VALIDO");
                   //System.out.println("DICE QUE SI EXISTE.");
                   String idType = getIdType(lexer.idExamination);
-                  System.out.println("LA VARIABLE " + lexer.idExamination + " ES DE TIPO " + idType);
+                  //System.out.println("LA VARIABLE " + lexer.idExamination + " ES DE TIPO " + idType);
                   if(lexer.idTypeExamination.equals("int")) {
-                    System.out.println("LA VARIABLE " + lexer.idExamination + " ES ENTERA");
+                    //System.out.println("LA VARIABLE " + lexer.idExamination + " ES ENTERA");
                     RESULT = n;
                   } else {
                       System.out.println(reportSemanticErr(n.toString(), "-e2"));
@@ -1134,15 +1137,60 @@ logRelExpression ::=
           logicalExpression | relationalExpression
           ;
 relationalExpression ::=
-          relationalOperand relationalOperator relationalOperand
+          relationalOperand:v1 relationalOperator:op relationalExpression:v2
+            {:
+              if(op.toString().equals(">=")) {
+                RESULT = convertToInteger(v1) >= convertToInteger(v2);
+              } else if(op.toString().equals(">")) {
+                RESULT = convertToInteger(v1) > convertToInteger(v2);
+              } else if(op.toString().equals("<")) {
+                RESULT = convertToInteger(v1) < convertToInteger(v2);
+              } else if(op.toString().equals("<=")) {
+                RESULT = convertToInteger(v1) <= convertToInteger(v2);
+              }
+              System.out.println("EL RESULTADO DE RELATIONAL EXPRESSION WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
+            :}
+          |
+          relationalOperand:val
+            {:
+              RESULT = val;
+            :}
           ;
 logicalExpression ::=
-          logicalOperand logicalOperator logicalExpr //HASH
+          logicalOperand:v1 logicalOperator:op logicalExpr:v2
+            {:
+              if(op.toString().equals("&&")) {
+                RESULT = v1 && v2;
+              } else if(op.toString().equals("||")) {
+                RESULT = v1 || v2;
+              } else if(op.toString().equals("==")) {
+                RESULT = v1 == v2;
+              }
+              System.out.println("EL RESULTADO DE LOGICAL EXPRESSION WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
+            :}
+          |
+          logicalOperand:v1 
+            {:
+              RESULT = v1;
+            :}
           ;
 logicalExpr ::=
-          logicalOperand
+          logicalOperand:v1
+            {:
+              RESULT = v1;
+            :}
           |
-          logicalOperand logicalOperator logicalExpr
+          logicalOperand:v1 logicalOperator:op logicalExpr:v2
+            {:
+              if(op.toString().equals("&&")) {
+                RESULT = v1 && v2;
+              } else if(op.toString().equals("||")) {
+                RESULT = v1 || v2;
+              } else if(op.toString().equals("==")) {
+                RESULT = v1 == v2;
+              }
+              System.out.println("EL RESULTADO DE LOGICAL EXPR WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
+            :}
           ;
 // ---------- Operands and operators ----------
 mathOperand ::=
@@ -1158,19 +1206,38 @@ floatMathOperand ::=
           FLOATLIT:val {: RESULT = convertToFloat(val); :}
           ;
 relationalOperand ::=
-          mathOperand | LPAREN mathExpression RPAREN
+          intMathOperand:val {: RESULT = val; :} //| LPAREN mathExpression RPAREN
           ;
 logicalOperand ::=
-          ID | boolLit | functionInv | LPAREN relationalExpression RPAREN
+          ID:id 
+            {:
+              Boolean res = Boolean.parseBoolean(getIdValue(id.toString()));
+              System.out.println("LOGICAL OPERAND IS: " + res );
+              RESULT = res;
+            :}
+          //| boolLit 
+          | LPAREN relationalExpression:val RPAREN {: RESULT = Boolean.parseBoolean(val.toString()); :}
           ;
 mathOperator ::=
           ADD | SUBS | DIV | MULT | EXP | MOD
           ;
 relationalOperator ::=
-          GTE | GT | LTE | LT
+          GTE {: RESULT = (Object) ">="; :} 
+          | 
+          GT {: RESULT = (Object) ">"; :} 
+          | 
+          LTE {: RESULT = (Object) "<="; :} 
+          | 
+          LT {: RESULT = (Object) "<"; :}
           ;
 logicalOperator ::=
-          AND | OR | EQEQ | NOT
+          AND {: RESULT = (Object) "&&"; :} 
+          | 
+          OR {: RESULT = (Object) "||"; :} 
+          | 
+          EQEQ {: RESULT = (Object) "=="; :}
+          | 
+          NOT
           ;
 // ---------- IF THEN ELSE structure ----------
 
