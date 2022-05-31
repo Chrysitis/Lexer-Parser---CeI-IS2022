@@ -67,7 +67,7 @@
 [ ADD ] +
 [ INTLIT ] 1
 [ HASH ] #
-[ ID 12 ] ni_3 - Found in symbol table: 1
+[ ID 12 ] ni_1 - Found in symbol table: 1
 [ EQ ] =
 [ ID 13 ] ni_2 - Found in symbol table: 1
 [ MULT ] *
@@ -81,58 +81,75 @@
 [ ID 15 ] ni_2 - Found in symbol table: 1
 [ PADD ] ++
 [ HASH ] #
-[ ID 16 ] ni_4 - Found in symbol table: 1
+[ COMMENT ] /* float creation, creation and assignation, assignation */
+[ FLOAT ] float
+[ ID 16 ] nf_1 - Found in symbol table: 1
+[ HASH ] #
+[ FLOAT ] float
+[ ID 17 ] nf_2 - Found in symbol table: 1
 [ EQ ] =
-[ ID 17 ] ni_4 - Found in symbol table: 1
+[ FLOATLIT ] 71.5
+[ HASH ] #
+[ FLOAT ] float
+[ ID 18 ] nf_3 - Found in symbol table: 1
+[ EQ ] =
+[ FUNC ] floatFun(
+[ RPAREN ] )
+[ ADD ] +
+[ FLOATLIT ] 2.7
+[ MULT ] *
+[ FLOATLIT ] 0.5
+[ HASH ] #
+[ FLOAT ] float
+[ ID 19 ] nf_4 - Found in symbol table: 1
+[ EQ ] =
+[ ID 20 ] nf_3 - Found in symbol table: 1
+[ MULT ] *
+[ FLOATLIT ] 3.0
+[ ADD ] +
+[ FLOATLIT ] 2.1
+[ HASH ] #
+[ ID 21 ] nf_2 - Found in symbol table: 1
+[ EQ ] =
+[ ID 22 ] nf_2 - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
+[ ID 23 ] nf_3 - Found in symbol table: 1
+[ EQ ] =
+[ ID 24 ] nf_3 - Found in symbol table: 1
 [ PSUBS ] --
 [ HASH ] #
 [ COMMENT ] /* char creation, creation and assignation, assignation */
 [ CHAR ] char
-[ ID 18 ] char_1 - Found in symbol table: 1
+[ ID 25 ] char_1 - Found in symbol table: 1
 [ HASH ] #
 [ CHAR ] char
-[ ID 19 ] char_2 - Found in symbol table: 1
+[ ID 26 ] char_2 - Found in symbol table: 1
 [ EQ ] =
 [ CHARLIT ] 'z'
 [ HASH ] #
 [ CHAR ] char
-[ ID 20 ] char_3 - Found in symbol table: 1
+[ ID 27 ] char_3 - Found in symbol table: 1
 [ EQ ] =
 [ FUNC ] charFunc(
 [ RPAREN ] )
 [ HASH ] #
 [ CHAR ] char
-[ ID 21 ] char_4 - Found in symbol table: 1
+[ ID 28 ] char_4 - Found in symbol table: 1
 [ EQ ] =
-[ ID 22 ] char_2 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 23 ] f - Found in symbol table: 1
-[ EQ ] =
-[ ID 24 ] y - Found in symbol table: 1
-[ ADD ] +
-SYNTAX ERROR AT LINE 37 COLUMN 14 VALUE: + - 
-[ INTLIT ] 5
-[ HASH ] #
-[ DIV ] /
-[ DIV ] /
-[ ID 25 ] t - Found in symbol table: 1
-[ EQ ] =
-[ INTLIT ] 18
-[ ADD ] +
-[ FUNC ] func2(
-[ RPAREN ] )
+[ ID 29 ] char_2 - Found in symbol table: 1
 [ HASH ] #
 [ COMMENT ] /* Recognized semantic errors */
 [ INT ] int
-[ ID 26 ] m - Found in symbol table: 1
+[ ID 30 ] m - Found in symbol table: 1
 [ EQ ] =
-[ ID 27 ] z - Found in symbol table: 1
+[ ID 31 ] z - Found in symbol table: 1
 [ ADD ] +
 [ INTLIT ] 5
 [ HASH ] #
 [ COMMENT ] /* Unrecognized semantic errors 
   char char_5 = 5 + func2()# 
+  char f = y + 5#
   New creation of already existing variable. Gotta validate!
   */
 [ RETURN ] return
