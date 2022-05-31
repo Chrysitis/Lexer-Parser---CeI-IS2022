@@ -25,6 +25,7 @@ int main() {
   int ni_3 = intFunc() + 1#
   ni_1 = ni_2 * 3 + 2#
   int ni_4 = ni_2++#
+  ni_2 = 24#
 
   /* float creation, creation and assignation, assignation */
   float nf_1#
@@ -33,21 +34,34 @@ int main() {
   float nf_4 = nf_3 * 3.0 + 2.1#
   nf_2 = nf_2++#
   nf_3 = nf_3--#
+  nf_2 = nf_4 * 2.0#
 
   /* char creation, creation and assignation, assignation */
   char char_1#
   char char_2 = 'z'#
   char char_3 = charFunc()#
   char char_4 = char_2#
-
+  char_2 = 'v'#
 
   /* Recognized semantic errors */
   int m = z + 5#
+  ni_1 = 'o'#
+  float nf_5 = 5 + 12#
+  float nf_6 = intFunc() + 3.0#
+  float nf_7 = ni_2 + 2.0#
+  int ni_5 = 5.0#
+  int ni_6 = floatFun()#
+  int ni_7 = nf_2 + 3.2#
+  
+  ni_2 = 5.6#
+  ni_2 = floatFunc()#
 
   /* Unrecognized semantic errors 
   char char_5 = 5 + func2()# 
-  char f = y + 5#
+  char_2 = intFunc()# Reduce/Reduce conflict
+  nf_2 = intFunc()#
   New creation of already existing variable. Gotta validate!
+  Assigning to non existant variable. Gotta validate!
   */
 
   return 0#

@@ -456,6 +456,7 @@ public class Lexer implements java_cup.runtime.Scanner {
   public boolean eqOperator = false;
   public boolean isReturnVal = false;
   public boolean isFunction = false;
+  public String idExamination = "";
   public String idTypeExamination = "";
 
   private Symbol symbol(int type) {
@@ -1071,7 +1072,8 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 78: break;
           case 18:
-            { saveToken(sym.ID, yytext()); 
+            { this.idExamination = yytext();
+                    saveToken(sym.ID, yytext()); 
                     if(this.idType != "") {
                       ArrayList<String> tokenAttributes = new ArrayList<>();
                       if(isFunction) {
@@ -1243,6 +1245,7 @@ public class Lexer implements java_cup.runtime.Scanner {
           case 42:
             { saveToken(sym.CHAR, yytext());
                   idType = "char";
+                  this.idTypeExamination = "char";
                   return symbol(sym.CHAR, yytext());
             }
             // fall through

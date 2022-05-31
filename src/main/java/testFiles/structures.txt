@@ -1,0 +1,18 @@
+int main() {
+
+  int c = 0#
+  int y = 12 * 3#
+  if (5 < 10) then {
+    c = 5#
+    int x = 9 * 9#
+  }
+
+  string str_1#
+  string str_2 = "Esto es un string"#
+  str_1 = "Init string"#
+  boolean b_1#
+  boolean b_2 = true#
+  b_2 = false#
+  x = 10#
+  return c#
+}
