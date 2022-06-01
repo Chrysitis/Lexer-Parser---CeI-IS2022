@@ -1,0 +1,47 @@
+func charFunc( begin
+
+	dataInt c = 99
+	dataChar x = 'c'
+
+	return x
+
+func charFunc( end
+
+func floatFun( begin
+
+	dataFloat y = 5.3
+
+	return y
+
+func floatFun( end
+
+func intFunc( begin
+
+	dataInt x = 99
+
+	return x
+
+func intFunc( end
+
+func main() begin
+	dataInt ni_1
+	dataInt ni_2 = 12
+	CALL TO intFunc(
+	dataInt ni_3 = 100
+	dataInt ni_4 = 13
+	dataFloat nf_1
+	dataFloat nf_2 = 71.5
+	CALL TO floatFun(
+	dataFloat nf_3 = 6.65
+	dataFloat nf_4 = 22.050001
+	dataChar char_1
+	dataChar char_2 = 'z'
+	CALL TO charFunc(
+	dataChar char_3 = CALL charFunc(
+	dataChar char_4 = char_2
+	id  = 'v'
+	dataString str_1
+	dataString str_2 = "Esto es un string"
+	id  = "Init string"
+	dataBoolean b_1
+	dataBoolean b_2 = true

@@ -24,6 +24,8 @@ parser code {:
     public SymbolTable currentSymbolTable = null;
     public String currentFunction;
     public Lexer lexer;
+    public String register = "t";
+    public int registerCount = 0;
 
     @Override
     public void syntax_error(Symbol current_token) {
@@ -36,6 +38,11 @@ parser code {:
 
     private void reportErrToFile(String info){
       FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
+      fileManager.writeToFile(info);
+    }
+
+    private void generateICode(String info){
+      FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/iCode.txt");
       fileManager.writeToFile(info);
     }
 
@@ -193,7 +200,7 @@ parser code {:
     this.currentFunction = name.toString();
   }
 
-  public String getIdValue(String id) {
+    public String getIdValue(String id) {
     ArrayList<SymbolTable> sTables = this.stManager.getSymbolTables();
     int limit = sTables.size() - 1;
     SymbolTable st;
@@ -473,35 +480,45 @@ ini ::=
 main ::= 
           INT MAIN:name 
             {: 
-              updateCurrentFunction(name); 
+              updateCurrentFunction(name);
+              generateICode("func " + name + " begin");
               //System.out.println("CURRENT FUNC IS: " + currentFunction); 
             :} 
-          LCURLY codeBlock RCURLY
+          LCURLY codeBlock {:generateICode("func" + name + " end\n");:} RCURLY
           ;
 return ::=
-          RETURN ID | RETURN INTLIT | RETURN FLOATLIT | RETURN CHARLIT | RETURN STRING
+          RETURN ID:id 
+            {:
+              generateICode("\n\treturn " + id.toString());
+            :}
+          | RETURN INTLIT:val 
+            {:
+              generateICode("\n\treturnVal " + val.toString());
+            :}
+          | RETURN FLOATLIT | RETURN CHARLIT | RETURN STRING
           ;
 // ---------- Other functions ----------
 /* These include functions with parameters and no parameters. 
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC:name {: updateCurrentFunction(name);:} RPAREN LCURLY codeBlock RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name);:} RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name);:} RPAREN LCURLY codeBlock RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
           |
-          INT FUNC:name {: updateCurrentFunction(name);:} parameters RPAREN LCURLY codeBlock RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name);:} parameters RPAREN LCURLY codeBlock RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name);:} parameters RPAREN LCURLY codeBlock RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock RCURLY
           ;
 functionInv ::=
           FUNC:name RPAREN 
             {:
               RESULT = name;
+              generateICode("\tCALL TO " + name.toString());
             :}
           |
           FUNC parametersInv RPAREN
@@ -570,6 +587,7 @@ intCreationAssign ::=
               //System.out.println("EL ID DE INT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateIntegerSymbolTable(id, dType, null);
+              generateICode("\tdataInt " + id);
             :} 
           | 
           INT:dType ID:id EQ intMathExpression:val
@@ -583,6 +601,7 @@ intCreationAssign ::=
               } else {
               System.out.println("*** SEMANTIC ERR *** ID: " + id + " ES INT ES Y ASIGNO FLOAT.");
               }
+              generateICode("\tdataInt " + id + " = " + val.toString());
             :}
           | 
           INT:dType ID:id EQ floatMathExpression:val
@@ -598,6 +617,8 @@ floatCreationAssign ::=
               System.out.println("EL ID DE FLOAT ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateFloatSymbolTable(id, dType, null);
+              generateICode("\tdataFloat " + id);
+
             :}
           |
           FLOAT:dType ID:id EQ intMathExpression:val
@@ -606,6 +627,7 @@ floatCreationAssign ::=
               //System.out.println("EL ID DE FLOAT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateFloatSymbolTable(id, dType, convertToFloat(RESULT));
+              generateICode("\tdataFloat " + id + " = " + val.toString());
             :}
           ;
 charCreationAssign ::=
@@ -615,6 +637,7 @@ charCreationAssign ::=
               System.out.println("EL ID DE CHARLIT ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT);
+              generateICode("\tdataChar " + id);
             :}
           |
           CHAR:dType ID:id EQ CHARLIT:val
@@ -623,6 +646,7 @@ charCreationAssign ::=
               System.out.println("EL ID DE CHARLIT ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT); 
+              generateICode("\tdataChar " + id + " = " + val.toString());
             :}
           |
           CHAR:dType ID:id EQ functionInv:val
@@ -636,6 +660,7 @@ charCreationAssign ::=
                 System.out.println(reportSemanticErr(val.toString(), res));
                 RESULT = null;
               }
+              generateICode("\tdataChar " + id + " = " + "CALL " + val);
            :}
            |
           CHAR:dType ID:id EQ ID:val
@@ -650,6 +675,7 @@ charCreationAssign ::=
                 System.out.println(reportSemanticErr(val.toString(), res));
                 RESULT = null;
               }
+              generateICode("\tdataChar " + id + " = " + val);
            :}
           | /* SOLO ASIGNACION POR ESTA LADO. */
           ID:id EQ CHARLIT:val
@@ -660,7 +686,8 @@ charCreationAssign ::=
               updateCharacterSymbolTable(id, "char", RESULT); 
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
-              }       
+              }
+              generateICode("\tid " + " = " + val);       
             :}
 /*
           |
@@ -685,6 +712,7 @@ stringCreationAssign ::=
               System.out.println("EL ID DE STRING ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateStringSymbolTable(id, dType, RESULT); 
+              generateICode("\tdataString " + id );
             :}
           | 
           STRING:dType ID:id EQ STRINGLIT:val
@@ -693,6 +721,7 @@ stringCreationAssign ::=
               System.out.println("EL ID DE STRING ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateStringSymbolTable(id, dType, RESULT); 
+              generateICode("\tdataString " + id + " = " + val);
             :}
           | 
           ID:id EQ STRINGLIT:val
@@ -704,6 +733,7 @@ stringCreationAssign ::=
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
+              generateICode("\tid " + " = " + val);
             :}
           ;
 boolCreationAssign ::=
@@ -714,6 +744,8 @@ boolCreationAssign ::=
               System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               //updateBooleanSymbolTable(id, dType, null.toString());
               updateBooleanSymbolTable(id, dType, "null"); 
+              generateICode("\tdataBoolean " + id);
+
             :} 
           | 
           BOOL:dType ID:id EQ boolLit:val
@@ -722,6 +754,7 @@ boolCreationAssign ::=
               System.out.println("EL ID DE BOOL ES: " + id);
               System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateBooleanSymbolTable(id, dType, RESULT.toString()); 
+              generateICode("\tdataBoolean " + id + " = " + val);
             :} 
           | 
           BOOL ID EQ logicalExpression
@@ -735,6 +768,7 @@ boolCreationAssign ::=
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
+              generateICode("\tid " + " = " + val);
             :} 
           ;
 varAsign ::=
@@ -1200,15 +1234,17 @@ mathOperand ::=
           floatMathOperand:val {: RESULT = val; :}
           ;
 intMathOperand ::=
-          INTLIT:val {: RESULT = convertToInteger(val); :} //| arrayAccess  
+          INTLIT:val {: RESULT = convertToInteger(val); :} //| arrayAccess 
           ;
 floatMathOperand ::=
           FLOATLIT:val {: RESULT = convertToFloat(val); :}
           ;
 relationalOperand ::=
-          intMathOperand:val {: RESULT = val; :} //| LPAREN mathExpression RPAREN
+          intMathOperand:val {: RESULT = val; :} 
+//| LPAREN mathExpression RPAREN
           ;
 logicalOperand ::=
+          // ***** Hay que validar que el ID exista, este en scope y no sea null. *****
           ID:id 
             {:
               Boolean res = Boolean.parseBoolean(getIdValue(id.toString()));
