@@ -1,47 +1,35 @@
-func charFunc( begin
-
-	dataInt c = 99
-	dataChar x = 'c'
-
-	return x
-
-func charFunc( end
-
-func floatFun( begin
-
-	dataFloat y = 5.3
-
-	return y
-
-func floatFun( end
-
-func intFunc( begin
-
-	dataInt x = 99
-
-	return x
-
-func intFunc( end
-
 func main() begin
-	dataInt ni_1
-	dataInt ni_2 = 12
-	CALL TO intFunc(
-	dataInt ni_3 = 100
-	dataInt ni_4 = 13
-	dataFloat nf_1
-	dataFloat nf_2 = 71.5
-	CALL TO floatFun(
-	dataFloat nf_3 = 6.65
-	dataFloat nf_4 = 22.050001
-	dataChar char_1
-	dataChar char_2 = 'z'
-	CALL TO charFunc(
-	dataChar char_3 = CALL charFunc(
-	dataChar char_4 = char_2
-	id  = 'v'
-	dataString str_1
-	dataString str_2 = "Esto es un string"
-	id  = "Init string"
-	dataBoolean b_1
-	dataBoolean b_2 = true
+
+	dataBoolean boolOne
+	dataInt int_1
+	dataFloat float1
+	dataChar charA
+	dataString strOne
+	dataString strTwo = "Esto es un string"
+	dataString strOne = "Ahora tiene valor"
+	dataBoolean boolOne = true
+	dataBoolean boolTwo = false
+	dataBoolean boo1Three = true
+	dataChar charB = 'x'
+	t0 =  CALL TO charFunc(
+	dataChar charC = t0
+	t1 = 5
+	dataInt int_2 = t1
+	t2 = 5.5
+	dataInt float2 = t2
+	t3 = 5
+	t4 = 2
+	t5 = t3 - t4
+	t6 = 3
+	t7 = t5 + t6
+	t8 = 4
+	t9 = 4
+	t10 = t8 * t9
+	t11 = 2
+	t12 = t10 / t11
+	t13 = t7 + t12
+	dataInt int_3 = t13
+	t14 = 3.5
+	t15 = 6.5
+	t16 = t14 + t15
+	dataInt float3 = t16

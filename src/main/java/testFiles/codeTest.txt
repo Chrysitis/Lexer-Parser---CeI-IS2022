@@ -3,23 +3,28 @@ int main(){
   boolean boolOne#
   int int_1#
   float float1#
-  char a#
+  char charA#
   string strOne#
 
   string strTwo = "Esto es un string"#
+  strOne = "Ahora tiene valor"#
+  boolOne = true#
   boolean boolTwo = false#
   boolean boo1Three = true#
+  char charB = 'x'#
+  char charC = charFunc()#
   int int_2 = 5#
   float float2 = 5.5#
-  char b = 'x'#
-
-  int var = int_2#
-  int_2 = x#
-
+  
   int int_3 = 5 - 2 + 3 + 4 * 4 / 2#
   float float3 = 3.5 + 6.5#
 
-  int int_4 = 10.3#
+  int int_4 = int_1#
+  int_2 = int_1#
+
+  /* int var = int_2# 
+  int_2 = x# 
+  int int_4 = 10.3# */
 
   return 0#
 }
