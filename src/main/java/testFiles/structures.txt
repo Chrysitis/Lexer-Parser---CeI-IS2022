@@ -1,12 +1,12 @@
 int main() {
 
   int c = 0#
-  int y = 12 * 3#
+  int y = 12 * 3.3#
   boolean b_1 = true#
   boolean b_2 = false#
   boolean b_3 = true#
 
-  if (b_2 && b_1 || b_3) then {
+  if (c && b_1 || b_3) then {
     c = 5#
     int x = 9 * 9#
     float f = 5.5 * 2.0#
@@ -14,9 +14,15 @@ int main() {
     char c_1 = 'y'#
   }
 
-  if ((10 >= 10) && b_2) then {
+  if ((c >= 10) && b_2) then {
   int v = 5#
 }
+  
+  while (b_1 || b_2) {
+
+    c = b_1++#
+  }
+
 
   x = 10#
   f = 5.4#

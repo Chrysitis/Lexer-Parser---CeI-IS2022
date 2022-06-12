@@ -55,7 +55,7 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     //lexicalAnalysis(testFilePackageDir + "test.txt");
-    syntacticAnalysis(testFilePackageDir + "test.txt");
+    syntacticAnalysis(testFilePackageDir + "codeTest.txt");
   }
 
   private static void lexicalAnalysis(String file)throws IOException {
@@ -115,7 +115,7 @@ public class Main {
       Lexer lexer = new Lexer(br);
       parser codeParser = new parser(0, lexer, lexer.getSymbolTableManager(), lexer);
       codeParser.initParser(lexer);
-      codeParser.printSymbolTable();
+      //codeParser.printSymbolTable();
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
       System.out.println("FIRST EX");

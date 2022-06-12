@@ -7,6 +7,8 @@ import java.util.Map;
 import symbolTable.*;
 import java.util.ArrayList;
 import org.apache.commons.lang3.math.NumberUtils;
+import codeGenerator.TDCGenerator;
+import java.util.Stack;
 
 /* Parser code to change the way the parser reports errors (include
   line and column number of the error). */
@@ -24,8 +26,9 @@ parser code {:
     public SymbolTable currentSymbolTable = null;
     public String currentFunction;
     public Lexer lexer;
-    public String register = "t";
-    public int registerCount = 0;
+    public String currentTemp = "t0";
+    public int currentTempCount = 0;
+    public Stack<String> mathExprTempsStack = new Stack<>();
 
     @Override
     public void syntax_error(Symbol current_token) {
@@ -355,10 +358,12 @@ public String validateId(String id, String type , String dataType) {
   // -e1 means no such id or no such id in the current scope.
   // -e2 means type conflict.
   // -e3 means id has null value.
-  // -e4 means no such function.
-  public String reportSemanticErr(String lexeme, String errType) {
+  // -e4 means no such function. 
+ public String reportSemanticErr(String lexeme, String errType) {
     String err = "";
-    if(errType.equals("-e1")) {
+    if(errType == null) {
+      err = "--------------- UNKNOW ERR FOR " + lexeme + ". ---------------";
+    } else if(errType.equals("-e1")) {
       err = "--------------- SEMANTIC ERR: NO SUCH VARIABLE " + lexeme + " CREATED OR IN SCOPE. ---------------";
     } else if(errType.equals("-e2")) {
       err = "--------------- SEMANTIC ERR: OPERAND, FUNCTION OR VARIABLE " + lexeme + " DATA TYPE CONFLICT FOR VARIBLE " + lexer.idExamination + ". ---------------";
@@ -481,19 +486,19 @@ main ::=
           INT MAIN:name 
             {: 
               updateCurrentFunction(name);
-              generateICode("func " + name + " begin");
+              TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null);
               //System.out.println("CURRENT FUNC IS: " + currentFunction); 
             :} 
-          LCURLY codeBlock {:generateICode("func" + name + " end\n");:} RCURLY
+          LCURLY codeBlock {: TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           ;
 return ::=
           RETURN ID:id 
             {:
-              generateICode("\n\treturn " + id.toString());
+              TDCGenerator.codeGenerator("RETURN", id.toString(), null, null, null);
             :}
           | RETURN INTLIT:val 
             {:
-              generateICode("\n\treturnVal " + val.toString());
+              TDCGenerator.codeGenerator("RETURN", val.toString(), null, null, null);
             :}
           | RETURN FLOATLIT | RETURN CHARLIT | RETURN STRING
           ;
@@ -502,23 +507,24 @@ return ::=
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          INT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock {:generateICode("\nfunc " + name + " end\n");:} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); generateICode("func " + name + " begin\n"); :} parameters RPAREN LCURLY codeBlock RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           ;
 functionInv ::=
           FUNC:name RPAREN 
             {:
               RESULT = name;
-              generateICode("\tCALL TO " + name.toString());
+              //String temp = TDCGenerator.newTemporal();
+              //TDCGenerator.codeGenerator("CALL", null, name.toString(), null, null);
             :}
           |
           FUNC parametersInv RPAREN
@@ -587,7 +593,7 @@ intCreationAssign ::=
               //System.out.println("EL ID DE INT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateIntegerSymbolTable(id, dType, null);
-              generateICode("\tdataInt " + id);
+              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataInt");
             :} 
           | 
           INT:dType ID:id EQ intMathExpression:val
@@ -601,7 +607,10 @@ intCreationAssign ::=
               } else {
               System.out.println("*** SEMANTIC ERR *** ID: " + id + " ES INT ES Y ASIGNO FLOAT.");
               }
-              generateICode("\tdataInt " + id + " = " + val.toString());
+              //generateICode("\tdataInt " + id + " = " + val.toString());
+              //String temp = TDCGenerator.newTemporal();
+              //String tempFunc = TDCGenerator.codeGenerator("CALL", temp, val.toString(), null, null);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), mathExprTempsStack.pop(), null, "dataInt");
             :}
           | 
           INT:dType ID:id EQ floatMathExpression:val
@@ -614,10 +623,10 @@ floatCreationAssign ::=
           FLOAT:dType ID:id
             {:
               RESULT = null;
-              System.out.println("EL ID DE FLOAT ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID DE FLOAT ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateFloatSymbolTable(id, dType, null);
-              generateICode("\tdataFloat " + id);
+              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataFloat");
 
             :}
           |
@@ -627,26 +636,28 @@ floatCreationAssign ::=
               //System.out.println("EL ID DE FLOAT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateFloatSymbolTable(id, dType, convertToFloat(RESULT));
-              generateICode("\tdataFloat " + id + " = " + val.toString());
+              //generateICode("\tdataFloat " + id + " = " + val.toString());
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), mathExprTempsStack.pop(), null, "dataInt");
             :}
           ;
 charCreationAssign ::=
           CHAR:dType ID:id
             {:
               RESULT = null;
-              System.out.println("EL ID DE CHARLIT ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID DE CHARLIT ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT);
-              generateICode("\tdataChar " + id);
+              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataChar");
             :}
           |
           CHAR:dType ID:id EQ CHARLIT:val
             {:
               RESULT = Character.valueOf(val.toString().charAt(1));
-              System.out.println("EL ID DE CHARLIT ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID DE CHARLIT ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT); 
-              generateICode("\tdataChar " + id + " = " + val.toString());
+              //generateICode("\tdataChar " + id + " = " + val.toString());
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataChar");
             :}
           |
           CHAR:dType ID:id EQ functionInv:val
@@ -660,12 +671,15 @@ charCreationAssign ::=
                 System.out.println(reportSemanticErr(val.toString(), res));
                 RESULT = null;
               }
-              generateICode("\tdataChar " + id + " = " + "CALL " + val);
+              //generateICode("\tdataChar " + id + " = " + "CALL " + val);
+              String tempFunc = TDCGenerator.codeGenerator("CALL", currentTemp, val.toString(), null, null);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
            :}
            |
           CHAR:dType ID:id EQ ID:val
             {:
-              System.out.println("ENTRO A functionInv PARA CHAR = " + val.toString());
+              //System.out.println("ENTRO A functionInv PARA CHAR = " + val.toString());
               String res = validateId(val.toString(), "char", "id");
               if (!res.contains("-e")) {
                 //System.out.println("ENTRO A PARSABLE");
@@ -675,7 +689,8 @@ charCreationAssign ::=
                 System.out.println(reportSemanticErr(val.toString(), res));
                 RESULT = null;
               }
-              generateICode("\tdataChar " + id + " = " + val);
+              //generateICode("\tdataChar " + id + " = " + val);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);
            :}
           | /* SOLO ASIGNACION POR ESTA LADO. */
           ID:id EQ CHARLIT:val
@@ -687,7 +702,8 @@ charCreationAssign ::=
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
-              generateICode("\tid " + " = " + val);       
+              //generateICode("\tid " + " = " + val); 
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);      
             :}
 /*
           |
@@ -709,19 +725,20 @@ stringCreationAssign ::=
           STRING:dType ID:id 
             {:
               RESULT = null;
-              System.out.println("EL ID DE STRING ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID DE STRING ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateStringSymbolTable(id, dType, RESULT); 
-              generateICode("\tdataString " + id );
+              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataString");
             :}
           | 
           STRING:dType ID:id EQ STRINGLIT:val
             {:
               RESULT = val;
-              System.out.println("EL ID DE STRING ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              //System.out.println("EL ID DE STRING ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateStringSymbolTable(id, dType, RESULT); 
-              generateICode("\tdataString " + id + " = " + val);
+              //generateICode("\tdataString " + id + " = " + val);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataString");
             :}
           | 
           ID:id EQ STRINGLIT:val
@@ -733,28 +750,29 @@ stringCreationAssign ::=
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
-              generateICode("\tid " + " = " + val);
+              //generateICode("\tid " + " = " + val);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataString");
             :}
           ;
 boolCreationAssign ::=
           BOOL:dType ID:id 
             {:
               RESULT = null;
-              System.out.println("EL ID DE BOOL ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
+              //System.out.println("EL ID DE BOOL ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               //updateBooleanSymbolTable(id, dType, null.toString());
               updateBooleanSymbolTable(id, dType, "null"); 
-              generateICode("\tdataBoolean " + id);
-
+              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataBoolean");
             :} 
           | 
           BOOL:dType ID:id EQ boolLit:val
             {:
               RESULT = val;
-              System.out.println("EL ID DE BOOL ES: " + id);
-              System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
+              //System.out.println("EL ID DE BOOL ES: " + id);
+              //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateBooleanSymbolTable(id, dType, RESULT.toString()); 
-              generateICode("\tdataBoolean " + id + " = " + val);
+              //generateICode("\tdataBoolean " + id + " = " + val);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataBoolean");
             :} 
           | 
           BOOL ID EQ logicalExpression
@@ -768,7 +786,9 @@ boolCreationAssign ::=
               } else {
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
-              generateICode("\tid " + " = " + val);
+              //generateICode("\tid " + " = " + val);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataBoolean");
+
             :} 
           ;
 varAsign ::=
@@ -918,6 +938,10 @@ intMathExpression ::=
               } else if(lexer.idTypeExamination.equals("float")) {
                 RESULT = convertToFloat(op1) + convertToFloat(op2);
               }
+              String arg2 = mathExprTempsStack.pop();
+              TDCGenerator.codeGenerator("ADD", currentTemp, mathExprTempsStack.pop(), arg2, "");
+              mathExprTempsStack.push(currentTemp);
+              currentTemp = TDCGenerator.newTemporal();
             :}
           |
           intMathExpression:op1 SUBS intFactor:op2
@@ -927,6 +951,10 @@ intMathExpression ::=
               } else if(lexer.idTypeExamination.equals("float")) {
                 RESULT = convertToFloat(op1) - convertToFloat(op2);
               }
+              String arg2 = mathExprTempsStack.pop();
+              TDCGenerator.codeGenerator("SUBS", currentTemp, mathExprTempsStack.pop(), arg2, "");
+              mathExprTempsStack.push(currentTemp);
+              currentTemp = TDCGenerator.newTemporal();
             :}
           |
           intFactor:val
@@ -955,6 +983,10 @@ intFactor ::=
                 val = fRes;
                 RESULT = val;
               }
+              String op2 = mathExprTempsStack.pop();
+              TDCGenerator.codeGenerator("MULT", currentTemp, mathExprTempsStack.pop(), op2, "");
+              mathExprTempsStack.push(currentTemp);
+              currentTemp = TDCGenerator.newTemporal();
             :}
           |
           intFactor:f DIV intTerm:t
@@ -972,6 +1004,10 @@ intFactor ::=
                 val = fRes;
                 RESULT = val;
               }
+              String op2 = mathExprTempsStack.pop();
+              TDCGenerator.codeGenerator("DIV", currentTemp, mathExprTempsStack.pop(), op2, "");
+              mathExprTempsStack.push(currentTemp);
+              currentTemp = TDCGenerator.newTemporal();
             :}
           |
           intTerm:t
@@ -1005,6 +1041,9 @@ intTerm ::=
                   if(lexer.idTypeExamination.equals("int")) {
                     //System.out.println("LA VARIABLE " + lexer.idExamination + " ES ENTERA");
                     RESULT = n;
+                    TDCGenerator.codeGenerator("ASSIGN", currentTemp, n.toString(), null, null);
+                    mathExprTempsStack.push(currentTemp);
+                    currentTemp = TDCGenerator.newTemporal();                    
                   } else {
                       System.out.println(reportSemanticErr(n.toString(), "-e2"));
                       RESULT = 0;
@@ -1027,6 +1066,9 @@ intTerm ::=
                   String idType = getIdType(lexer.idExamination);
                   if(lexer.idTypeExamination.equals("float")) {
                     RESULT = n;
+                    TDCGenerator.codeGenerator("ASSIGN", currentTemp, n.toString(), null, null);
+                    mathExprTempsStack.push(currentTemp);
+                    currentTemp = TDCGenerator.newTemporal(); 
                   } else {
                     System.out.println(reportSemanticErr(n.toString(), "-e2"));
                     RESULT = 0;
@@ -1076,6 +1118,8 @@ intTerm ::=
               if (NumberUtils.isParsable(res)) {
                 val = res;
                 RESULT = val;
+                String tempFunc = TDCGenerator.codeGenerator("CALL", currentTemp, n.toString(), "", "");
+                currentTemp = TDCGenerator.newTemporal();
               } else {
                 System.out.println(reportSemanticErr(n.toString(), res));
                 RESULT = val;
@@ -1085,6 +1129,8 @@ intTerm ::=
             intUnaryExpression:val
               {:
                 RESULT = val;
+                  TDCGenerator.codeGenerator("UEXP", currentTemp, val.toString(), "", "");
+                  currentTemp = TDCGenerator.newTemporal();
               :}
           ;
 /*
