@@ -1,35 +1,50 @@
 func main() begin
 
-	dataBoolean boolOne
-	dataInt int_1
-	dataFloat float1
-	dataChar charA
+	dataBoolean boolOne = t0
+	t1 = 5
+	dataInt int_1 = t1
+	dataChar float1 = t3
+	dataChar charA = t4
 	dataString strOne
 	dataString strTwo = "Esto es un string"
 	dataString strOne = "Ahora tiene valor"
-	dataBoolean boolOne = true
-	dataBoolean boolTwo = false
-	dataBoolean boo1Three = true
-	dataChar charB = 'x'
-	t0 =  CALL TO charFunc(
-	dataChar charC = t0
-	t1 = 5
-	dataInt int_2 = t1
-	t2 = 5.5
-	dataInt float2 = t2
-	t3 = 5
-	t4 = 2
-	t5 = t3 - t4
-	t6 = 3
-	t7 = t5 + t6
-	t8 = 4
-	t9 = 4
-	t10 = t8 * t9
-	t11 = 2
-	t12 = t10 / t11
-	t13 = t7 + t12
-	dataInt int_3 = t13
-	t14 = 3.5
-	t15 = 6.5
-	t16 = t14 + t15
-	dataInt float3 = t16
+	t5 = true
+	boolOne = t5
+	t7 = false
+	dataBoolean boolTwo = t7
+	t9 = true
+	dataBoolean boo1Three = t9
+	t11 = 'x'
+	dataChar charB = t11
+	t13 =  CALL TO charFunc(
+	dataChar charC = t13
+	t14 = 5
+	dataInt int_2 = t14
+	t16 = 5.5
+	dataInt float2 = t16
+	t18 = 5
+	t19 = 2
+	t20 = t18 - t19
+	t21 = 3
+	t22 = t20 + t21
+	t23 = 4
+	t24 = 4
+	t25 = t23 * t24
+	t26 = 2
+	t27 = t25 / t26
+	t28 = t22 + t27
+	dataInt int_3 = t28
+	t30 = 3.5
+	t31 = 6.5
+	t32 = t30 + t31
+	dataInt float3 = t32
+	t34 = t14 * t28
+	t35 = t1 + t34
+	dataInt int_4 = t35
+	dataChar charD = t11
+	t38 = 5.5
+	t39 = t32 + t38
+	dataInt float4 = t39
+	int_2 = 0.0
+
+func main() end
