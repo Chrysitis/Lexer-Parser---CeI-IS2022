@@ -575,6 +575,10 @@ public class parser extends java_cup.runtime.lr_parser {
     public String currentTemp = "t0";
     public int currentTempCount = 0;
     public Stack<String> mathExprTempsStack = new Stack<>();
+    public ArrayList<String> ids = new ArrayList<>();
+    public ArrayList<String> idsTemps = new ArrayList<>();
+
+
 
     @Override
     public void syntax_error(Symbol current_token) {
@@ -585,6 +589,39 @@ public class parser extends java_cup.runtime.lr_parser {
       this.syntaxErrs += 1;
     }    
 
+    public void printArrays() {
+      int i = 0;
+      int arraySize = ids.size();
+      while(i < ids.size()) { 
+        System.out.println("ID: " + ids.get(i) + " TEMP: " + idsTemps.get(i));
+        System.out.println("hmmmmmmmmmmmmmmmmmmm"); 
+        i++;
+      }
+      System.out.println(ids);
+      System.out.println(idsTemps);
+}
+
+    private void addIdsnTemps(String id, String temp) {
+      int i = 0;
+      int arraySize = this.ids.size();
+      if (arraySize == 0) {
+        this.ids.add(id);
+        this.idsTemps.add(temp);
+      } else {
+        while(i < arraySize) {
+          if(id.equals(this.ids.get(i))) {
+            this.ids.remove(i);
+            this.idsTemps.remove(i);
+            i = arraySize; 
+          }
+          i++;
+        }
+        this.ids.add(id);
+        this.idsTemps.add(temp);
+      }
+      System.out.println(this.ids);
+      System.out.println(this.idsTemps);
+    }
     private void reportErrToFile(String info){
       FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
       fileManager.writeToFile(info);
@@ -1684,7 +1721,9 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println("EL ID DE INT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateIntegerSymbolTable(id, dType, null);
-              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataInt");
+              addIdsnTemps(id.toString(), currentTemp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intCreationAssign",39, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1716,7 +1755,10 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //generateICode("\tdataInt " + id + " = " + val.toString());
               //String temp = TDCGenerator.newTemporal();
               //String tempFunc = TDCGenerator.codeGenerator("CALL", temp, val.toString(), null, null);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), mathExprTempsStack.pop(), null, "dataInt");
+              String temp = mathExprTempsStack.pop();
+              addIdsnTemps(id.toString(), temp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), temp, null, "dataInt");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intCreationAssign",39, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1758,8 +1800,9 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println("EL ID DE FLOAT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateFloatSymbolTable(id, dType, null);
-              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataFloat");
-
+              addIdsnTemps(id.toString(), currentTemp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("floatCreationAssign",40, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1784,7 +1827,10 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateFloatSymbolTable(id, dType, convertToFloat(RESULT));
               //generateICode("\tdataFloat " + id + " = " + val.toString());
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), mathExprTempsStack.pop(), null, "dataInt");
+              String temp = mathExprTempsStack.pop();
+              addIdsnTemps(id.toString(), temp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), temp, null, "dataInt");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("floatCreationAssign",40, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1805,7 +1851,9 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println("EL ID DE CHARLIT ES: " + id);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT);
-              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataChar");
+              addIdsnTemps(id.toString(), currentTemp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("charCreationAssign",38, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1830,7 +1878,11 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateCharacterSymbolTable(id, dType, RESULT); 
               //generateICode("\tdataChar " + id + " = " + val.toString());
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataChar");
+              addIdsnTemps(id.toString(), currentTemp);
+              String tempVal = TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              currentTemp = TDCGenerator.newTemporal();
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), tempVal, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("charCreationAssign",38, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1860,6 +1912,7 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
                 RESULT = null;
               }
               //generateICode("\tdataChar " + id + " = " + "CALL " + val);
+              addIdsnTemps(id.toString(), currentTemp);
               String tempFunc = TDCGenerator.codeGenerator("CALL", currentTemp, val.toString(), null, null);
               TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
               currentTemp = TDCGenerator.newTemporal();
@@ -1893,7 +1946,14 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
                 RESULT = null;
               }
               //generateICode("\tdataChar " + id + " = " + val);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);
+              addIdsnTemps(id.toString(), currentTemp);
+              //String valTemp = TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              //currentTemp = TDCGenerator.newTemporal();
+              String idTemp = idsTemps.get(ids.indexOf(val.toString()));
+              //System.out.println("ID TEMPS IS: " + idTemp);
+              //mathExprTempsStack.push(idTemp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), idTemp, null, "dataChar");
+              currentTemp = TDCGenerator.newTemporal();
            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("charCreationAssign",38, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1918,7 +1978,10 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
               //generateICode("\tid " + " = " + val); 
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);      
+              String valTemp = TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              currentTemp = TDCGenerator.newTemporal();
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), valTemp, null, null);  
+              currentTemp = TDCGenerator.newTemporal();    
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("charCreationAssign",38, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2011,7 +2074,9 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               //updateBooleanSymbolTable(id, dType, null.toString());
               updateBooleanSymbolTable(id, dType, "null"); 
-              TDCGenerator.codeGenerator("CREATE", id.toString(), null, null, "dataBoolean");
+              addIdsnTemps(id.toString(), currentTemp);
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataBoolean");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("boolCreationAssign",42, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2036,7 +2101,11 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + val);
               updateBooleanSymbolTable(id, dType, RESULT.toString()); 
               //generateICode("\tdataBoolean " + id + " = " + val);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataBoolean");
+              addIdsnTemps(id.toString(), currentTemp);
+              String valTemp = TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              currentTemp = TDCGenerator.newTemporal();
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), valTemp, null, "dataBoolean");
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("boolCreationAssign",42, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2070,8 +2139,11 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
                 System.out.println(reportSemanticErr(id.toString(),"-e2"));
               }
               //generateICode("\tid " + " = " + val);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, "dataBoolean");
-
+              addIdsnTemps(id.toString(), currentTemp);
+              String valTemp = TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              currentTemp = TDCGenerator.newTemporal();
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), valTemp, null, null);
+              currentTemp = TDCGenerator.newTemporal();
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("boolCreationAssign",42, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2106,6 +2178,7 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               }else if(lexer.idTypeExamination.equals("float")) {
                 updateFloatSymbolTable(id, "float", convertToFloat(val.toString()));
               }
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("intVarAsign",50, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2701,6 +2774,10 @@ TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null);
               if (NumberUtils.isParsable(res)) {
                 val = res;
                 RESULT = val;
+                //TDCGenerator.codeGenerator("ASSIGN", currentTemp, n.toString(), null, null);
+                String idTemp = idsTemps.get(ids.indexOf(id.toString()));
+                //System.out.println("ID TEMPS IS: " + idTemp);
+                mathExprTempsStack.push(idTemp);
               } else {
                   System.out.println(reportSemanticErr(id.toString(), res));
                   RESULT = 0;
