@@ -28,6 +28,7 @@ parser code {:
     public Lexer lexer;
     public String currentTemp = "t0";
     public int currentTempCount = 0;
+    public String currentBranch = "";
     public Stack<String> mathExprTempsStack = new Stack<>();
     public ArrayList<String> ids = new ArrayList<>();
     public ArrayList<String> idsTemps = new ArrayList<>();
@@ -54,6 +55,11 @@ parser code {:
       System.out.println(ids);
       System.out.println(idsTemps);
 }
+
+    public void emptyIdsnTempsArray() {
+      this.ids.clear();
+      this.idsTemps.clear();
+    }
 
     private void addIdsnTemps(String id, String temp) {
       int i = 0;
@@ -524,6 +530,8 @@ main ::=
             {: 
               updateCurrentFunction(name);
               TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null);
+              TDCGenerator.reinitTemporal();
+              emptyIdsnTempsArray();
               //System.out.println("CURRENT FUNC IS: " + currentFunction); 
             :} 
           LCURLY codeBlock {: TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
@@ -544,17 +552,17 @@ return ::=
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           ;
 functionInv ::=
           FUNC:name RPAREN 
@@ -867,18 +875,19 @@ varAsign ::=
           intVarAsign
           ;
 intVarAsign ::=
-          ID:id EQ intMathExpression:val
+          ID:id EQ mathExpression:val
             {:
               RESULT = val;
               //System.out.println("ENTRO A intVarAsign");
               //System.out.println("EL ID ES: " + id);
-              //System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
+              System.out.println(" --> LA NUEVA ASIGNACION DE " + id + " ES: " + RESULT);
               if(lexer.idTypeExamination.equals("int")) {
                 updateIntegerSymbolTable(id, "int", convertToInteger(val.toString()));
               }else if(lexer.idTypeExamination.equals("float")) {
                 updateFloatSymbolTable(id, "float", convertToFloat(val.toString()));
               }
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), val.toString(), null, null);
+              String idTemp = idsTemps.get(ids.indexOf(id.toString()));
+              TDCGenerator.codeGenerator("ASSIGN", idTemp, val.toString(), null, null);
             :} 
           ;
 arrayAccess ::=
@@ -1291,19 +1300,49 @@ floatTerm ::=
 
           ;*/
 logRelExpression ::=
-          logicalExpression | relationalExpression
+          logicalExpression 
+            {:
+              String op1 = mathExprTempsStack.pop();
+              currentBranch = TDCGenerator.newBranch();
+              TDCGenerator.codeGenerator("IF", null, op1, currentBranch, null);
+              TDCGenerator.codeGenerator("BRANCH", null, "BEGIN", currentBranch, null);  
+           :} 
+          | 
+          relationalExpression
+            {:
+              String op1 = mathExprTempsStack.pop();
+              currentBranch = TDCGenerator.newBranch();
+              TDCGenerator.codeGenerator("IF", null, op1, currentBranch, null);
+              TDCGenerator.codeGenerator("BRANCH", null, "BEGIN", currentBranch, null);  
+           :}
           ;
 relationalExpression ::=
           relationalOperand:v1 relationalOperator:op relationalExpression:v2
             {:
               if(op.toString().equals(">=")) {
                 RESULT = convertToInteger(v1) >= convertToInteger(v2);
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("GTE", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals(">")) {
                 RESULT = convertToInteger(v1) > convertToInteger(v2);
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("GT", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("<")) {
                 RESULT = convertToInteger(v1) < convertToInteger(v2);
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("LT", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("<=")) {
                 RESULT = convertToInteger(v1) <= convertToInteger(v2);
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("LTE", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               }
               System.out.println("EL RESULTADO DE RELATIONAL EXPRESSION WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
             :}
@@ -1318,10 +1357,22 @@ logicalExpression ::=
             {:
               if(op.toString().equals("&&")) {
                 RESULT = v1 && v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("AND", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("||")) {
                 RESULT = v1 || v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("OR", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("==")) {
                 RESULT = v1 == v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("EQEQ", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               }
               System.out.println("EL RESULTADO DE LOGICAL EXPRESSION WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
             :}
@@ -1341,10 +1392,22 @@ logicalExpr ::=
             {:
               if(op.toString().equals("&&")) {
                 RESULT = v1 && v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("AND", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("||")) {
                 RESULT = v1 || v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("OR", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               } else if(op.toString().equals("==")) {
                 RESULT = v1 == v2;
+                String op2 = mathExprTempsStack.pop();
+                TDCGenerator.codeGenerator("EQEQ", currentTemp, mathExprTempsStack.pop(), op2, null);
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
               }
               System.out.println("EL RESULTADO DE LOGICAL EXPR WITH: " + v1 + " " + op + " " + v2 + " IS " + RESULT);
             :}
@@ -1357,13 +1420,22 @@ mathOperand ::=
           floatMathOperand:val {: RESULT = val; :}
           ;
 intMathOperand ::=
-          INTLIT:val {: RESULT = convertToInteger(val); :} //| arrayAccess 
+          INTLIT:val 
+            {: 
+              RESULT = convertToInteger(val); 
+              TDCGenerator.codeGenerator("ASSIGN", currentTemp, val.toString(), null, null);
+              mathExprTempsStack.push(currentTemp);
+              currentTemp = TDCGenerator.newTemporal();
+            :} //| arrayAccess 
           ;
 floatMathOperand ::=
           FLOATLIT:val {: RESULT = convertToFloat(val); :}
           ;
 relationalOperand ::=
-          intMathOperand:val {: RESULT = val; :} 
+          intMathOperand:val 
+            {: 
+              RESULT = val; 
+            :} 
 //| LPAREN mathExpression RPAREN
           ;
 logicalOperand ::=
@@ -1373,6 +1445,8 @@ logicalOperand ::=
               Boolean res = Boolean.parseBoolean(getIdValue(id.toString()));
               System.out.println("LOGICAL OPERAND IS: " + res );
               RESULT = res;
+              String idTemp = idsTemps.get(ids.indexOf(id.toString()));
+              mathExprTempsStack.push(idTemp);
             :}
           //| boolLit 
           | LPAREN relationalExpression:val RPAREN {: RESULT = Boolean.parseBoolean(val.toString()); :}
@@ -1402,6 +1476,9 @@ logicalOperator ::=
 
 if ::=  // Add rule to make it work with a boolean literal: true/false
         IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY
+         {:
+          TDCGenerator.codeGenerator("BRANCH", null, "END", currentBranch, null);  
+         :} 
         |
         IF LPAREN logRelExpression RPAREN THEN LCURLY codeBlock RCURLY ELSE LCURLY codeBlock RCURLY
         ;

@@ -1,4 +1,32 @@
-int main(){
+int funcOne() {
+
+  int x#
+  int y = 10#
+  int z = y * 5#
+  char z = 'z'#
+  boolean b_1 = true#
+  boolean b_2 = false#
+  boolean b_3 = true#
+
+  /* int p = y++# 3DCode does not like it! */
+  /* y = y++ Even the parser throws err! */
+  /* y = 99# semantic error! */
+
+  if (b_2 && b_1 || b_3) then {
+    char c = 'u'#
+    int u = 99#
+  }
+
+
+  if (10 > 10) then {
+    char t = 'p'#
+    int o = 99#
+  }
+
+  return 0#
+}
+
+int main() {
 
   boolean boolOne#
   int int_1 = 5#
@@ -28,7 +56,7 @@ int main(){
   int var = int_2# 
   int_2 = x# 
   int int_4 = 10.3# */
-  boolean boolFour = boolTwo# is not recognized by grammar.
 
   return 0#
 }
+
