@@ -17,6 +17,8 @@ public class TDCGenerator {
   
   public static int temporalNum;
   public static String temporalVar;
+  public static int branchNum;
+  public static String branch;
   public static final String FUNCB = "FUNCB";
   public static final String FUNCE = "FUNCE";
   public static final String RETURN = "RETURN";
@@ -38,6 +40,12 @@ public class TDCGenerator {
   public static final String GT = "GT";
   public static final String LTE = "LTE";
   public static final String LT = "LT";
+  public static final String AND = "AND";
+  public static final String OR = "OR";
+  public static final String EQEQ = "EQEQ";
+  public static final String BRCH = "BRANCH";
+
+
 
   public TDCGenerator() {
     this.temporalNum = 0;
@@ -51,7 +59,7 @@ public class TDCGenerator {
         generateICode("func " + var + " begin\n");  
         break;
       case FUNCE:
-        generateICode("\nfunc " + var + " end");
+        generateICode("\nfunc " + var + " end\n");
         break;
       case RETURN:
         generateICode("\n\tRETURN " + var);
@@ -81,6 +89,37 @@ public class TDCGenerator {
       case CALL:
         generateICode("\t" + var + " = " + " CALL TO " + firstArg);
         break;
+      case GTE:
+        generateICode("\t" + var + " = " + firstArg + " >= " + secondArg);
+        break;
+      case GT:
+        generateICode("\t" + var + " = " + firstArg + " > " + secondArg);
+        break;
+      case LTE:
+        generateICode("\t" + var + " = " + firstArg + " <= " + secondArg);
+        break;
+      case LT:
+        generateICode("\t" + var + " = " + firstArg + " < " + secondArg);
+        break;
+      case AND:
+        generateICode("\t" + var + " = " + firstArg + " && " + secondArg);
+        break;
+      case OR:
+        generateICode("\t" + var + " = " + firstArg + " || " + secondArg);
+        break;
+      case EQEQ:
+        generateICode("\t" + var + " = " + firstArg + " == " + secondArg);
+        break;
+      case IF:
+        generateICode("\t" + "IF ( " + firstArg + " ) GOTO " + secondArg);
+        break;
+      case BRCH:
+        if (firstArg.equals("BEGIN")) {
+          generateICode("\tBEGIN " + secondArg + ": ");
+          } else {
+          generateICode("\tEND " + secondArg);
+        }
+        break;
     }
     return temporalVar;
   }
@@ -91,6 +130,16 @@ public class TDCGenerator {
     return temporalVar;
   }
   
+  public static String newBranch() {
+    branchNum = branchNum + 1;
+    branch = "branch_" + String.valueOf(branchNum);
+    return branch;
+  }
+  
+  public static void reinitTemporal() {
+    temporalNum = 0;
+    temporalVar = "t" + String.valueOf(temporalNum);
+  }
  
   public static void generateICode(String info) {
     FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/iCode.txt");
