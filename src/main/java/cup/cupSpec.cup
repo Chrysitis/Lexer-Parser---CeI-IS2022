@@ -7,7 +7,7 @@ import java.util.Map;
 import symbolTable.*;
 import java.util.ArrayList;
 import org.apache.commons.lang3.math.NumberUtils;
-import codeGenerator.TDCGenerator;
+import codeGenerator.*;
 import java.util.Stack;
 
 /* Parser code to change the way the parser reports errors (include
@@ -32,7 +32,7 @@ parser code {:
     public Stack<String> mathExprTempsStack = new Stack<>();
     public ArrayList<String> ids = new ArrayList<>();
     public ArrayList<String> idsTemps = new ArrayList<>();
-
+    public boolean uExp = false;
 
 
     @Override
@@ -88,7 +88,7 @@ parser code {:
     }
 
     private void generateICode(String info){
-      FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/iCode.txt");
+      FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/codeGenerator/iCode.txt");
       fileManager.writeToFile(info);
     }
 
@@ -532,6 +532,7 @@ main ::=
               TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null);
               TDCGenerator.reinitTemporal();
               emptyIdsnTempsArray();
+              currentTemp = "t0";
               //System.out.println("CURRENT FUNC IS: " + currentFunction); 
             :} 
           LCURLY codeBlock {: TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
@@ -552,17 +553,17 @@ return ::=
   Also, function definition and function invocations.
   The lexeme is "functionName(", that is why RPAREN is missing. */
 function ::=
-          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          INT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          CHAR FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           |
-          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
+          FLOAT FUNC:name {: updateCurrentFunction(name); TDCGenerator.codeGenerator("FUNCB", name.toString(), null, null, null); TDCGenerator.reinitTemporal(); emptyIdsnTempsArray(); currentTemp = "t0"; :} parameters RPAREN LCURLY codeBlock {:TDCGenerator.codeGenerator("FUNCE", name.toString(), null, null, null); :} RCURLY
           ;
 functionInv ::=
           FUNC:name RPAREN 
@@ -639,7 +640,7 @@ intCreationAssign ::=
               //System.out.println(" --> EL VALOR DE " + id + " ES: " + RESULT);
               updateIntegerSymbolTable(id, dType, null);
               addIdsnTemps(id.toString(), currentTemp);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataChar");
+              TDCGenerator.codeGenerator("ASSIGN", id.toString(), currentTemp, null, "dataInt");
               currentTemp = TDCGenerator.newTemporal();
             :} 
           | 
@@ -657,10 +658,15 @@ intCreationAssign ::=
               //generateICode("\tdataInt " + id + " = " + val.toString());
               //String temp = TDCGenerator.newTemporal();
               //String tempFunc = TDCGenerator.codeGenerator("CALL", temp, val.toString(), null, null);
-              String temp = mathExprTempsStack.pop();
-              addIdsnTemps(id.toString(), temp);
-              TDCGenerator.codeGenerator("ASSIGN", id.toString(), temp, null, "dataInt");
-              currentTemp = TDCGenerator.newTemporal();
+              //if(!uExp) {
+                String temp = mathExprTempsStack.pop();
+                addIdsnTemps(id.toString(), temp);
+                TDCGenerator.codeGenerator("ASSIGN", id.toString(), temp, null, "dataInt");
+                currentTemp = TDCGenerator.newTemporal();
+              //} else {
+              //  uExp = false;
+              //}
+
             :}
           | 
           INT:dType ID:id EQ floatMathExpression:val
@@ -911,20 +917,34 @@ arrayValModification ::=
 // ---------- Print function ----------
 // Print function taking int, float, char and string literals. Also identifiers.
 printFunction ::=
-          PRINT LPAREN INTLIT RPAREN
+          PRINT INTLIT:val RPAREN
+            {:
+              TDCGenerator.codeGenerator("PRINT", null, val.toString(), null, null);
+            :}
           |
-          PRINT LPAREN FLOATLIT RPAREN
+          PRINT FLOATLIT RPAREN
           |
-          PRINT LPAREN CHARLIT RPAREN
+          PRINT CHARLIT RPAREN
           |
-          PRINT LPAREN STRINGLIT RPAREN
+          PRINT STRINGLIT:val RPAREN
+            {:
+              TDCGenerator.codeGenerator("PRINT", null, val.toString(), null, null);
+            :}
           |
-          PRINT LPAREN ID RPAREN
+          PRINT ID:val RPAREN
+            {:
+              TDCGenerator.codeGenerator("PRINT", null, val.toString(), null, null);
+            :}
           ;
 // ---------- Read function ----------
 // I believe this one is just like a system call to read input.
 readFunction ::=
-          READ
+          INT ID:val EQ READ
+            {:
+              TDCGenerator.codeGenerator("READ", null, val.toString(), null, "dataInt");
+            :}
+          |
+          STRING ID EQ READ
           ;
 // ---------- Expressions ----------
 expression ::=
@@ -954,6 +974,7 @@ intUnaryExpression ::=
             {:
               String res;
               Object eval;
+              RESULT = 0;
               if(lexer.idTypeExamination.equals("int")) { 
                 res = validateId(id.toString(), "int", "id");
               } else {
@@ -964,11 +985,18 @@ intUnaryExpression ::=
                   res = validateId(id.toString(), "int", "id");
                   eval = convertToInteger(res) + 1;
                   RESULT = eval;
+                  //mathExprTempsStack.push(currentTemp);
+                  currentTemp = TDCGenerator.newTemporal();
                 } else {
                   res = validateId(id.toString(), "float", "id");
                   eval = convertToFloat(res) + 1.0;       
                   RESULT = eval;          
-                }              
+                }
+                String idTemp = idsTemps.get(ids.indexOf(id.toString()));
+                String unaryTemp = TDCGenerator.codeGenerator("UEXP", currentTemp, idTemp, "++", "");
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
+                uExp = true;              
               } else {
                 System.out.println(reportSemanticErr(id.toString(), res));
               }
@@ -978,6 +1006,7 @@ intUnaryExpression ::=
             {:
               String res;
               Object eval;
+              RESULT = 0;
               if(lexer.idTypeExamination.equals("int")) { 
                 res = validateId(id.toString(), "int", "id");
               } else {
@@ -992,7 +1021,12 @@ intUnaryExpression ::=
                   res = validateId(id.toString(), "float", "id");
                   eval = convertToFloat(res) - 1.0;       
                   RESULT = eval;          
-                }              
+                }   
+                String idTemp = idsTemps.get(ids.indexOf(id.toString()));
+                TDCGenerator.codeGenerator("UEXP", currentTemp, idTemp, "--", "");
+                mathExprTempsStack.push(currentTemp);
+                currentTemp = TDCGenerator.newTemporal();
+                uExp = true;             
               } else {
                 System.out.println(reportSemanticErr(id.toString(), res));
               }
@@ -1215,8 +1249,6 @@ intTerm ::=
             intUnaryExpression:val
               {:
                 RESULT = val;
-                  TDCGenerator.codeGenerator("UEXP", currentTemp, val.toString(), "", "");
-                  currentTemp = TDCGenerator.newTemporal();
               :}
           ;
 /*

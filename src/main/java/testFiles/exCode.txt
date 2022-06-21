@@ -1,0 +1,21 @@
+int funcA (int num1, int num2) {
+  bool miBoolean = num1 < num2/2#
+  while (miBoolean) {
+    if (num1 > 100) {
+      num2 = num2 – 2#
+    } else {
+      num1 = num1 + 10#
+    }
+    print(num2)#
+    miBoolean = num1 < num2/2#
+  }
+  return num1#
+}
+
+int main () {
+  int numero = read()#
+  int resultado = funcA(numero, numero*10)#
+  print(“El resultado es: ”)#
+  print(resultado)#
+  return -1#
+}

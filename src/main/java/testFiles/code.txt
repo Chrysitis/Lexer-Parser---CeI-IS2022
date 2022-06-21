@@ -1,0 +1,61 @@
+int funcOne() {
+
+  int i_x#
+  int i_y = 10#
+  int i_z = i_y * 5#
+  char c_a = 'z'#
+  boolean b_1 = true#
+  boolean b_2 = false#
+  boolean b_3 = true#
+  string str_s = "Esto es un string"#
+  /* int p = y++# 3DCode does not like it! */
+  /* y = y++ Even the parser throws err! */
+  /* y = 99# semantic error! */
+
+  int i_p = i_y++#
+  if (b_2 && b_1 || b_3) then {
+    char c_b = 'u'#
+    int i_u = 99#
+  }
+
+
+  if (10 > 10) then {
+    char c_t = 'p'#
+    int i_o = 99#
+  }
+
+  return 0#
+}
+
+int main() {
+
+  int i_xi = 5#
+  int i_yi = 7#
+  int i_ai = 52#
+  int i_bi = 26#
+  int i_ci = 2#
+  int i_ji = i_xi * 5#
+
+  int i_zi = i_xi * i_yi#
+  int i_di = i_ai / i_bi#
+  int i_ei = i_xi + i_bi#
+  int i_fi = i_yi - i_ci#
+  int i_gi = 5 * 2 + 3 - 2#
+
+  print("i_zi es: ")#
+  print(i_zi)#
+
+  print("Inserte un numero: ")#
+  int i_ri = read()#
+  print("i_ri es: ")#
+  print(i_ri)#
+
+
+  boolean b_ai = true#
+  if (b_ai) then {
+    int i_ti = i_xi + 1 + 6#
+  }
+
+  return 0#
+
+}

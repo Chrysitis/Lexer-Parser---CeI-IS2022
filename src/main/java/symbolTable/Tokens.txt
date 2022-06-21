@@ -3,22 +3,22 @@
 [ RPAREN ] )
 [ LCURLY ] {
 [ INT ] int
-[ ID 0 ] x - Found in symbol table: 1
+[ ID 0 ] i_x - Found in symbol table: 1
 [ HASH ] #
 [ INT ] int
-[ ID 1 ] y - Found in symbol table: 1
+[ ID 1 ] i_y - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 10
 [ HASH ] #
 [ INT ] int
-[ ID 2 ] z - Found in symbol table: 1
+[ ID 2 ] i_z - Found in symbol table: 1
 [ EQ ] =
-[ ID 3 ] y - Found in symbol table: 1
+[ ID 3 ] i_y - Found in symbol table: 1
 [ MULT ] *
 [ INTLIT ] 5
 [ HASH ] #
 [ CHAR ] char
-[ ID 4 ] z - Found in symbol table: 1
+[ ID 4 ] c_a - Found in symbol table: 1
 [ EQ ] =
 [ CHARLIT ] 'z'
 [ HASH ] #
@@ -37,26 +37,37 @@
 [ EQ ] =
 [ TRUE ] true
 [ HASH ] #
+[ STRING ] string
+[ ID 8 ] str_s - Found in symbol table: 1
+[ EQ ] =
+[ STRINGLIT ] "Esto es un string"
+[ HASH ] #
 [ COMMENT ] /* int p = y++# 3DCode does not like it! */
 [ COMMENT ] /* y = y++ Even the parser throws err! */
 [ COMMENT ] /* y = 99# semantic error! */
+[ INT ] int
+[ ID 9 ] i_p - Found in symbol table: 1
+[ EQ ] =
+[ ID 10 ] i_y - Found in symbol table: 1
+[ PADD ] ++
+[ HASH ] #
 [ IF ] if
 [ LPAREN ] (
-[ ID 8 ] b_2 - Found in symbol table: 1
+[ ID 11 ] b_2 - Found in symbol table: 1
 [ AND ] &&
-[ ID 9 ] b_1 - Found in symbol table: 1
+[ ID 12 ] b_1 - Found in symbol table: 1
 [ OR ] ||
-[ ID 10 ] b_3 - Found in symbol table: 1
+[ ID 13 ] b_3 - Found in symbol table: 1
 [ RPAREN ] )
 [ THEN ] then
 [ LCURLY ] {
 [ CHAR ] char
-[ ID 11 ] c - Found in symbol table: 2
+[ ID 14 ] c_b - Found in symbol table: 2
 [ EQ ] =
 [ CHARLIT ] 'u'
 [ HASH ] #
 [ INT ] int
-[ ID 12 ] u - Found in symbol table: 2
+[ ID 15 ] i_u - Found in symbol table: 2
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
@@ -70,12 +81,12 @@
 [ THEN ] then
 [ LCURLY ] {
 [ CHAR ] char
-[ ID 13 ] t - Found in symbol table: 2
+[ ID 16 ] c_t - Found in symbol table: 2
 [ EQ ] =
 [ CHARLIT ] 'p'
 [ HASH ] #
 [ INT ] int
-[ ID 14 ] o - Found in symbol table: 2
+[ ID 17 ] i_o - Found in symbol table: 2
 [ EQ ] =
 [ INTLIT ] 99
 [ HASH ] #
@@ -87,113 +98,124 @@
 [ INT ] int
 [ MAIN ] main()
 [ LCURLY ] {
-[ BOOL ] boolean
-[ ID 15 ] boolOne - Found in symbol table: 1
-[ HASH ] #
 [ INT ] int
-[ ID 16 ] int_1 - Found in symbol table: 1
+[ ID 18 ] i_xi - Found in symbol table: 1
 [ EQ ] =
 [ INTLIT ] 5
 [ HASH ] #
-[ FLOAT ] float
-[ ID 17 ] float1 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 18 ] charA - Found in symbol table: 1
-[ HASH ] #
-[ STRING ] string
-[ ID 19 ] strOne - Found in symbol table: 1
-[ HASH ] #
-[ STRING ] string
-[ ID 20 ] strTwo - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Esto es un string"
-[ HASH ] #
-[ ID 21 ] strOne - Found in symbol table: 1
-[ EQ ] =
-[ STRINGLIT ] "Ahora tiene valor"
-[ HASH ] #
-[ ID 22 ] boolOne - Found in symbol table: 1
-[ EQ ] =
-[ TRUE ] true
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 23 ] boolTwo - Found in symbol table: 1
-[ EQ ] =
-[ FALSE ] false
-[ HASH ] #
-[ BOOL ] boolean
-[ ID 24 ] boo1Three - Found in symbol table: 1
-[ EQ ] =
-[ TRUE ] true
-[ HASH ] #
-[ CHAR ] char
-[ ID 25 ] charB - Found in symbol table: 1
-[ EQ ] =
-[ CHARLIT ] 'x'
-[ HASH ] #
-[ CHAR ] char
-[ ID 26 ] charC - Found in symbol table: 1
-[ EQ ] =
-[ FUNC ] charFunc(
-[ RPAREN ] )
-[ HASH ] #
---------------- SEMANTIC ERR: NO SUCH FUNCTION charFunc( EXISTS. ---------------
 [ INT ] int
-[ ID 27 ] int_2 - Found in symbol table: 1
+[ ID 19 ] i_yi - Found in symbol table: 1
 [ EQ ] =
-[ INTLIT ] 5
-[ HASH ] #
-[ FLOAT ] float
-[ ID 28 ] float2 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 5.5
+[ INTLIT ] 7
 [ HASH ] #
 [ INT ] int
-[ ID 29 ] int_3 - Found in symbol table: 1
+[ ID 20 ] i_ai - Found in symbol table: 1
 [ EQ ] =
+[ INTLIT ] 52
+[ HASH ] #
+[ INT ] int
+[ ID 21 ] i_bi - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 26
+[ HASH ] #
+[ INT ] int
+[ ID 22 ] i_ci - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 2
+[ HASH ] #
+[ INT ] int
+[ ID 23 ] i_ji - Found in symbol table: 1
+[ EQ ] =
+[ ID 24 ] i_xi - Found in symbol table: 1
+[ MULT ] *
 [ INTLIT ] 5
+[ HASH ] #
+[ INT ] int
+[ ID 25 ] i_zi - Found in symbol table: 1
+[ EQ ] =
+[ ID 26 ] i_xi - Found in symbol table: 1
+[ MULT ] *
+[ ID 27 ] i_yi - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 28 ] i_di - Found in symbol table: 1
+[ EQ ] =
+[ ID 29 ] i_ai - Found in symbol table: 1
+[ DIV ] /
+[ ID 30 ] i_bi - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 31 ] i_ei - Found in symbol table: 1
+[ EQ ] =
+[ ID 32 ] i_xi - Found in symbol table: 1
+[ ADD ] +
+[ ID 33 ] i_bi - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 34 ] i_fi - Found in symbol table: 1
+[ EQ ] =
+[ ID 35 ] i_yi - Found in symbol table: 1
 [ SUBS ] -
+[ ID 36 ] i_ci - Found in symbol table: 1
+[ HASH ] #
+[ INT ] int
+[ ID 37 ] i_gi - Found in symbol table: 1
+[ EQ ] =
+[ INTLIT ] 5
+[ MULT ] *
 [ INTLIT ] 2
 [ ADD ] +
 [ INTLIT ] 3
-[ ADD ] +
-[ INTLIT ] 4
-[ MULT ] *
-[ INTLIT ] 4
-[ DIV ] /
+[ SUBS ] -
 [ INTLIT ] 2
 [ HASH ] #
-[ FLOAT ] float
-[ ID 30 ] float3 - Found in symbol table: 1
-[ EQ ] =
-[ FLOATLIT ] 3.5
-[ ADD ] +
-[ FLOATLIT ] 6.5
+[ PRINT ] print(
+[ STRINGLIT ] "i_zi es: "
+[ RPAREN ] )
+[ HASH ] #
+[ PRINT ] print(
+[ ID 38 ] i_zi - Found in symbol table: 1
+[ RPAREN ] )
+[ HASH ] #
+[ PRINT ] print(
+[ STRINGLIT ] "Inserte un numero: "
+[ RPAREN ] )
 [ HASH ] #
 [ INT ] int
-[ ID 31 ] int_4 - Found in symbol table: 1
+[ ID 39 ] i_ri - Found in symbol table: 1
 [ EQ ] =
-[ ID 32 ] int_1 - Found in symbol table: 1
+[ READ ] read()
+[ HASH ] #
+[ PRINT ] print(
+[ STRINGLIT ] "i_ri es: "
+[ RPAREN ] )
+[ HASH ] #
+[ PRINT ] print(
+[ ID 40 ] i_ri - Found in symbol table: 1
+[ RPAREN ] )
+[ HASH ] #
+[ BOOL ] boolean
+[ ID 41 ] b_ai - Found in symbol table: 1
+[ EQ ] =
+[ TRUE ] true
+[ HASH ] #
+[ IF ] if
+[ LPAREN ] (
+[ ID 42 ] b_ai - Found in symbol table: 1
+[ RPAREN ] )
+[ THEN ] then
+[ LCURLY ] {
+[ INT ] int
+[ ID 43 ] i_ti - Found in symbol table: 2
+[ EQ ] =
+[ ID 44 ] i_xi - Found in symbol table: 2
 [ ADD ] +
-[ ID 33 ] int_2 - Found in symbol table: 1
-[ MULT ] *
-[ ID 34 ] int_3 - Found in symbol table: 1
-[ HASH ] #
-[ CHAR ] char
-[ ID 35 ] charD - Found in symbol table: 1
-[ EQ ] =
-[ ID 36 ] charB - Found in symbol table: 1
-[ HASH ] #
-[ FLOAT ] float
-[ ID 37 ] float4 - Found in symbol table: 1
-[ EQ ] =
-[ ID 38 ] float3 - Found in symbol table: 1
+[ INTLIT ] 1
 [ ADD ] +
-[ FLOATLIT ] 5.5
+[ INTLIT ] 6
 [ HASH ] #
-[ ID 39 ] int_2 - Found in symbol table: 1
-[ EQ ] =
-[ ID 40 ] int_1 - Found in symbol table: 1
+[ RCURLY ] }
+[ RETURN ] return
+[ INTLIT ] 0
 [ HASH ] #
---------------- SEMANTIC ERR: NO SUCH VARIABLE int_1 CREATED OR IN SCOPE. ---------------
+[ RCURLY ] }

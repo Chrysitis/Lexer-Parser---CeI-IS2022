@@ -12,6 +12,7 @@ int funcOne() {
   /* y = y++ Even the parser throws err! */
   /* y = 99# semantic error! */
 
+  int p = y++#
   if (b_2 && b_1 || b_3) then {
     char c = 'u'#
     int u = 99#
@@ -50,9 +51,10 @@ int main() {
   int int_4 = int_1 + int_2 * int_3# 
   char charD = charB#
   float float4 = float3 + 5.5#
-  int_2 = int_1#
+  
 
   /*
+  int_2 = int_1#
   int var = int_2# 
   int_2 = x# 
   int int_4 = 10.3# */
