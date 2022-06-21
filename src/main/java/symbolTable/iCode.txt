@@ -1,6 +1,6 @@
 func funcOne( begin
 
-	dataChar x = t0
+	dataInt x = t0
 	t1 = 10
 	dataInt y = t1
 	t3 = 5
@@ -14,24 +14,27 @@ func funcOne( begin
 	dataBoolean b_2 = t10
 	t12 = true
 	dataBoolean b_3 = t12
-	t14 = t8 || t12
-	t15 = t10 && t14
-	IF ( t15 ) GOTO branch_1
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
 	BEGIN branch_1: 
-	t16 = 'u'
-	dataChar c = t16
-	t18 = 99
-	dataInt u = t18
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
 	END branch_1
-	t20 = 10
-	t21 = 10
-	t22 = t20 > t21
-	IF ( t22 ) GOTO branch_2
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
 	BEGIN branch_2: 
-	t23 = 'p'
-	dataChar t = t23
-	t25 = 99
-	dataInt o = t25
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
 	END branch_2
 
 	RETURN 0
@@ -40,48 +43,258 @@ func funcOne( end
 
 func main() begin
 
-	dataBoolean boolOne = t27
-	t1 = 5
-	dataInt int_1 = t1
-	dataChar float1 = t3
-	dataChar charA = t4
-	dataString strOne
-	dataString strTwo = "Esto es un string"
-	dataString strOne = "Ahora tiene valor"
-	t5 = true
-	boolOne = t5
-	t7 = false
-	dataBoolean boolTwo = t7
-	t9 = true
-	dataBoolean boo1Three = t9
-	t11 = 'x'
-	dataChar charB = t11
-	t13 =  CALL TO charFunc(
-	dataChar charC = t13
-	t14 = 5
-	dataInt int_2 = t14
-	t16 = 5.5
-	dataInt float2 = t16
-	t18 = 5
-	t19 = 2
-	t20 = t18 - t19
-	t21 = 3
-	t22 = t20 + t21
-	t23 = 4
-	t24 = 4
-	t25 = t23 * t24
-	t26 = 2
-	t27 = t25 / t26
-	t28 = t22 + t27
-	dataInt int_3 = t28
-	t30 = 3.5
-	t31 = 6.5
-	t32 = t30 + t31
-	dataInt float3 = t32
-	t34 = t14 * t28
-	t35 = t1 + t34
-	dataInt int_4 = t35
-	dataChar charD = t11
-	t38 = 5.5
-	t39 = t32 + t38
-	dataInt float4 = t39
+
+	RETURN 0
+
+func main() end
+
+func funcOne( begin
+
+	dataInt x = t0
+	t1 = 10
+	dataInt y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt z = t4
+	t6 = 'z'
+	dataChar z = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+
+	RETURN 0
+
+func main() end
+
+func funcOne( begin
+
+	dataInt x = t0
+	t1 = 10
+	dataInt y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt z = t4
+	t6 = 'z'
+	dataChar z = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+
+	RETURN 0
+
+func main() end
+
+func funcOne( begin
+
+	dataInt x = t0
+	t1 = 10
+	dataInt y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt z = t4
+	t6 = 'z'
+	dataChar z = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+
+	RETURN 0
+
+func main() end
+
+func funcOne( begin
+
+	dataInt x = t0
+	t1 = 10
+	dataInt y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt z = t4
+	t6 = 'z'
+	dataChar z = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+
+	RETURN 0
+
+func main() end
+
+func funcOne( begin
+
+	dataInt x = t0
+	t1 = 10
+	dataInt y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt z = t4
+	t6 = 'z'
+	dataChar z = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str1 = "Esto es un string"
+	t15 = t1 + 1
+	dataInt p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c = t19
+	t21 = 99
+	dataInt u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar t = t26
+	t28 = 99
+	dataInt o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+
+	RETURN 0
+
+func main() end
+

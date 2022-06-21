@@ -166,7 +166,7 @@ identifier = {letter}+ ({letter} | {underScore} | {digs})*
 
 // ---------- string ----------
 stringDelimiter = \"
-strSymbols = [$=><#\.\+\_\-%&|/()!¡¿?\"\'\,]
+strSymbols = [:$=><#\.\+\_\-%&|/()!¡¿?\"\'\,]
 stringLit = {stringDelimiter} ({letter} | {digs} | [ ] | {strSymbols}) + {stringDelimiter}
 
 // ---------- array ----------
@@ -194,7 +194,7 @@ function = {identifier} "("
                   createSymbolTable(false, "main()", "INT"); 
                   return symbol(sym.MAIN, yytext()); 
                 }
-    "print"     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext()); }
+    "print("     { saveToken(sym.PRINT, yytext()); return symbol(sym.PRINT, yytext()); }
     {function}  { 
                   Boolean func = (idType != "");
                   if (func) {

@@ -35,6 +35,7 @@ public class TDCGenerator {
   public static final String SUB = "SUBS";
   public static final String MULT = "MULT";
   public static final String DIV = "DIV";
+  public static final String UEXP = "UEXP";
   public static final String EQ = "EQ";
   public static final String GTE = "GTE";
   public static final String GT = "GT";
@@ -86,8 +87,21 @@ public class TDCGenerator {
       case DIV:
         generateICode("\t" + var + " = " + firstArg + " / " + secondArg);
         break;
+      case UEXP:
+        if(secondArg.equals("++")) {
+          generateICode("\t" + var + " = " + firstArg + " + 1");
+        } else {
+          generateICode("\t" + var + " = " + firstArg + " - 1");
+        }
+        break;
       case CALL:
         generateICode("\t" + var + " = " + " CALL TO " + firstArg);
+        break;
+      case PRINT:
+        generateICode("\t" + "PRINT" + "(" + firstArg + ")");
+        break;
+      case READ:
+        generateICode("\t" + dataType + " " + firstArg + " = " + "READ()");
         break;
       case GTE:
         generateICode("\t" + var + " = " + firstArg + " >= " + secondArg);
@@ -142,7 +156,7 @@ public class TDCGenerator {
   }
  
   public static void generateICode(String info) {
-    FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/iCode.txt");
+    FileManager fileManager = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/codeGenerator/iCode.txt");
     fileManager.writeToFile(info);
   }
   

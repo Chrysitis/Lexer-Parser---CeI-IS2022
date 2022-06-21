@@ -5,6 +5,7 @@
  */
 package main;
 
+import codeGenerator.MIPSGenerator;
 import cup.parser;
 import cup.sym;
 import fileManager.FileManager;
@@ -30,7 +31,8 @@ import jflex.Lexer;
 public class Main {
   
   public static FileManager fileManagerToken = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/Tokens.txt");
-  public static FileManager fileManagerICode = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/symbolTable/iCode.txt");
+  public static FileManager fileManagerICode = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/codeGenerator/iCode.txt");
+  public static FileManager fileManagerMipsCode = new FileManager("C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/codeGenerator/MIPSCode.s");
 // Lexer.class, parser.class and sym.class dirs to delete them everytime the program in run to avoid replication. :)
   public static String lexerClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/jflex/Lexer.java";
   public static String parserClassDir = "C:/Users/chris/Documents/NetBeansProjects/CeI-PYI/src/main/java/cup/parser.java";
@@ -55,7 +57,10 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     //lexicalAnalysis(testFilePackageDir + "test.txt");
-    syntacticAnalysis(testFilePackageDir + "codeTest.txt");
+    syntacticAnalysis(testFilePackageDir + "code.txt");
+    MIPSGenerator.MipsGenerator();
+    System.out.println(MIPSGenerator.temps);
+    System.out.println(MIPSGenerator.tempsValues);
   }
 
   private static void lexicalAnalysis(String file)throws IOException {
@@ -99,6 +104,7 @@ public class Main {
  
     fileManagerToken.emptyFile();
     fileManagerICode.emptyFile();
+    fileManagerMipsCode.emptyFile();
     // Delete the files if they have been previously created...
     delFile(new File(lexerClassDir));
     delFile(new File(parserClassDir));

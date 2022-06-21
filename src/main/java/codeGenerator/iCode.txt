@@ -1,0 +1,95 @@
+func funcOne( begin
+
+	dataInt i_x = t0
+	t1 = 10
+	dataInt i_y = t1
+	t3 = 5
+	t4 = t1 * t3
+	dataInt i_z = t4
+	t6 = 'z'
+	dataChar c_a = t6
+	t8 = true
+	dataBoolean b_1 = t8
+	t10 = false
+	dataBoolean b_2 = t10
+	t12 = true
+	dataBoolean b_3 = t12
+	dataString str_s = "Esto es un string"
+	t15 = t1 + 1
+	dataInt i_p = t15
+	t17 = t8 || t12
+	t18 = t10 && t17
+	IF ( t18 ) GOTO branch_1
+	BEGIN branch_1: 
+	t19 = 'u'
+	dataChar c_b = t19
+	t21 = 99
+	dataInt i_u = t21
+	END branch_1
+	t23 = 10
+	t24 = 10
+	t25 = t23 > t24
+	IF ( t25 ) GOTO branch_2
+	BEGIN branch_2: 
+	t26 = 'p'
+	dataChar c_t = t26
+	t28 = 99
+	dataInt i_o = t28
+	END branch_2
+
+	RETURN 0
+
+func funcOne( end
+
+func main() begin
+
+	t0 = 5
+	dataInt i_xi = t0
+	t2 = 7
+	dataInt i_yi = t2
+	t4 = 52
+	dataInt i_ai = t4
+	t6 = 26
+	dataInt i_bi = t6
+	t8 = 2
+	dataInt i_ci = t8
+	t10 = 5
+	t11 = t0 * t10
+	dataInt i_ji = t11
+	t13 = t0 * t2
+	dataInt i_zi = t13
+	t15 = t4 / t6
+	dataInt i_di = t15
+	t17 = t0 + t6
+	dataInt i_ei = t17
+	t19 = t2 - t8
+	dataInt i_fi = t19
+	t21 = 5
+	t22 = 2
+	t23 = t21 * t22
+	t24 = 3
+	t25 = t23 + t24
+	t26 = 2
+	t27 = t25 - t26
+	dataInt i_gi = t27
+	PRINT("i_zi es: ")
+	PRINT(i_zi)
+	PRINT("Inserte un numero: ")
+	dataInt i_ri = READ()
+	PRINT("i_ri es: ")
+	PRINT(i_ri)
+	t29 = true
+	dataBoolean b_ai = t29
+	IF ( t29 ) GOTO branch_3
+	BEGIN branch_3: 
+	t31 = 1
+	t32 = t0 + t31
+	t33 = 6
+	t34 = t32 + t33
+	dataInt i_ti = t34
+	END branch_3
+
+	RETURN 0
+
+func main() end
+
